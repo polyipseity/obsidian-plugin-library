@@ -37,7 +37,6 @@
 		"eslint-plugin-import": "^2.27.5",
 		"eslint-plugin-svelte3": "^4.0.0",
 		"obsidian": "file:build/obsidian",
-		"patch-package": "^7.0.0",
 		"svelte": "^3.59.1",
 		"svelte-preprocess": "^5.0.3",
 		"tslib": "^2.5.0",
@@ -73,7 +72,6 @@
 		"check": "tsc -noEmit && eslint --cache --ignore-pattern \"*.svelte\" .",
 		"dev": "npm run build:force dev",
 		"fix": "eslint --fix --cache --ignore-pattern \"*.svelte\" .",
-		"postinstall": "patch-package",
 		"postversion": "node build/version-post.mjs",
 		"version": "node build/version.mjs"
 	},
