@@ -1,4 +1,4 @@
-import { type Fixed, fixTyped, markFixed } from "sources/ui/fixers"
+import { type Fixed, fixTyped, markFixed } from "sources/fixers.js"
 import {
 	ItemView,
 	MarkdownRenderer,
@@ -7,17 +7,18 @@ import {
 } from "obsidian"
 import {
 	UnnamespacedID,
+	newCollabrativeState,
 	printMalformedData,
 	readStateCollabratively,
 	recordViewStateHistory,
 	updateDisplayText,
 	writeStateCollabratively,
-} from "sources/utils/obsidian"
-import { capitalize, createChildElement, deepFreeze } from "sources/utils/util"
-import { DOMClasses } from "sources/magic"
-import type { NamespacedTranslationKey } from "sources/i18n"
-import type { PLACEHOLDERPlugin } from "sources/main"
-import { launderUnchecked } from "sources/utils/types"
+} from "sources/obsidian.js"
+import { capitalize, createChildElement, deepFreeze } from "sources/util.js"
+import { DOMClasses } from "sources/magic.js"
+import type { NamespacedTranslationKey } from "sources/i18n.js"
+import type { PluginContext } from "./plugin.js"
+import { launderUnchecked } from "sources/types.js"
 
 export class DocumentationMarkdownView extends ItemView {
 	public static readonly type = new UnnamespacedID("documentation")
@@ -26,11 +27,11 @@ export class DocumentationMarkdownView extends ItemView {
 	#state = DocumentationMarkdownView.State.DEFAULT
 
 	public constructor(
-		protected readonly plugin: PLACEHOLDERPlugin,
+		protected readonly context: PluginContext,
 		leaf: WorkspaceLeaf,
 	) {
 		DocumentationMarkdownView.#namespacedType =
-			DocumentationMarkdownView.type.namespaced(plugin)
+			DocumentationMarkdownView.type.namespaced(context)
 		super(leaf)
 		const { contentEl } = this
 		this.navigation = true
@@ -62,7 +63,7 @@ export class DocumentationMarkdownView extends ItemView {
 
 	protected set state(value: DocumentationMarkdownView.State) {
 		this.#state = value
-		updateDisplayText(this.plugin, this)
+		updateDisplayText(this.context, this)
 	}
 
 	public override getViewType(): string {
@@ -71,7 +72,7 @@ export class DocumentationMarkdownView extends ItemView {
 
 	public override getDisplayText(): string {
 		const {
-			plugin: { language: { i18n, language } },
+			context: { language: { i18n, language } },
 			state: { displayTextI18nKey: key },
 		} = this
 		return key === null ? "" : capitalize(String(i18n.t(key)), language)
@@ -79,7 +80,7 @@ export class DocumentationMarkdownView extends ItemView {
 
 	public override getIcon(): string {
 		const {
-			plugin: { language: { i18n } },
+			context: { language: { i18n } },
 			state: { iconI18nKey: key },
 		} = this
 		return key === null ? super.getIcon() : String(i18n.t(key))
@@ -89,7 +90,7 @@ export class DocumentationMarkdownView extends ItemView {
 		state: unknown,
 		result: ViewStateResult,
 	): Promise<void> {
-		const { plugin, element } = this,
+		const { context: plugin, element } = this,
 			ownState = readStateCollabratively(
 				DocumentationMarkdownView.type.namespaced(plugin),
 				state,
@@ -106,20 +107,58 @@ export class DocumentationMarkdownView extends ItemView {
 	public override getState(): unknown {
 		return writeStateCollabratively(
 			super.getState(),
-			DocumentationMarkdownView.type.namespaced(this.plugin),
+			DocumentationMarkdownView.type.namespaced(this.context),
 			this.state,
 		)
 	}
 
 	protected override async onOpen(): Promise<void> {
 		await super.onOpen()
-		const { plugin, plugin: { language: { onChangeLanguage } } } = this
+		const { context, context: { language: { onChangeLanguage } } } = this
 		this.register(onChangeLanguage.listen(() => {
-			updateDisplayText(plugin, this)
+			updateDisplayText(context, this)
 		}))
 	}
 }
+class Registered0 {
+	public constructor(protected readonly context: PluginContext) { }
+
+	public async open(
+		active: boolean,
+		state: DocumentationMarkdownView.State,
+	): Promise<void> {
+		const { context, context: { app: { workspace } } } = this
+		return new Promise(resolve => {
+			workspace.onLayoutReady(() => {
+				resolve(workspace.getLeaf("tab").setViewState({
+					active,
+					state: newCollabrativeState(
+						context,
+						new Map([
+							[
+								DocumentationMarkdownView.type,
+								state satisfies DocumentationMarkdownView.State,
+							],
+						]),
+					),
+					type: DocumentationMarkdownView.type.namespaced(context),
+				}))
+			})
+		})
+	}
+}
 export namespace DocumentationMarkdownView {
+	export type Registered = Registered0
+	export function register(
+		context: PluginContext,
+	): Registered {
+		const { type } = DocumentationMarkdownView
+		context.registerView(
+			type.namespaced(context),
+			leaf => new DocumentationMarkdownView(context, leaf),
+		)
+		return new Registered0(context)
+	}
 	export interface State {
 		readonly data: string
 		readonly displayTextI18nKey: NamespacedTranslationKey | null

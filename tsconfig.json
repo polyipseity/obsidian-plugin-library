@@ -10,7 +10,7 @@
     "baseUrl": "./",
     "checkJs": true,
     "composite": false,
-    "declaration": false,
+    "declaration": true,
     "disableReferencedProjectLoad": true,
     "disableSizeLimit": false,
     "disableSolutionSearching": false,
@@ -25,21 +25,21 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "inlineSourceMap": true,
+    "inlineSourceMap": false,
     "inlineSources": true,
     "jsx": "react",
     "lib": [
       "DOM",
-      "ES2018"
+      "ES2022"
     ],
     "maxNodeModuleJsDepth": 0,
     "module": "ESNext",
     "moduleDetection": "force",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "moduleSuffixes": [
       ""
     ],
-    "noEmit": true,
+    "noEmit": false,
     "noEmitHelpers": false,
     "noEmitOnError": false,
     "noErrorTruncation": true,
@@ -79,14 +79,14 @@
       "./"
     ],
     "skipLibCheck": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "strict": true,
     "suppressExcessPropertyErrors": false,
     "suppressImplicitAnyIndexErrors": false,
-    "target": "ES2018",
+    "target": "ES2022",
     "tsBuildInfoFile": ".tsbuildinfo",
     "typeRoots": [
-      "node_modules/@types/"
+      "node_modules/@types/",
     ],
     "useDefineForClassFields": true,
     "verbatimModuleSyntax": true
@@ -95,7 +95,6 @@
   "extends": [
     "@tsconfig/recommended/tsconfig.json",
     "@tsconfig/strictest/tsconfig.json",
-    "@tsconfig/node16/tsconfig.json",
     "@tsconfig/svelte/tsconfig.json",
     "@tsconfig/esm/tsconfig.json"
   ],

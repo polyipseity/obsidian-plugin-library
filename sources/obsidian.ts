@@ -1,4 +1,4 @@
-import { type AnyObject, launderUnchecked } from "./types"
+import { type AnyObject, launderUnchecked } from "./types.js"
 import {
 	type BaseComponent,
 	ButtonComponent,
@@ -12,10 +12,12 @@ import {
 	Setting,
 	View,
 	type ViewStateResult,
-	addIcon as addIcon0,
-	removeIcon,
 } from "obsidian"
-import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "sources/magic"
+import {
+	DOMClasses,
+	NOTICE_NO_TIMEOUT,
+	SI_PREFIX_SCALE,
+} from "sources/magic.js"
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem"
 import {
 	Functions,
@@ -27,12 +29,12 @@ import {
 	onVisible,
 	replaceAllRegex,
 	typedStructuredClone,
-} from "./util"
+} from "./util.js"
 import { cloneDeep, constant, isUndefined } from "lodash-es"
-import { revealPrivate, revealPrivateAsync } from "./private"
-import { DEFAULT_LANGUAGE } from "assets/locales"
-import type { PLACEHOLDERPlugin } from "sources/main"
-import { Platform } from "./platforms"
+import { revealPrivate, revealPrivateAsync } from "./private.js"
+import { InternalDOMClasses } from "sources/internals/magic.js"
+import { Platform } from "./platform.js"
+import type { PluginContext } from "sources/plugin.js"
 import { around } from "monkey-around"
 import { saveAs } from "file-saver"
 
@@ -194,11 +196,10 @@ type AddCommandPredefinedOptions = {
 	readonly [K in "name"]: Command[K]
 }
 export function addCommand(
-	plugin: PLACEHOLDERPlugin,
+	plugin: PluginContext,
 	name: () => string,
 	command: Readonly<Omit<Command, keyof AddCommandPredefinedOptions>>,
 ): Command {
-	const { i18n } = plugin.language
 	let namer = name
 	return plugin.addCommand(Object.assign(
 		{
@@ -206,11 +207,8 @@ export function addCommand(
 			set name(format) {
 				namer = commandNamer(
 					name,
-					() => i18n.t("name"),
-					i18n.t("name", {
-						interpolation: { escapeValue: false },
-						lng: DEFAULT_LANGUAGE,
-					}),
+					() => plugin.displayName(),
+					plugin.displayName(true),
 					format,
 				)
 			},
@@ -219,16 +217,8 @@ export function addCommand(
 	))
 }
 
-export function addIcon(
-	id: string,
-	content: string,
-): () => void {
-	addIcon0(id, content)
-	return () => { removeIcon(id) }
-}
-
 export function addRibbonIcon(
-	plugin: PLACEHOLDERPlugin,
+	plugin: PluginContext,
 	id: string,
 	icon: string,
 	title: () => string,
@@ -264,19 +254,20 @@ export function addRibbonIcon(
 }
 
 export function awaitCSS(
-	plugin: Plugin | PluginManifest,
 	element: HTMLElement,
 ): void {
-	const { classList, style, style: { display } } = element,
-		id = new UnnamespacedID(DOMClasses.Namespaced.AWAIT_CSS).namespaced(plugin)
+	const { classList, style, style: { display } } = element
 	style.display = "none"
 	const obsr = onVisible(element, () => {
 		try {
 			style.display = display
-			classList.remove(id)
+			classList.remove(awaitCSS.CLASS)
 		} finally { obsr.disconnect() }
 	})
-	classList.add(id)
+	classList.add(awaitCSS.CLASS)
+}
+export namespace awaitCSS {
+	export const CLASS = InternalDOMClasses.AWAIT_CSS
 }
 
 export function cleanFrontmatterCache(
@@ -302,7 +293,7 @@ export function commandNamer(
 }
 
 export function printMalformedData(
-	plugin: PLACEHOLDERPlugin,
+	plugin: PluginContext,
 	actual: unknown,
 	expected?: unknown,
 ): void {
@@ -322,7 +313,7 @@ export function printMalformedData(
 	)
 	notice2(
 		() => i18n.t("errors.malformed-data"),
-		plugin.settings.errorNoticeTimeout,
+		plugin.settings.copy.errorNoticeTimeout,
 		plugin,
 	)
 }
@@ -342,7 +333,7 @@ export function newCollabrativeState(
 export function notice(
 	message: () => DocumentFragment | string,
 	timeout: number = NOTICE_NO_TIMEOUT,
-	plugin?: PLACEHOLDERPlugin,
+	plugin?: PluginContext,
 ): Notice {
 	const timeoutMs = SI_PREFIX_SCALE * Math.max(timeout, 0),
 		ret = new Notice(message(), timeoutMs)
@@ -358,7 +349,7 @@ export function notice(
 export function notice2(
 	message: () => DocumentFragment | string,
 	timeout = NOTICE_NO_TIMEOUT,
-	plugin?: PLACEHOLDERPlugin,
+	plugin?: PluginContext,
 ): void {
 	if (timeout >= 0) {
 		notice(message, timeout, plugin)
@@ -368,12 +359,12 @@ export function notice2(
 export function printError(
 	error: Error,
 	message = (): string => "",
-	plugin?: PLACEHOLDERPlugin,
+	plugin?: PluginContext,
 ): void {
 	self.console.error(`${message()}\n`, error)
 	notice2(
 		() => `${message()}\n${error.name}: ${error.message}`,
-		plugin?.settings.errorNoticeTimeout,
+		plugin?.settings.copy.errorNoticeTimeout,
 		plugin,
 	)
 }
@@ -386,7 +377,7 @@ export function readStateCollabratively(
 }
 
 export function recordViewStateHistory(
-	plugin: PLACEHOLDERPlugin,
+	plugin: PluginContext,
 	result: ViewStateResult,
 ): void {
 	revealPrivate(plugin, [result], result0 => {
@@ -395,7 +386,7 @@ export function recordViewStateHistory(
 }
 
 export async function saveFileAs(
-	plugin: PLACEHOLDERPlugin,
+	plugin: PluginContext,
 	adapter: DataAdapter,
 	data: File,
 ): Promise<void> {
@@ -415,7 +406,7 @@ export async function saveFileAs(
 	saveAs(data)
 }
 
-export function updateDisplayText(plugin: PLACEHOLDERPlugin, view: View): void {
+export function updateDisplayText(plugin: PluginContext, view: View): void {
 	revealPrivate(plugin, [view.leaf], leaf => {
 		const { containerEl } = view,
 			{ tabHeaderEl, tabHeaderInnerTitleEl } = leaf,

@@ -1,9 +1,10 @@
-import { DOMClasses } from "./magic"
-import type { PLACEHOLDERPlugin } from "./main"
-import { UnnamespacedID } from "./utils/obsidian"
-import { remove } from "./utils/util"
+import { Component } from "obsidian"
+import { DOMClasses } from "./magic.js"
+import { InternalDOMClasses } from "./internals/magic.js"
+import type { PluginContext } from "./plugin.js"
+import { remove } from "./util.js"
 
-export function statusBar(callback?: (
+export function getStatusBar(callback?: (
 	element: Element) => void): Element | null {
 	// Okay to use `document` as it only exists on the main one
 	const ret = self.document.querySelector(`.${DOMClasses.STATUS_BAR}`)
@@ -11,17 +12,18 @@ export function statusBar(callback?: (
 	return ret
 }
 
-export class StatusBarHider {
-	public static readonly class =
-		new UnnamespacedID(DOMClasses.Namespaced.HIDE_STATUS_BAR)
-
+export class StatusBarHider extends Component {
+	public static readonly class = InternalDOMClasses.HIDE_STATUS_BAR
 	readonly #hiders: (() => boolean)[] = []
 
-	public constructor(protected readonly plugin: PLACEHOLDERPlugin) { }
+	public constructor(protected readonly context: PluginContext) {
+		super()
+		context.addChild(this)
+	}
 
-	public load(): void {
-		const { plugin } = this
-		plugin.app.workspace.onLayoutReady(() => { this.update() })
+	public override onload(): void {
+		super.onload()
+		this.context.app.workspace.onLayoutReady(() => { this.update() })
 	}
 
 	public hide(hider: () => boolean): () => void {
@@ -34,12 +36,11 @@ export class StatusBarHider {
 	}
 
 	public update(): void {
-		statusBar(div => {
-			const { plugin } = this
+		getStatusBar(div => {
 			if (this.#hiders.some(hider0 => hider0())) {
-				div.classList.add(StatusBarHider.class.namespaced(plugin))
+				div.classList.add(StatusBarHider.class)
 			} else {
-				div.classList.remove(StatusBarHider.class.namespaced(plugin))
+				div.classList.remove(StatusBarHider.class)
 			}
 		})
 	}

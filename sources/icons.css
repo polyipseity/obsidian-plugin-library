@@ -1,4 +1,4 @@
-svg.svg-icon[class*=PLACEHOLDER\:] {
+.obsidian-plugin-library\:icon {
 	fill: none;
 	stroke: currentColor;
 }

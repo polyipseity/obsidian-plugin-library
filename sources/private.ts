@@ -1,4 +1,4 @@
-import type { PLACEHOLDERPlugin } from "sources/main"
+import type { PluginContext } from "./plugin.js"
 
 declare const PRIVATE: unique symbol
 export interface Private<T> { readonly [PRIVATE]: T }
@@ -6,7 +6,7 @@ export type RevealPrivate<T extends Private<unknown>> =
 	Omit<T, typeof PRIVATE> & T[typeof PRIVATE]
 
 export function revealPrivate<const As extends readonly Private<unknown>[], R>(
-	plugin: PLACEHOLDERPlugin,
+	context: PluginContext,
 	args: As,
 	func: (
 		...args: { readonly [A in keyof As]: RevealPrivate<As[A]> }
@@ -20,7 +20,7 @@ export function revealPrivate<const As extends readonly Private<unknown>[], R>(
 		return func(...args as { readonly [A in keyof As]: RevealPrivate<As[A]> })
 	} catch (error) {
 		self.console.warn(
-			plugin.language.i18n.t("errors.private-API-changed"),
+			context.language.i18n.t("errors.private-API-changed"),
 			error,
 		)
 		return fallback(error, ...args)
@@ -30,7 +30,7 @@ export async function revealPrivateAsync<
 	const As extends readonly Private<unknown>[],
 	R extends PromiseLike<unknown>,
 >(
-	plugin: PLACEHOLDERPlugin,
+	context: PluginContext,
 	args: As,
 	func: (...args: { readonly [A in keyof As]: RevealPrivate<As[A]> }) => R,
 	fallback: (error: unknown, ...args: As) => R,
@@ -40,7 +40,7 @@ export async function revealPrivateAsync<
 			{ readonly [A in keyof As]: RevealPrivate<As[A]> })
 	} catch (error) {
 		self.console.warn(
-			plugin.language.i18n.t("errors.private-API-changed"),
+			context.language.i18n.t("errors.private-API-changed"),
 			error,
 		)
 		return await fallback(error, ...args)

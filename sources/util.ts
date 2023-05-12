@@ -11,7 +11,7 @@ import {
 	type ReadonlyTuple,
 	contravariant,
 	simplifyType,
-} from "./types"
+} from "./types.js"
 import {
 	type DebouncedFunc,
 	escapeRegExp,
@@ -21,21 +21,16 @@ import {
 	noop,
 	range,
 } from "lodash-es"
-import {
-	MAX_LOCK_PENDING,
-	SI_PREFIX_SCALE,
-	UNDEFINED,
-} from "sources/magic"
+import { MAX_LOCK_PENDING, UNDEFINED } from "./internals/magic.js"
 import {
 	type PrimitiveTypeE,
 	type TypeofMapE,
 	genericTypeofGuardE,
-} from "./typeof"
+} from "./typeof.js"
 import inspect, { type Options } from "browser-util-inspect"
 import AsyncLock from "async-lock"
-import type { ChildProcess } from "node:child_process"
+import { SI_PREFIX_SCALE } from "sources/magic.js"
 import type { SvelteComponent } from "svelte"
-import type { Writable } from "node:stream"
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift"
 
@@ -184,14 +179,12 @@ export function bigIntReplacer(): (key: string, value: unknown) => unknown {
 	}
 }
 
-export function bracket<T>(self: readonly T[], index: number): {
-	readonly valid: false
-	readonly value?: never
-} | {
-	readonly valid: true
-	readonly value: T
-} {
-	const proof = typedIn(self, index)
+export function bracket<T extends object, K extends keyof any>(
+	self: T,
+	key: K,
+): { readonly valid: false; readonly value?: never }
+	| { readonly valid: true; readonly value: T[K & keyof T] } {
+	const proof = typedIn(self, key)
 	return Object.freeze(proof
 		? { valid: true, value: proof() }
 		: { valid: false })
@@ -328,22 +321,12 @@ export function getKeyModifiers(
 	return deepFreeze(ret)
 }
 
-export async function spawnPromise<T extends ChildProcess>(spawn: (
-
-) => AsyncOrSync<T>): Promise<T> {
-	const ret = await spawn()
-	return new Promise<T>((resolve, reject) => {
-		ret.once("spawn", () => { resolve(ret) })
-			.once("error", reject)
-	})
-}
-
 export function typedIn<T extends object, K extends keyof any>(
 	self: T,
-	value: K,
+	key: K,
 ): (() => T[K & keyof T]) | null {
-	if (value in self) {
-		return () => self[value as K & keyof T]
+	if (key in self) {
+		return () => self[key as K & keyof T]
 	}
 	return null
 }
@@ -757,16 +740,4 @@ export function uncapitalize(
 
 export function unexpected(): never {
 	throw new Error()
-}
-
-export async function writePromise(
-	stream: Writable,
-	chunk: unknown,
-): Promise<void> {
-	return new Promise<void>((resolve, reject) => {
-		const written = stream.write(chunk, error => {
-			if (error) { reject(error) } else if (written) { resolve() }
-		})
-		if (!written) { stream.once("drain", resolve) }
-	})
 }

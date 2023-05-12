@@ -3,9 +3,9 @@ import {
 	type PrimitiveOfE,
 	genericTypeofGuardE,
 	primitiveOfE,
-} from "sources/utils/typeof"
-import type { ReadonlyTuple, Unchecked } from "sources/utils/types"
-import { inSet, isHomogenousArray, lazyInit } from "sources/utils/util"
+} from "sources/typeof.js"
+import type { ReadonlyTuple, Unchecked } from "sources/types.js"
+import { inSet, isHomogenousArray, lazyInit } from "sources/util.js"
 import type { DeepWritable } from "ts-essentials"
 import deepEqual from "deep-equal"
 
@@ -13,6 +13,7 @@ export interface Fixed<T> {
 	readonly value: DeepWritable<T>
 	readonly valid: boolean
 }
+export type Fixer<T> = (value: unknown) => Fixed<T>
 
 export function markFixed<T>(
 	unchecked: unknown,

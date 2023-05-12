@@ -3,10 +3,7 @@
 		"export-settings-clipboard": "$t(generic.export, capitalize) $t(generic.setting_other) to $t(generic.clipboard)",
 		"export-settings-current-file": "$t(generic.export, capitalize) $t(generic.setting_other) to $t(generic.current-file)",
 		"import-settings-clipboard": "$t(generic.import, capitalize) $t(generic.setting_other) from $t(generic.clipboard)",
-		"import-settings-current-file": "$t(generic.import, capitalize) $t(generic.setting_other) from $t(generic.current-file)",
-		"open-documentation-changelog": "$t(generic.open, capitalize) $t(generic.documentations.changelog)",
-		"open-documentation-donate": "$t(generic.open, capitalize) $t(generic.documentations.donate)",
-		"open-documentation-readme": "$t(generic.open, capitalize) $t(generic.documentations.readme)"
+		"import-settings-current-file": "$t(generic.import, capitalize) $t(generic.setting_other) from $t(generic.current-file)"
 	},
 	"components": {
 		"dialog": {
@@ -64,13 +61,7 @@
 		"current-file": "current $t(generic.file)",
 		"data": "data",
 		"disable": "disable",
-		"documentation": "documentation",
-		"documentations": {
-			"changelog": "changelog",
-			"donate": "$t(generic.donate)",
-			"readme": "readme"
-		},
-		"donate": "donate",
+
 		"edit": "edit",
 		"exist": "exist",
 		"exist_gerund": "existing",
@@ -100,7 +91,6 @@
 		"timeout": "timeout",
 		"use": "use"
 	},
-	"name": "PLACEHOLDER",
 	"settings": {
 		"all-settings": "All $t(generic.setting_other)",
 		"all-settings-actions": {
@@ -111,12 +101,6 @@
 			"undo": "Undo"
 		},
 		"description": "To $t(generic.export) or $t(generic.import) $t(generic.setting_other), open '$t(settings.all-settings-actions.edit)' under '$t(settings.all-settings)' or $t(generic.use) the $t(generic.command-palette).",
-		"documentation": "$t(generic.documentation, capitalize)",
-		"documentations": {
-			"changelog": "$t(generic.documentations.changelog, capitalize)",
-			"donate": "$t(generic.documentations.donate, capitalize)",
-			"readme": "$t(generic.documentations.readme, capitalize)"
-		},
 		"error-notice-timeout": "Error $t(generic.notice) $t(generic.timeout) (s)",
 		"error-notice-timeout-description": "$t(settings.notice-timeout-description)",
 		"language": "$t(generic.language, capitalize)",
@@ -124,7 +108,6 @@
 		"language-description": "Applies to this $t(generic.plugin) only. $t(generic.language_other, capitalize) with 🚧 need your help with translation!",
 		"notice-timeout": "$t(generic.notice, capitalize) $t(generic.timeout) (s)",
 		"notice-timeout-description": "Set to 0 s for no $t(generic.timeout). Set to negative to $t(generic.disable) $t(generic.notice).",
-		"open-changelog-on-update": "$t(generic.open, capitalize) $t(generic.documentations.changelog) on update",
 		"reset": "$t(generic.reset, capitalize)"
 	}
 }

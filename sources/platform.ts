@@ -1,5 +1,5 @@
 import type { Opaque } from "ts-essentials"
-import { deepFreeze } from "./util"
+import { deepFreeze } from "./util.js"
 
 export namespace Platform {
 	export const

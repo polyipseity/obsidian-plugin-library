@@ -9,13 +9,14 @@ import {
 	DOMClasses,
 	JSON_STRINGIFY_SPACE,
 	SI_PREFIX_SCALE,
-} from "sources/magic"
+} from "sources/magic.js"
+import type { DeepReadonly, DeepWritable } from "ts-essentials"
 import {
 	UpdatableUI,
 	statusUI,
 	useSettings,
 	useSubsettings,
-} from "sources/utils/obsidian"
+} from "sources/obsidian.js"
 import {
 	bracket,
 	clearProperties,
@@ -28,16 +29,16 @@ import {
 	swap,
 	typedStructuredClone,
 	unexpected,
-} from "sources/utils/util"
+} from "sources/util.js"
 import {
 	dropdownSelect,
 	linkSetting,
 	resetButton,
-} from "./settings"
-import type { DeepWritable } from "ts-essentials"
-import type { Fixed } from "./fixers"
-import type { PLACEHOLDERPlugin } from "sources/main"
+} from "./settings-widgets.js"
+import type { Fixer } from "./fixers.js"
+import type { PluginContext } from "sources/plugin.js"
 import { constant } from "lodash-es"
+import { simplifyType } from "./types.js"
 
 export function makeModalDynamicWidth(
 	ui: UpdatableUI,
@@ -64,7 +65,7 @@ export class ListModal<T> extends Modal {
 	readonly #dynamicWidth
 
 	public constructor(
-		protected readonly plugin: PLACEHOLDERPlugin,
+		protected readonly context: PluginContext,
 		protected readonly inputter: (
 			setting: Setting,
 			editable: boolean,
@@ -79,7 +80,7 @@ export class ListModal<T> extends Modal {
 		data: readonly T[],
 		options?: ListModal.Options<T>,
 	) {
-		const { app, language } = plugin,
+		const { app, language } = context,
 			{ i18n } = language
 		super(app)
 		this.data = [...data]
@@ -134,9 +135,9 @@ export class ListModal<T> extends Modal {
 
 	public override onOpen(): void {
 		super.onOpen()
-		const { plugin, placeholder, data, ui, titleEl, modalUI, modalEl } = this,
+		const { context, placeholder, data, ui, titleEl, modalUI, modalEl } = this,
 			{ element: listEl, remover: listElRemover } = useSettings(this.contentEl),
-			{ language } = plugin,
+			{ language } = context,
 			{ i18n, onChangeLanguage } = language,
 			editables = this.#editables,
 			title = this.#title,
@@ -257,11 +258,11 @@ export class ListModal<T> extends Modal {
 	}
 
 	protected setupListSubUI(ui: UpdatableUI, element: HTMLElement): void {
-		const { plugin, data } = this,
+		const { context, data } = this,
 			editables = this.#editables,
 			namer = this.#namer,
 			descriptor = this.#descriptor,
-			{ language } = plugin,
+			{ language } = context,
 			{ i18n } = language
 		ui.destroy()
 		for (const [index] of data.entries()) {
@@ -356,13 +357,13 @@ export class EditDataModal<T extends object> extends Modal {
 	readonly #title
 
 	public constructor(
-		protected readonly plugin: PLACEHOLDERPlugin,
-		protected readonly protodata: T,
-		protected readonly fixer: (data: unknown) => Fixed<T>,
+		protected readonly context: PluginContext,
+		protected readonly protodata: DeepReadonly<T>,
+		protected readonly fixer: Fixer<T>,
 		options?: EditDataModal.Options<T>,
 	) {
-		super(plugin.app)
-		this.data = cloneAsWritable(protodata)
+		super(context.app)
+		this.data = simplifyType(cloneAsWritable(protodata))
 		this.#dataText = JSON.stringify(this.data, null, JSON_STRINGIFY_SPACE)
 		this.#callback = options?.callback ?? ((): void => { })
 		this.#title = options?.title
@@ -370,9 +371,9 @@ export class EditDataModal<T extends object> extends Modal {
 
 	public override onOpen(): void {
 		super.onOpen()
-		const { modalUI, ui, modalEl, titleEl, plugin, protodata, fixer } = this,
+		const { modalUI, ui, modalEl, titleEl, context, protodata, fixer } = this,
 			{ element: listEl, remover: listElRemover } = useSettings(this.contentEl),
-			{ language } = plugin,
+			{ language } = context,
 			{ i18n, onChangeLanguage } = language,
 			title = this.#title
 		modalUI.finally(onChangeLanguage.listen(() => { modalUI.update() }))
@@ -462,7 +463,9 @@ export class EditDataModal<T extends object> extends Modal {
 					.addExtraButton(resetButton(
 						i18n.t("asset:components.edit-data.data-icon"),
 						i18n.t("components.edit-data.reset"),
-						() => { this.replaceData(cloneAsWritable(protodata)) },
+						() => {
+							this.replaceData(simplifyType(cloneAsWritable(protodata)))
+						},
 						async () => {
 							this.#resetDataText()
 							await this.postMutate()
@@ -513,7 +516,7 @@ export class DialogModal extends Modal {
 	readonly #dynamicWidth
 
 	public constructor(
-		protected readonly plugin: PLACEHOLDERPlugin,
+		protected readonly context: PluginContext,
 		options?: {
 			cancel?: (close: () => void) => unknown
 			confirm?: (close: () => void) => unknown
@@ -524,7 +527,7 @@ export class DialogModal extends Modal {
 			dynamicWidth?: boolean
 		},
 	) {
-		super(plugin.app)
+		super(context.app)
 		this.#doubleConfirmTimeout = options?.doubleConfirmTimeout
 		this.#cancel = options?.cancel ?? ((close): void => { close() })
 		this.#confirm = options?.confirm ?? ((close): void => { close() })
@@ -536,8 +539,8 @@ export class DialogModal extends Modal {
 
 	public override onOpen(): void {
 		super.onOpen()
-		const { plugin, modalEl, scope, modalUI, titleEl, ui, contentEl } = this,
-			{ language } = plugin,
+		const { context, modalEl, scope, modalUI, titleEl, ui, contentEl } = this,
+			{ language } = context,
 			{ i18n, onChangeLanguage } = language,
 			title = this.#title,
 			description = this.#description,

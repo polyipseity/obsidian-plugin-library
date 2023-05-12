@@ -4,23 +4,20 @@ import { promisify } from "util"
 import { readFile } from "fs/promises"
 
 const execFileP = promisify(execFile),
-	OUTDIR = "."
+	OUTDIR = "./dist"
 
 export const
 	PATHS = Object.freeze({
 		main: `${OUTDIR}/main.js`,
-		manifest: "manifest.json",
-		manifestBeta: "manifest-beta.json",
 		metafile: "metafile.json",
-		obsidianPlugins: ".obsidian/plugins",
 		outDir: OUTDIR,
 		"package": "package.json",
 		packageLock: "package-lock.json",
 		styles: `${OUTDIR}/styles.css`,
 		versions: "versions.json",
 	}),
-	PLUGIN_ID = PLazy.from(async () =>
-		JSON.parse(await readFile(PATHS.manifest, { encoding: "utf-8" })).id)
+	PACKAGE_ID = PLazy.from(async () =>
+		JSON.parse(await readFile(PATHS.package, { encoding: "utf-8" })).name)
 
 export async function execute(...args) {
 	const process = execFileP(...args),

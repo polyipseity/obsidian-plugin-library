@@ -1,4 +1,4 @@
-import { PATHS, PLUGIN_ID } from "./util.mjs"
+import { PACKAGE_ID, PATHS } from "./util.mjs"
 import { analyzeMetafile, context, formatMessages } from "esbuild"
 import {
 	constant,
@@ -9,38 +9,29 @@ import {
 } from "lodash-es"
 import { readFile, writeFile } from "node:fs/promises"
 import { argv } from "node:process"
-import builtinModules from "builtin-modules"
 import esbuildSvelte from "esbuild-svelte"
 import lzString from "lz-string"
+import { nodeExternalsPlugin } from "esbuild-node-externals"
 import sveltePreprocess from "svelte-preprocess"
 
 const ARGV_PRODUCTION = 2,
-	COMMENT = "// repository: https://github.com/polyipseity/obsidian-plugin-template",
+	COMMENT = "// repository: https://github.com/polyipseity/obsidian-plugin-library",
 	DEV = argv[ARGV_PRODUCTION] === "dev",
-	PLUGIN_ID0 = await PLUGIN_ID,
+	PACKAGE_ID0 = await PACKAGE_ID,
 	BUILD = await context({
 		alias: {},
 		banner: { js: COMMENT },
 		bundle: true,
 		color: true,
 		drop: [],
-		entryPoints: ["sources/main.ts", "sources/styles.css"],
-		external: [
-			"@codemirror/*",
-			"@lezer/*",
-			"electron",
-			"node:*",
-			"obsidian",
-			...builtinModules,
-		],
+		entryPoints: ["sources/index.ts", "sources/style.css"],
+		external: [],
 		footer: { js: COMMENT },
 		format: "cjs",
 		jsx: "transform",
 		legalComments: "inline",
 		loader: {
 			".json": "compressed-json",
-			".md": "compressed-text",
-			".py": "compressed-text",
 		},
 		logLevel: "info",
 		logLimit: 0,
@@ -49,6 +40,8 @@ const ARGV_PRODUCTION = 2,
 		outdir: PATHS.outDir,
 		platform: "browser",
 		plugins: [
+			nodeExternalsPlugin({
+			}),
 			{
 				name: "compress",
 				setup(build) {
@@ -99,7 +92,7 @@ export default JSON.parse(decompress(${str(lzString.compressToBase64(data))}))
 					accessors: false,
 					css: "injected",
 					cssHash({ name }) {
-						return `${PLUGIN_ID0}-svelte-${kebabCase(name)}`
+						return `${PACKAGE_ID0}-svelte-${kebabCase(name)}`
 					},
 					customElement: false,
 					dev: DEV,
@@ -141,9 +134,9 @@ export default JSON.parse(decompress(${str(lzString.compressToBase64(data))}))
 				],
 			}),
 		],
-		sourcemap: DEV ? "inline" : false,
+		sourcemap: "linked",
 		sourcesContent: true,
-		target: "ES2018",
+		target: "ES2022",
 		treeShaking: true,
 	})
 if (DEV) {

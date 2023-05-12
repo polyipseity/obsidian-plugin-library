@@ -3,10 +3,7 @@
 		"export-settings-clipboard": "$t(generic.export)$t(generic.setting)到$t(generic.clipboard)",
 		"export-settings-current-file": "$t(generic.export)$t(generic.setting)到$t(generic.current-file)",
 		"import-settings-clipboard": "從$t(generic.clipboard)$t(generic.import)$t(generic.setting)",
-		"import-settings-current-file": "從$t(generic.current-file)$t(generic.import)$t(generic.setting)",
-		"open-documentation-changelog": "$t(generic.open)$t(generic.documentations.changelog)",
-		"open-documentation-donate": "$t(generic.open)$t(generic.documentations.donate)",
-		"open-documentation-readme": "$t(generic.open)$t(generic.documentations.readme)"
+		"import-settings-current-file": "從$t(generic.current-file)$t(generic.import)$t(generic.setting)"
 	},
 	"components": {
 		"dialog": {
@@ -61,13 +58,6 @@
 		"current-file": "目前$t(generic.file)",
 		"data": "數據",
 		"disable": "禁用",
-		"documentation": "文檔",
-		"documentations": {
-			"changelog": "變更日誌",
-			"donate": "$t(generic.donate)",
-			"readme": "自述文件"
-		},
-		"donate": "贊助",
 		"edit": "編輯",
 		"exist": "存在",
 		"export": "導出",
@@ -86,7 +76,6 @@
 		"timeout": "超時",
 		"use": "使用"
 	},
-	"name": "PLACEHOLDER",
 	"settings": {
 		"all-settings": "所有$t(generic.setting)",
 		"all-settings-actions": {
@@ -97,12 +86,6 @@
 			"undo": "復原"
 		},
 		"description": "$t(generic.open)「$t(settings.all-settings)」下的「$t(settings.all-settings-actions.edit)」或$t(generic.use)$t(generic.command-palette)以$t(generic.export)或$t(generic.import)$t(generic.setting)。",
-		"documentation": "$t(generic.documentation)",
-		"documentations": {
-			"changelog": "$t(generic.documentations.changelog)",
-			"donate": "$t(generic.documentations.donate)",
-			"readme": "$t(generic.documentations.readme)"
-		},
 		"error-notice-timeout": "錯誤$t(generic.notice)$t(generic.timeout)（s）",
 		"error-notice-timeout-description": "$t(settings.notice-timeout-description)",
 		"language": "$t(generic.language)",
@@ -110,7 +93,6 @@
 		"language-description": "僅適用於此$t(generic.plugin)。標有🚧的$t(generic.language)需要您幫助來翻譯！",
 		"notice-timeout": "$t(generic.notice)$t(generic.timeout)（s）",
 		"notice-timeout-description": "設為0 s是無$t(generic.timeout)。設為負數以$t(generic.disable)$t(generic.notice)。",
-		"open-changelog-on-update": "更新時$t(generic.open)$t(generic.documentations.changelog)",
 		"reset": "$t(generic.reset)"
 	}
 }

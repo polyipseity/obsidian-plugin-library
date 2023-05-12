@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/indent */
-import { contravariant } from "./types"
+import { contravariant } from "./types.js"
 
 export type InverseTypeofMap<T> =
 	T extends string ? "string"
