@@ -68,7 +68,7 @@
 	"private": true,
 	"scripts": {
 		"build": "npm run check && npm run build:force",
-		"build:force": "tsc --emitDeclarationOnly --outDir ./dist && node build/build.mjs",
+		"build:force": "tsc --emitDeclarationOnly && node build/build.mjs",
 		"check": "tsc -noEmit && eslint --cache --ignore-pattern \"*.svelte\" .",
 		"dev": "npm run build:force dev",
 		"fix": "eslint --fix --cache --ignore-pattern \"*.svelte\" .",
