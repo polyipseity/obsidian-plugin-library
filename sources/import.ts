@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import {
 	bracket,
 	lazyProxy,
@@ -22,7 +21,7 @@ export function dynamicRequireLazy<T extends object>(
 
 export function dynamicRequireSync<T>(bundle: Bundle, module: string): T {
 	const { valid, value } = bracket(bundle, module),
-		ret: unknown = valid ? value() : require(module)
+		ret = valid ? value() : (require ?? ((): void => { }))(module)
 	if (isNil(ret)) { throw new Error(module) }
 	return ret as T
 }

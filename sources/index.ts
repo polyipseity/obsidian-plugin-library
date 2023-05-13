@@ -1,6 +1,5 @@
 export * from "../assets/locales.js"
 export * from "./@types/lib.es5.js"
-export * from "./@types/node.js"
 // eslint-disable-next-line import/export
 export * from "./@types/obsidian.js"
 export * from "./documentation.js"
