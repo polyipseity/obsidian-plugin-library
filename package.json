@@ -70,7 +70,7 @@
 		"build": "npm run check && npm run build:force",
 		"build:force": "tsc --emitDeclarationOnly && node build/build.mjs",
 		"check": "tsc -noEmit && eslint --cache --ignore-pattern \"*.svelte\" .",
-		"dev": "npm run build:force dev",
+		"dev": "npm run build:force -- dev",
 		"fix": "eslint --fix --cache --ignore-pattern \"*.svelte\" .",
 		"postversion": "node build/version-post.mjs",
 		"version": "node build/version.mjs"
@@ -79,5 +79,8 @@
 	"style": "dist/style.css",
 	"type": "module",
 	"types": "dist/sources/index.d.ts",
-	"version": "0.0.0"
+	"version": "0.0.0",
+	"workspaces": [
+		"build/obsidian"
+	]
 }
