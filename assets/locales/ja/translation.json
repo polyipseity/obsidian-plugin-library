@@ -61,7 +61,6 @@
 		"current-file": "current $t(generic.file)",
 		"data": "data",
 		"disable": "disable",
-
 		"edit": "edit",
 		"exist": "exist",
 		"exist_gerund": "existing",
