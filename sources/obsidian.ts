@@ -17,7 +17,7 @@ import {
 	DOMClasses,
 	NOTICE_NO_TIMEOUT,
 	SI_PREFIX_SCALE,
-} from "sources/magic.js"
+} from "./magic.js"
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem"
 import {
 	Functions,
@@ -32,9 +32,9 @@ import {
 } from "./util.js"
 import { cloneDeep, constant, isUndefined } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
-import { InternalDOMClasses } from "sources/internals/magic.js"
+import { InternalDOMClasses } from "./internals/magic.js"
 import { Platform } from "./platform.js"
-import type { PluginContext } from "sources/plugin.js"
+import type { PluginContext } from "./plugin.js"
 import { around } from "monkey-around"
 import { saveAs } from "file-saver"
 

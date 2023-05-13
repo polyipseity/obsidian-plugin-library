@@ -4,9 +4,9 @@ import type {
 	ExtraButtonComponent,
 	ValueComponent,
 } from "obsidian"
-import { inSet, instanceOf, unexpected } from "sources/util.js"
-import { DOMClasses } from "sources/magic.js"
-import type { ReadonlyTuple } from "sources/types.js"
+import { inSet, instanceOf, unexpected } from "./util.js"
+import { DOMClasses } from "./magic.js"
+import type { ReadonlyTuple } from "./types.js"
 
 export function closeSetting(container: HTMLElement): void {
 	let element: HTMLElement | null = container

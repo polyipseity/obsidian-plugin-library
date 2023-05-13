@@ -29,7 +29,7 @@ import {
 } from "./typeof.js"
 import inspect, { type Options } from "browser-util-inspect"
 import AsyncLock from "async-lock"
-import { SI_PREFIX_SCALE } from "sources/magic.js"
+import { SI_PREFIX_SCALE } from "./magic.js"
 import type { SvelteComponent } from "svelte"
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift"

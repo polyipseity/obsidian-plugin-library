@@ -25,7 +25,7 @@ import {
 } from "./obsidian.js"
 import { isEmpty, isNil, throttle } from "lodash-es"
 import { Component } from "obsidian"
-import { DialogModal } from "sources/modals.js"
+import { DialogModal } from "./modals.js"
 import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
 import { SAVE_SETTINGS_WAIT } from "./internals/magic.js"

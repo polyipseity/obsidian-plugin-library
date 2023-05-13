@@ -1,7 +1,7 @@
 import {
 	EditDataModal,
 	ListModal,
-} from "sources/modals.js"
+} from "./modals.js"
 import {
 	cloneAsWritable,
 	createChildElement,
@@ -16,11 +16,11 @@ import {
 	setTextToNumber,
 } from "./settings-widgets.js"
 import type { DeepReadonly } from "ts-essentials"
-import type { Fixer } from "sources/fixers.js"
-import type { PluginContext } from "sources/plugin.js"
+import type { Fixer } from "./fixers.js"
+import type { PluginContext } from "./plugin.js"
 import { PluginSettingTab } from "obsidian"
-import type { ReadonlyTuple } from "sources/types.js"
-import { UpdatableUI } from "sources/obsidian.js"
+import type { ReadonlyTuple } from "./types.js"
+import { UpdatableUI } from "./obsidian.js"
 
 export abstract class AdvancedSettingTab<S extends PluginContext
 	.Settings> extends PluginSettingTab {

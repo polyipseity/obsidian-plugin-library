@@ -1,4 +1,4 @@
-import { type Fixed, fixTyped, markFixed } from "sources/fixers.js"
+import { type Fixed, fixTyped, markFixed } from "./fixers.js"
 import {
 	ItemView,
 	MarkdownRenderer,
@@ -13,12 +13,12 @@ import {
 	recordViewStateHistory,
 	updateDisplayText,
 	writeStateCollabratively,
-} from "sources/obsidian.js"
-import { capitalize, createChildElement, deepFreeze } from "sources/util.js"
-import { DOMClasses } from "sources/magic.js"
-import type { NamespacedTranslationKey } from "sources/i18n.js"
+} from "./obsidian.js"
+import { capitalize, createChildElement, deepFreeze } from "./util.js"
+import { DOMClasses } from "./magic.js"
+import type { NamespacedTranslationKey } from "./i18n.js"
 import type { PluginContext } from "./plugin.js"
-import { launderUnchecked } from "sources/types.js"
+import { launderUnchecked } from "./types.js"
 
 export class DocumentationMarkdownView extends ItemView {
 	public static readonly type = new UnnamespacedID("documentation")
