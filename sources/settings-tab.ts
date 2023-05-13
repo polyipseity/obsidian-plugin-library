@@ -57,7 +57,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	protected newLanguageWidget(
 		languages: ReadonlyTuple<S["language"]>,
 		languageNamer: (language: S["language"] | "") => string,
-		defaults: DeepReadonly<S>,
+		defaults: DeepReadonly<Pick<S, "language">>,
 	): void {
 		const {
 			containerEl,
@@ -99,7 +99,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	}
 
 	protected newAllSettingsWidget(
-		defaults: DeepReadonly<S>,
+		defaults: DeepReadonly<Partial<S>>,
 		fixer: Fixer<S>,
 	): void {
 		const {
@@ -207,7 +207,9 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		})
 	}
 
-	protected newNoticeTimeoutWidget(defaults: DeepReadonly<S>): void {
+	protected newNoticeTimeoutWidget(
+		defaults: DeepReadonly<Pick<S, "errorNoticeTimeout" | "noticeTimeout">>,
+	): void {
 		const {
 			containerEl,
 			context: { settings, language: { i18n } },
