@@ -9,14 +9,14 @@ import {
 	DOMClasses,
 	JSON_STRINGIFY_SPACE,
 	SI_PREFIX_SCALE,
-} from "sources/magic.js"
+} from "./magic.js"
 import type { DeepReadonly, DeepWritable } from "ts-essentials"
 import {
 	UpdatableUI,
 	statusUI,
 	useSettings,
 	useSubsettings,
-} from "sources/obsidian.js"
+} from "./obsidian.js"
 import {
 	bracket,
 	clearProperties,
@@ -29,14 +29,14 @@ import {
 	swap,
 	typedStructuredClone,
 	unexpected,
-} from "sources/util.js"
+} from "./util.js"
 import {
 	dropdownSelect,
 	linkSetting,
 	resetButton,
 } from "./settings-widgets.js"
 import type { Fixer } from "./fixers.js"
-import type { PluginContext } from "sources/plugin.js"
+import type { PluginContext } from "./plugin.js"
 import { constant } from "lodash-es"
 import { simplifyType } from "./types.js"
 

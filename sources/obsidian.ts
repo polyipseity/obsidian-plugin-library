@@ -17,7 +17,7 @@ import {
 	DOMClasses,
 	NOTICE_NO_TIMEOUT,
 	SI_PREFIX_SCALE,
-} from "sources/magic.js"
+} from "./magic.js"
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem"
 import {
 	Functions,
@@ -32,9 +32,9 @@ import {
 } from "./util.js"
 import { cloneDeep, constant, isUndefined } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
-import { InternalDOMClasses } from "sources/internals/magic.js"
+import { InternalDOMClasses } from "./internals/magic.js"
 import { Platform } from "./platform.js"
-import type { PluginContext } from "sources/plugin.js"
+import type { PluginContext } from "./plugin.js"
 import { around } from "monkey-around"
 import { saveAs } from "file-saver"
 
@@ -196,19 +196,19 @@ type AddCommandPredefinedOptions = {
 	readonly [K in "name"]: Command[K]
 }
 export function addCommand(
-	plugin: PluginContext,
+	context: PluginContext,
 	name: () => string,
 	command: Readonly<Omit<Command, keyof AddCommandPredefinedOptions>>,
 ): Command {
 	let namer = name
-	return plugin.addCommand(Object.assign(
+	return context.addCommand(Object.assign(
 		{
 			get name(): string { return namer() },
 			set name(format) {
 				namer = commandNamer(
 					name,
-					() => plugin.displayName(),
-					plugin.displayName(true),
+					() => context.displayName(),
+					context.displayName(true),
 					format,
 				)
 			},
@@ -218,22 +218,22 @@ export function addCommand(
 }
 
 export function addRibbonIcon(
-	plugin: PluginContext,
+	context: PluginContext,
 	id: string,
 	icon: string,
 	title: () => string,
 	callback: (event: MouseEvent) => unknown,
 ): void {
-	const { app: { workspace: { leftRibbon } }, language } = plugin
+	const { app: { workspace: { leftRibbon } }, language } = context
 	revealPrivate(
-		plugin,
+		context,
 		[leftRibbon],
 		leftRibbon0 => {
 			const ribbon = (): readonly [ele: HTMLElement, title: string] => {
 				const title0 = title()
 				return Object.freeze([
 					leftRibbon0.addRibbonItemButton(
-						new UnnamespacedID(id).namespaced(plugin),
+						new UnnamespacedID(id).namespaced(context),
 						icon,
 						title0,
 						callback,
@@ -241,15 +241,15 @@ export function addRibbonIcon(
 				])
 			}
 			let [ele, title0] = ribbon()
-			plugin.register(() => {
+			context.register(() => {
 				leftRibbon0.removeRibbonAction(title0)
 				ele.remove()
 			})
-			plugin.register(language.onChangeLanguage.listen(() => {
+			context.register(language.onChangeLanguage.listen(() => {
 				ele.replaceWith(([ele, title0] = ribbon())[0])
 			}))
 		},
-		_0 => { plugin.addRibbonIcon(icon, id, callback) },
+		_0 => { context.addRibbonIcon(icon, id, callback) },
 	)
 }
 
@@ -293,11 +293,11 @@ export function commandNamer(
 }
 
 export function printMalformedData(
-	plugin: PluginContext,
+	context: PluginContext,
 	actual: unknown,
 	expected?: unknown,
 ): void {
-	const { i18n } = plugin.language,
+	const { i18n } = context.language,
 		tryClone = (thing: unknown): unknown => {
 			try {
 				return cloneDeep(thing)
@@ -313,8 +313,8 @@ export function printMalformedData(
 	)
 	notice2(
 		() => i18n.t("errors.malformed-data"),
-		plugin.settings.copy.errorNoticeTimeout,
-		plugin,
+		context.settings.copy.errorNoticeTimeout,
+		context,
 	)
 }
 
@@ -377,21 +377,21 @@ export function readStateCollabratively(
 }
 
 export function recordViewStateHistory(
-	plugin: PluginContext,
+	context: PluginContext,
 	result: ViewStateResult,
 ): void {
-	revealPrivate(plugin, [result], result0 => {
+	revealPrivate(context, [result], result0 => {
 		result0.history = true
 	}, _0 => { })
 }
 
 export async function saveFileAs(
-	plugin: PluginContext,
+	context: PluginContext,
 	adapter: DataAdapter,
 	data: File,
 ): Promise<void> {
 	if (inSet(Platform.MOBILE, Platform.CURRENT)) {
-		await revealPrivateAsync(plugin, [adapter], async ({ fs }) => {
+		await revealPrivateAsync(context, [adapter], async ({ fs }) => {
 			await fs.open<typeof Platform.CURRENT>(
 				(await Filesystem.writeFile({
 					data: await data.text(),
@@ -406,8 +406,8 @@ export async function saveFileAs(
 	saveAs(data)
 }
 
-export function updateDisplayText(plugin: PluginContext, view: View): void {
-	revealPrivate(plugin, [view.leaf], leaf => {
+export function updateDisplayText(context: PluginContext, view: View): void {
+	revealPrivate(context, [view.leaf], leaf => {
 		const { containerEl } = view,
 			{ tabHeaderEl, tabHeaderInnerTitleEl } = leaf,
 			text = view.getDisplayText(),
@@ -417,7 +417,7 @@ export function updateDisplayText(plugin: PluginContext, view: View): void {
 		tabHeaderEl.ariaLabel = text
 		tabHeaderInnerTitleEl.textContent = text
 		if (viewHeaderEl) { viewHeaderEl.textContent = text }
-		if (plugin.app.workspace.getActiveViewOfType(View) === view &&
+		if (context.app.workspace.getActiveViewOfType(View) === view &&
 			oldText !== null) {
 			const { ownerDocument } = containerEl
 			ownerDocument.title =

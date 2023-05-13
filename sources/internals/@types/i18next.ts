@@ -1,4 +1,4 @@
-import type { LibraryLocales } from "assets/locales.js"
+import type { LibraryLocales } from "../../../assets/locales.js"
 
 declare module "i18next" {
 	interface CustomTypeOptions {
