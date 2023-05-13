@@ -29,6 +29,7 @@ import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
 import { SAVE_SETTINGS_WAIT } from "./internals/magic.js"
 import deepEqual from "deep-equal"
+import { simplifyType } from "./types.js"
 
 export class SettingsManager<T extends SettingsManager.Type> extends Component {
 	public readonly onLoaded
@@ -45,11 +46,11 @@ export class SettingsManager<T extends SettingsManager.Type> extends Component {
 
 	public constructor(
 		protected readonly context: PluginContext,
-		defaults: T,
+		defaults: DeepReadonly<T>,
 		protected readonly fixer: Fixer<T>,
 	) {
 		super()
-		this.#data = cloneAsFrozen(defaults)
+		this.#data = simplifyType<T>(cloneAsFrozen(defaults))
 		this.onLoaded = this.#loader.then(async ({ promise }) => promise)
 		context.addChild(this)
 	}

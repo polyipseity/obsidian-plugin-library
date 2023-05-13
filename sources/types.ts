@@ -76,10 +76,12 @@ export function semVerString(value: string): SemVerString {
 	return new SemVer(value).version as SemVerString
 }
 
-export function simplifyType<T>(value: DeepWritable<DeepReadonly<T>
->): DeepWritable<T>
-export function simplifyType<T>(value: DeepReadonly<DeepWritable<T>
->): DeepReadonly<T>
+export function simplifyType<T>(
+	value: DeepWritable<DeepReadonly<T>> | DeepWritable<DeepWritable<T>>,
+): DeepWritable<T>
+export function simplifyType<T>(
+	value: DeepReadonly<DeepReadonly<T>> | DeepReadonly<DeepWritable<T>>,
+): DeepReadonly<T>
 export function simplifyType<T>(value: T): T {
 	return value
 }

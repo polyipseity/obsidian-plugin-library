@@ -241,18 +241,18 @@ export function copyOnWrite<T extends object>(
 	obj: DeepReadonly<T>,
 	mutator: (obj: DeepWritable<T>) => void,
 ): DeepReadonly<T> {
-	const ret = simplifyType(cloneAsWritable(obj))
+	const ret = simplifyType<T>(cloneAsWritable(obj))
 	mutator(ret)
-	return simplifyType(deepFreeze(ret))
+	return simplifyType<T>(deepFreeze(ret))
 }
 
 export async function copyOnWriteAsync<T extends object>(
 	obj: DeepReadonly<T>,
 	mutator: (obj: DeepWritable<T>) => unknown,
 ): Promise<DeepReadonly<T>> {
-	const ret = simplifyType(cloneAsWritable(obj))
+	const ret = simplifyType<T>(cloneAsWritable(obj))
 	await mutator(ret)
-	return simplifyType(deepFreeze(ret))
+	return simplifyType<T>(deepFreeze(ret))
 }
 
 export function createChildElement<K extends keyof HTMLElementTagNameMap>(

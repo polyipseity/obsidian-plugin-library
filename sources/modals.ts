@@ -362,7 +362,7 @@ export class EditDataModal<T extends object> extends Modal {
 		options?: EditDataModal.Options<T>,
 	) {
 		super(context.app)
-		this.data = simplifyType(cloneAsWritable(protodata))
+		this.data = simplifyType<T>(cloneAsWritable(protodata))
 		this.#dataText = JSON.stringify(this.data, null, JSON_STRINGIFY_SPACE)
 		this.#callback = options?.callback ?? ((): void => { })
 		this.#title = options?.title
@@ -463,7 +463,7 @@ export class EditDataModal<T extends object> extends Modal {
 						i18n.t("asset:components.edit-data.data-icon"),
 						i18n.t("components.edit-data.reset"),
 						() => {
-							this.replaceData(simplifyType(cloneAsWritable(protodata)))
+							this.replaceData(simplifyType<T>(cloneAsWritable(protodata)))
 						},
 						async () => {
 							this.#resetDataText()
@@ -481,7 +481,7 @@ export class EditDataModal<T extends object> extends Modal {
 
 	protected async postMutate(): Promise<void> {
 		const { data, modalUI, ui } = this,
-			cb = this.#callback(cloneAsWritable(data))
+			cb = this.#callback(simplifyType<T>(cloneAsWritable(data)))
 		modalUI.update()
 		ui.update()
 		await cb
