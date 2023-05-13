@@ -25,10 +25,11 @@ import { UpdatableUI } from "./obsidian.js"
 export abstract class AdvancedSettingTab<S extends PluginContext
 	.Settings> extends PluginSettingTab {
 	protected readonly ui = new UpdatableUI()
-	#onMutate = this.snapshot()
+	#onMutate
 
 	public constructor(protected readonly context: PluginContext<S>) {
 		super(context.app, context)
+		this.#onMutate = this.snapshot()
 		const { ui } = this,
 			{ language: { onChangeLanguage } } = context
 		context.register(() => { ui.destroy() })

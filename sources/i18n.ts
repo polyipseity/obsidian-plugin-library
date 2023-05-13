@@ -130,8 +130,6 @@ export class LanguageManager extends Component {
 		const {
 			context,
 			context: { settings, settings: { onLoaded } },
-			language,
-			autoChangeLanguage,
 		} = this;
 		(async (): Promise<void> => {
 			try {
@@ -139,15 +137,15 @@ export class LanguageManager extends Component {
 				resolve((async (): Promise<void> => {
 					await onLoaded
 					this.#i18n = await this.#loader0()
-					if (autoChangeLanguage) {
+					this.#loaded = true
+					if (this.autoChangeLanguage) {
 						context.register(settings.on(
 							"mutate-settings",
 							settings0 => settings0.language,
 							async cur => this.changeLanguage(cur),
 						))
 					}
-					await this.changeLanguage(language)
-					this.#loaded = true
+					await this.changeLanguage(this.language)
 				})())
 				await promise
 			} catch (error) {
