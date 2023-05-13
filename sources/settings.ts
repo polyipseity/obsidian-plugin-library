@@ -10,12 +10,11 @@ import {
 	anyToError,
 	asyncDebounce,
 	clearProperties,
+	cloneAsFrozen,
 	copyOnWriteAsync,
 	createChildElement,
-	deepFreeze,
 	logError,
 	promisePromise,
-	typedStructuredClone,
 } from "./util.js"
 import {
 	addCommand,
@@ -50,7 +49,7 @@ export class SettingsManager<T extends SettingsManager.Type> extends Component {
 		protected readonly fixer: Fixer<T>,
 	) {
 		super()
-		this.#data = deepFreeze(typedStructuredClone(defaults))
+		this.#data = cloneAsFrozen(defaults)
 		this.onLoaded = this.#loader.then(async ({ promise }) => promise)
 		context.addChild(this)
 	}

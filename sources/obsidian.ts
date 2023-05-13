@@ -22,13 +22,13 @@ import { Directory, Encoding, Filesystem } from "@capacitor/filesystem"
 import {
 	Functions,
 	clear,
+	cloneAsWritable,
 	createChildElement,
 	deepFreeze,
 	inSet,
 	multireplace,
 	onVisible,
 	replaceAllRegex,
-	typedStructuredClone,
 } from "./util.js"
 import { cloneDeep, constant, isUndefined } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
@@ -274,7 +274,7 @@ export function cleanFrontmatterCache(
 	cache?: FrontMatterCache,
 ): Readonly<Record<string, unknown>> {
 	if (!cache) { return deepFreeze({}) }
-	const ret = typedStructuredClone<Partial<typeof cache>>(cache)
+	const ret = cloneAsWritable<Partial<typeof cache>>(cache)
 	delete ret.position
 	return deepFreeze(ret)
 }

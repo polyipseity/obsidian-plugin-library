@@ -27,7 +27,6 @@ import {
 	removeAt,
 	requireNonNil,
 	swap,
-	typedStructuredClone,
 	unexpected,
 } from "./util.js"
 import {
@@ -482,7 +481,7 @@ export class EditDataModal<T extends object> extends Modal {
 
 	protected async postMutate(): Promise<void> {
 		const { data, modalUI, ui } = this,
-			cb = this.#callback(typedStructuredClone(data))
+			cb = this.#callback(cloneAsWritable(data))
 		modalUI.update()
 		ui.update()
 		await cb

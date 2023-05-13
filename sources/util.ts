@@ -217,9 +217,16 @@ export function clearProperties(self: object): void {
 	}
 }
 
+export function cloneAsFrozen<T>(
+	obj: T,
+	cloner: <V>(value: V) => V = structuredClone,
+): DeepReadonly<T> {
+	return simplifyType(deepFreeze(cloneAsWritable(obj, cloner)))
+}
+
 export function cloneAsWritable<T>(
 	obj: T,
-	cloner: <V>(value: V) => V = typedStructuredClone,
+	cloner: <V>(value: V) => V = structuredClone,
 ): DeepWritable<T> {
 	// `readonly` is fake at runtime
 	return cloner(obj) as DeepWritable<T>
@@ -342,13 +349,6 @@ export function typedKeys<T extends readonly (keyof any)[]>() {
 		readonly [_ in T[number]]: unknown
 	} : never)>(obj: O): Readonly<T> =>
 		deepFreeze(Object.keys(obj)) as T
-}
-
-export function typedStructuredClone<T>(
-	value: T,
-	transfer?: StructuredSerializeOptions,
-): T {
-	return structuredClone(value, transfer) as T
 }
 
 export function inSet<const T extends ReadonlyTuple>(
