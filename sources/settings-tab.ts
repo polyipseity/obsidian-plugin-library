@@ -56,8 +56,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 
 	protected newLanguageWidget(
 		languages: ReadonlyTuple<S["language"]>,
-		defaultLanguage: () => string,
-		languageName: (language: S["language"] | "") => string,
+		languageNamer: (language: S["language"] | "") => string,
 		defaults: DeepReadonly<S>,
 	): void {
 		const {
@@ -74,16 +73,16 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 					setTextToEnum(
 						["", ...languages],
 						async value => settings.mutate(settingsM => {
-							settingsM.language = value || defaultLanguage()
+							settingsM.language = value || defaults.language
 						}),
 					),
 					() => { this.postMutate() },
 					{
 						pre: dropdown => {
 							dropdown
-								.addOption("", languageName(""))
+								.addOption("", languageNamer(""))
 								.addOptions(Object.fromEntries(languages
-									.map(lang => [lang, languageName(lang)])))
+									.map(lang => [lang, languageNamer(lang)])))
 						},
 					},
 				))
