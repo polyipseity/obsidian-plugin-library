@@ -121,7 +121,7 @@ export class DocumentationMarkdownView extends ItemView {
 	}
 }
 class Registered0 {
-	public constructor(protected readonly context: PluginContext) { }
+	public constructor(public readonly context: PluginContext) { }
 
 	public async open(
 		active: boolean,
