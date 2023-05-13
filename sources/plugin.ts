@@ -15,7 +15,4 @@ export namespace PluginContext {
 
 		readonly language: string
 	}
-	export interface Settings2 extends Settings {
-		readonly language: "asd"
-	}
 }
