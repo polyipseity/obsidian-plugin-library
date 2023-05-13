@@ -333,12 +333,12 @@ export function newCollabrativeState(
 export function notice(
 	message: () => DocumentFragment | string,
 	timeout: number = NOTICE_NO_TIMEOUT,
-	plugin?: PluginContext,
+	context?: PluginContext,
 ): Notice {
 	const timeoutMs = SI_PREFIX_SCALE * Math.max(timeout, 0),
 		ret = new Notice(message(), timeoutMs)
-	if (!plugin) { return ret }
-	const unreg = plugin.language.onChangeLanguage
+	if (!context) { return ret }
+	const unreg = context.language.onChangeLanguage
 		.listen(() => ret.setMessage(message()))
 	if (timeoutMs > 0) {
 		self.setTimeout(unreg, timeoutMs)
@@ -349,23 +349,23 @@ export function notice(
 export function notice2(
 	message: () => DocumentFragment | string,
 	timeout = NOTICE_NO_TIMEOUT,
-	plugin?: PluginContext,
+	context?: PluginContext,
 ): void {
 	if (timeout >= 0) {
-		notice(message, timeout, plugin)
+		notice(message, timeout, context)
 	}
 }
 
 export function printError(
 	error: Error,
 	message = (): string => "",
-	plugin?: PluginContext,
+	context?: PluginContext,
 ): void {
 	self.console.error(`${message()}\n`, error)
 	notice2(
 		() => `${message()}\n${error.name}: ${error.message}`,
-		plugin?.settings.copy.errorNoticeTimeout,
-		plugin,
+		context?.settings.copy.errorNoticeTimeout,
+		context,
 	)
 }
 
