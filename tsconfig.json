@@ -100,8 +100,6 @@
     "@tsconfig/esm/tsconfig.json"
   ],
   "include": [
-    "CHANGELOG.md",
-    "README.md",
     "assets/**/*",
     "sources/**/*"
   ],
