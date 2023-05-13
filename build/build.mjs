@@ -27,7 +27,7 @@ const ARGV_PRODUCTION = 2,
 		entryPoints: ["sources/index.ts", "sources/style.css"],
 		external: [],
 		footer: { js: COMMENT },
-		format: "cjs",
+		format: "esm",
 		jsx: "transform",
 		legalComments: "inline",
 		loader: {
