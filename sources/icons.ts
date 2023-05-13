@@ -16,19 +16,19 @@ export namespace addIcon {
 }
 
 export function registerIcon(
-	plugin: Plugin,
+	context: Plugin,
 	...args: Parameters<typeof addIcon>
 ): void {
-	plugin.register(addIcon(...args))
+	context.register(addIcon(...args))
 }
 
 export function registerLucideIcon(
-	plugin: Plugin,
+	context: Plugin,
 	id: string,
 	...args: Parameters<typeof createElement>
 ): void {
 	const icon = createElement(...args)
 	icon.setAttribute("width", "100")
 	icon.setAttribute("height", "100")
-	registerIcon(plugin, id, icon.outerHTML)
+	registerIcon(context, id, icon.outerHTML)
 }

@@ -185,10 +185,10 @@ export function statusUI(ui: UpdatableUI, element: HTMLElement): {
 export class UnnamespacedID<V extends string> {
 	public constructor(public readonly id: V) { }
 
-	public namespaced(plugin: Plugin | PluginManifest): string {
-		return `${(plugin instanceof Plugin
-			? plugin.manifest
-			: plugin).id}:${this.id}`
+	public namespaced(context: Plugin | PluginManifest): string {
+		return `${(context instanceof Plugin
+			? context.manifest
+			: context).id}:${this.id}`
 	}
 }
 
@@ -319,12 +319,12 @@ export function printMalformedData(
 }
 
 export function newCollabrativeState(
-	plugin: Plugin | PluginManifest,
+	context: Plugin | PluginManifest,
 	states: ReadonlyMap<UnnamespacedID<string>, unknown>,
 ): unknown {
 	const entries = (function* fn(): Generator<readonly [string, unknown], void> {
 		for (const [key, value] of states.entries()) {
-			yield [key.namespaced(plugin), value]
+			yield [key.namespaced(context), value]
 		}
 	}())
 	return Object.freeze(Object.fromEntries(entries))
