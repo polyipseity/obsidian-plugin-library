@@ -50,7 +50,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 
 	protected newDescriptionWidget(): void {
 		const { context: { language: { i18n } }, containerEl, ui } = this
-		ui.new(() => createChildElement(containerEl, "h1"), ele => {
+		ui.new(() => createChildElement(containerEl, "div"), ele => {
 			ele.textContent = i18n.t("settings.description")
 		})
 	}
