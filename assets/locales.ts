@@ -299,14 +299,12 @@ export namespace LibraryLocales {
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		"zh-Hans": {
 			[DEFAULT_NAMESPACE]: async () =>
-				sync((await import("./locales/zh-Hans/translation.json")).default,
-				),
+				sync((await import("./locales/zh-Hans/translation.json")).default),
 		},
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		"zh-Hant": {
 			[DEFAULT_NAMESPACE]: async () =>
-				sync((await import("./locales/zh-Hant/translation.json")).default,
-				),
+				sync((await import("./locales/zh-Hant/translation.json")).default),
 		},
 	}) satisfies I18nResources
 	export type Resources =
