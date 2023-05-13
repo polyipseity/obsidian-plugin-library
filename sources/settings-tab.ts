@@ -5,6 +5,7 @@ import {
 import {
 	cloneAsWritable,
 	createChildElement,
+	deepFreeze,
 	logError,
 	unexpected,
 } from "./util.js"
@@ -60,11 +61,13 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		languageNamer: (language: S["language"] | "") => string,
 		defaults: DeepReadonly<Pick<S, "language">>,
 	): void {
-		const {
-			containerEl,
-			ui,
-			context: { settings, language: { i18n } },
-		} = this
+		const
+			{
+				containerEl,
+				ui,
+				context: { settings, language: { i18n } },
+			} = this,
+			langs = deepFreeze(["", ...languages.filter(identity)])
 		ui.newSetting(containerEl, setting => {
 			setting
 				.setName(i18n.t("settings.language"))
@@ -72,7 +75,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 				.addDropdown(linkSetting(
 					(): string => settings.copy.language,
 					setTextToEnum(
-						["", ...languages],
+						langs,
 						async value => settings.mutate(settingsM => {
 							settingsM.language = value || defaults.language
 						}),
@@ -81,8 +84,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 					{
 						pre: dropdown => {
 							dropdown
-								.addOption("", languageNamer(""))
-								.addOptions(Object.fromEntries(languages
+								.addOptions(Object.fromEntries(langs
 									.map(lang => [lang, languageNamer(lang)])))
 						},
 					},
