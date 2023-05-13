@@ -102,6 +102,7 @@ export class LanguageManager extends Component {
 		super()
 		this.#loader0 = loader
 		this.onLoaded = this.#loader.then(async ({ promise }) => promise)
+		context.addChild(this)
 	}
 
 	public get i18n(): i18n {
