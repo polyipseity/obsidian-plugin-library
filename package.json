@@ -20,6 +20,7 @@
 	"description": "Library for Obsidian plugins.",
 	"devDependencies": {
 		"@tsconfig/esm": "^1.0.3",
+		"@tsconfig/node16": "^1.0.4",
 		"@tsconfig/recommended": "^1.0.2",
 		"@tsconfig/strictest": "^2.0.1",
 		"@tsconfig/svelte": "^4.0.1",
