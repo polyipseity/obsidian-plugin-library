@@ -87,9 +87,6 @@
     "suppressImplicitAnyIndexErrors": false,
     "target": "ES2022",
     "tsBuildInfoFile": ".tsbuildinfo",
-    "typeRoots": [
-      "node_modules/@types/",
-    ],
     "useDefineForClassFields": true,
     "verbatimModuleSyntax": true
   },
