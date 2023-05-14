@@ -12,8 +12,6 @@ export type CodePoint =
 	Opaque<string, "2af98ef6-0537-4fd3-a1e1-269517bca44d"> & {
 		readonly codePointAt: (pos: 0) => number
 	}
-export type Constructor<T> = new (...args: readonly unknown[]) => T
-export type Contains<T, U> = T & U extends never ? false : true
 export type Deopaque<T> = T extends WithOpaque<infer U>
 	? T extends Opaque<infer V, U> ? V : never : never
 export type DistributeKeys<T> = T extends unknown ? keyof T : never
@@ -23,7 +21,7 @@ export type Evaluate<T> = T extends (...args: infer A) => infer R ? (
 	...args: A
 ) => R : T extends object
 	? T extends infer O ? { [K in keyof O]: O[K] } : never : T
-export type Exact<T, U> =
+export type IsExact<T, U> =
 	(<G>() => G extends T ? 1 : -1) extends
 	(<G>() => G extends U ? 1 : -1) ? true : false
 export type ReadonlyTuple<Type = unknown> =

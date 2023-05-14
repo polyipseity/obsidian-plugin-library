@@ -3,11 +3,14 @@ import {
 	group_outros as $groupOutros,
 	transition_out as $transitionOut,
 } from "svelte/internal"
-import type { AsyncOrSync, DeepReadonly, DeepWritable } from "ts-essentials"
+import type {
+	AsyncOrSync,
+	DeepReadonly,
+	DeepWritable,
+	Newable,
+} from "ts-essentials"
 import {
 	type CodePoint,
-	type Constructor,
-	type Contains,
 	type ReadonlyTuple,
 	contravariant,
 	simplifyType,
@@ -368,7 +371,7 @@ export function insertAt<T>(
 
 export function instanceOf<T extends Node | UIEvent>(
 	self0: Node | UIEvent | null | undefined,
-	type: Constructor<T>,
+	type: Newable<T>,
 ): self0 is T {
 	if (!self0) { return false }
 	if (self0 instanceof type) { return true }
@@ -394,9 +397,9 @@ export function isHomogenousArray<T extends PrimitiveTypeE>(
 	return value.every(element => genericTypeofGuardE(types, element))
 }
 
-export function isNonNil<T>(value: Contains<T, null | undefined
-> extends true ? T : never): value is Contains<T, null | undefined
-> extends true ? NonNullable<T> : never {
+export function isNonNil<T>(
+	value: (T & (null | undefined)) extends never ? never : T,
+): value is (T & (null | undefined)) extends never ? never : NonNullable<T> {
 	return !isNil(value)
 }
 
@@ -715,8 +718,9 @@ export function replaceAllRegex(string: string): RegExp {
 	return new RegExp(escapeRegExp(string), "ug")
 }
 
-export function requireNonNil<T>(value: Contains<T, null | undefined
-> extends true ? T : never): NonNullable<T> {
+export function requireNonNil<T>(
+	value: (T & (null | undefined)) extends never ? never : T,
+): NonNullable<T> {
 	if (isNonNil(value)) { return value }
 	throw new Error()
 }

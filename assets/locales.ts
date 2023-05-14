@@ -9,7 +9,7 @@ import type {
 	DistributeKeys,
 	DistributeValues,
 	Evaluate,
-	Exact,
+	IsExact,
 } from "../sources/types.js"
 import type {
 	I18nFormatters,
@@ -34,7 +34,7 @@ export type NormalizeLocale<T> = T extends Builtin ? T
 	} : IsUnknown<T> extends true ? unknown : T
 export function syncLocale<Expected>() {
 	return function fn<Actual>(
-		locale: Exact<NormalizeLocale<Expected>, NormalizeLocale<Actual>
+		locale: IsExact<NormalizeLocale<Expected>, NormalizeLocale<Actual>
 		> extends false ? never : Actual,
 	): Actual {
 		// TypeScript does not check more than 2 layers...
