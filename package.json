@@ -84,7 +84,7 @@
 	"style": "dist/style.css",
 	"type": "module",
 	"types": "dist/sources/index.d.ts",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"workspaces": [
 		"build/esbuild-compress",
 		"build/obsidian"
