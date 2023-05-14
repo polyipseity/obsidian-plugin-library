@@ -64,7 +64,10 @@
 	"keywords": [
 		"library",
 		"obsidian",
-		"plugin"
+		"obsidian-library",
+		"obsidian-plugin",
+		"plugin",
+		"plugin-library"
 	],
 	"license": "MIT",
 	"main": "dist/index.js",
