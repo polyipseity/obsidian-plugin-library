@@ -1,11 +1,6 @@
 import { PACKAGE_ID, PATHS } from "./util.mjs"
 import { analyzeMetafile, context, formatMessages } from "esbuild"
-import {
-	constant,
-	isEmpty,
-	isUndefined,
-	kebabCase,
-} from "lodash-es"
+import { constant, isEmpty, isUndefined, kebabCase } from "lodash-es"
 import { argv } from "node:process"
 import { copy } from "esbuild-plugin-copy"
 import esbuildCompress from "esbuild-compress"
