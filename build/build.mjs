@@ -1,6 +1,5 @@
 import { PACKAGE_ID, PATHS } from "./util.mjs"
 import { analyzeMetafile, context, formatMessages } from "esbuild"
-import { argv, cwd } from "node:process"
 import {
 	constant,
 	escapeRegExp,
@@ -9,6 +8,8 @@ import {
 	kebabCase,
 } from "lodash-es"
 import { readFile, writeFile } from "node:fs/promises"
+import { argv } from "node:process"
+import { copy } from "esbuild-plugin-copy"
 import esbuildSvelte from "esbuild-svelte"
 import lzString from "lz-string"
 import { nodeExternalsPlugin } from "esbuild-node-externals"
@@ -40,23 +41,14 @@ const ARGV_PRODUCTION = 2,
 		outdir: PATHS.outDir,
 		platform: "browser",
 		plugins: [
-			(filter => ({
-				name: "copy",
-				setup(build) {
-					const { initialOptions: { outdir } } = build
-					if (!outdir) {
-						throw new Error()
-					}
-					build.onLoad({ filter }, async ({ path }) => {
-						await writeFile(
-							`${outdir}/${path.slice(cwd().length)}`,
-							await readFile(path, { encoding: "utf-8" }),
-							{ encoding: "utf-8" },
-						)
-					})
-				},
-			}))(/\.svelte$/u),
-			nodeExternalsPlugin({
+			nodeExternalsPlugin({}),
+			copy({
+				assets: [
+					{
+						from: ["sources/**/*.svelte"],
+						to: ["sources"],
+					},
+				],
 			}),
 			{
 				name: "compress",
