@@ -169,10 +169,11 @@ function tsc() {
 	})
 }
 async function esbuild() {
-	if (DEV) {
-		await BUILD.watch({})
-	} else {
-		try {
+	try {
+		if (DEV) {
+			await BUILD.watch({})
+		} else {
+			// Await https://github.com/evanw/esbuild/issues/2886
 			const { errors, warnings, metafile } = await BUILD.rebuild()
 			await Promise.all([
 				(async () => {
@@ -213,9 +214,9 @@ async function esbuild() {
 						{ encoding: "utf-8" },
 					),
 			])
-		} finally {
-			await BUILD.dispose()
 		}
+	} finally {
+		await BUILD.dispose()
 	}
 }
 await Promise.all([tsc(), esbuild()])
