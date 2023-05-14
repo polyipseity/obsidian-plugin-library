@@ -77,8 +77,7 @@
 		"check": "tsc -noEmit && eslint --cache --ignore-pattern \"*.svelte\" .",
 		"dev": "npm run build:force -- dev",
 		"fix": "eslint --fix --cache --ignore-pattern \"*.svelte\" .",
-		"postversion": "node build/version-post.mjs",
-		"version": "node build/version.mjs"
+		"postversion": "node build/version-post.mjs"
 	},
 	"sideEffects": false,
 	"style": "dist/style.css",
