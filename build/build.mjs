@@ -13,6 +13,7 @@ import { copy } from "esbuild-plugin-copy"
 import esbuildSvelte from "esbuild-svelte"
 import lzString from "lz-string"
 import { nodeExternalsPlugin } from "esbuild-node-externals"
+import { spawn } from "node:child_process"
 import sveltePreprocess from "svelte-preprocess"
 
 const ARGV_PRODUCTION = 2,
@@ -147,43 +148,74 @@ export default JSON.parse(decompress(${str(lzString.compressToBase64(data))}))
 		target: "ES2022",
 		treeShaking: true,
 	})
-if (DEV) {
-	await BUILD.watch({})
-} else {
-	try {
-		const { errors, warnings, metafile } = await BUILD.rebuild()
-		await Promise.all([
-			(async () => {
-				if (!isUndefined(metafile)) {
-					console.log(await analyzeMetafile(metafile, {
-						color: true,
-						verbose: true,
-					}))
+
+function tsc() {
+	return new Promise((resolve, reject) => {
+		spawn(
+			"npx",
+			["tsc", "--emitDeclarationOnly", ...DEV ? ["--watch"] : []],
+			{
+				shell: true,
+			},
+		)
+			.once("error", reject)
+			.once("exit", (code, signal) => {
+				if (code === 0) {
+					resolve()
+					return
 				}
-				for await (const logging of [
-					{ data: warnings, kind: "warning", log: console.warn.bind(console) },
-					{ data: errors, kind: "error", log: console.error.bind(console) },
-				]
-					.filter(({ data }) => !isEmpty(data))
-					.map(async ({ data, kind, log }) => {
-						const message = (await formatMessages(data, {
+				reject(code ?? signal)
+			})
+	})
+}
+async function esbuild() {
+	if (DEV) {
+		await BUILD.watch({})
+	} else {
+		try {
+			const { errors, warnings, metafile } = await BUILD.rebuild()
+			await Promise.all([
+				(async () => {
+					if (!isUndefined(metafile)) {
+						console.log(await analyzeMetafile(metafile, {
 							color: true,
-							kind,
-						})).join("\n")
-						return () => log(message)
-					})) {
-					logging()
-				}
-			})(),
-			isUndefined(metafile)
-				? null
-				: writeFile(
-					PATHS.metafile,
-					JSON.stringify(metafile, null, "\t"),
-					{ encoding: "utf-8" },
-				),
-		])
-	} finally {
-		await BUILD.dispose()
+							verbose: true,
+						}))
+					}
+					for await (const logging of [
+						{
+							data: warnings,
+							kind: "warning",
+							log: console.warn.bind(console),
+						},
+						{
+							data: errors,
+							kind: "error",
+							log: console.error.bind(console),
+						},
+					]
+						.filter(({ data }) => !isEmpty(data))
+						.map(async ({ data, kind, log }) => {
+							const message = (await formatMessages(data, {
+								color: true,
+								kind,
+							})).join("\n")
+							return () => log(message)
+						})) {
+						logging()
+					}
+				})(),
+				isUndefined(metafile)
+					? null
+					: writeFile(
+						PATHS.metafile,
+						JSON.stringify(metafile, null, "\t"),
+						{ encoding: "utf-8" },
+					),
+			])
+		} finally {
+			await BUILD.dispose()
+		}
 	}
 }
+await Promise.all([tsc(), esbuild()])
