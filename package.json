@@ -45,6 +45,9 @@
 		"typescript-svelte-plugin": "^0.3.25"
 	},
 	"displayName": "Obsidian Plugin Library",
+	"files": [
+		"dist"
+	],
 	"funding": [
 		{
 			"type": "Buy Me a Coffee",
