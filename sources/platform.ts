@@ -1,3 +1,4 @@
+import type { LibraryUUIDs } from "./magic.js"
 import type { Opaque } from "ts-essentials"
 import { deepFreeze } from "./util.js"
 
@@ -9,8 +10,7 @@ export namespace Platform {
 	export type Desktop = typeof DESKTOP[number]
 	export type Mobile = typeof MOBILE[number]
 	export type All = typeof ALL[number]
-	export type Current =
-		Opaque<All, "387823d1-e81d-4ed2-8148-4023aeae81a6">
+	export type Current = Opaque<All, typeof LibraryUUIDs["UUID2"]>
 	export const CURRENT = ((): All => {
 		const { userAgent } = self.navigator
 		if (userAgent.includes("like Mac")) {

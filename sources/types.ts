@@ -4,14 +4,14 @@ import type {
 	Opaque,
 	WithOpaque,
 } from "ts-essentials"
+import type { LibraryUUIDs } from "./magic.js"
 import SemVer from "semver/classes/semver.js"
 import { isUndefined } from "lodash-es"
 
 export type AnyObject = Readonly<Record<keyof any, unknown>>
-export type CodePoint =
-	Opaque<string, "2af98ef6-0537-4fd3-a1e1-269517bca44d"> & {
-		readonly codePointAt: (pos: 0) => number
-	}
+export type CodePoint = Opaque<string, typeof LibraryUUIDs["UUID0"]> & {
+	readonly codePointAt: (pos: 0) => number
+}
 export type Deopaque<T> = T extends WithOpaque<infer U>
 	? T extends Opaque<infer V, U> ? V : never : never
 export type DistributeKeys<T> = T extends unknown ? keyof T : never
@@ -26,8 +26,7 @@ export type IsExact<T, U> =
 	(<G>() => G extends U ? 1 : -1) ? true : false
 export type ReadonlyTuple<Type = unknown> =
 	readonly [] | readonly [Type, ...Type[]]
-export type SemVerString =
-	Opaque<string, "fec54e0c-8342-4418-bc4b-57ea4d92c3d4">
+export type SemVerString = Opaque<string, typeof LibraryUUIDs["UUID1"]>
 export type Unchecked<T> = { readonly [_ in keyof T]?: unknown }
 
 export const NULL_SEM_VER_STRING = semVerString("0.0.0")
