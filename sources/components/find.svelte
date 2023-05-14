@@ -1,7 +1,7 @@
 <svelte:options immutable={false} />
 
 <script context="module" lang="typescript">
-	import { Direction, type Params } from "./find.js";
+	import type { Direction, Params } from "./find.js";
 	import type { DeepWritable } from "ts-essentials";
 	import { getKeyModifiers } from "../util.js";
 	import { t as i18nt } from "i18next";
@@ -84,7 +84,7 @@
 				class="document-search-button"
 				aria-label={i18n("components.find.previous")}
 				on:click|preventDefault|stopPropagation={() => {
-					onFind(Direction.previous, params);
+					onFind("previous", params);
 				}}
 				use:setIcon={i18n("asset:components.find.previous-icon")}
 			/>
@@ -92,7 +92,7 @@
 				class="document-search-button"
 				aria-label={i18n("components.find.next")}
 				on:click|preventDefault|stopPropagation={() => {
-					onFind(Direction.next, params);
+					onFind("next", params);
 				}}
 				use:setIcon={i18n("asset:components.find.next-icon")}
 			/>

@@ -1,7 +1,4 @@
-export const enum Direction {
-	next = 0,
-	previous = 1,
-}
+export type Direction = "next" | "previous"
 export interface Params {
 	readonly caseSensitive: boolean
 	readonly findText: string
