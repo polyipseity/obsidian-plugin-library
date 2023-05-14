@@ -1,7 +1,4 @@
-import {
-	bracket,
-	lazyProxy,
-} from "./util.js"
+import { bracket, lazyProxy } from "./util.js"
 import PLazy from "p-lazy"
 import { isNil } from "lodash-es"
 
@@ -21,7 +18,7 @@ export function dynamicRequireLazy<T extends object>(
 
 export function dynamicRequireSync<T>(bundle: Bundle, module: string): T {
 	const { valid, value } = bracket(bundle, module),
-		ret = valid ? value() : (require ?? ((): void => { }))(module)
+		ret: unknown = valid ? value() : require(module)
 	if (isNil(ret)) { throw new Error(module) }
 	return ret as T
 }
