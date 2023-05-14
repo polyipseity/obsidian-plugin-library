@@ -15,6 +15,13 @@
 			"export-to-clipboard-icon": "$t(asset:generic.output-to-clipboard-icon)",
 			"import-from-clipboard-icon": "$t(asset:generic.input-from-clipboard-icon)"
 		},
+		"find": {
+			"case-sensitive-icon": "case-sensitive",
+			"next-icon": "$t(asset:generic.next-icon)",
+			"previous-icon": "$t(asset:generic.previous-icon)",
+			"regex-icon": "regex",
+			"whole-word-icon": "whole-word"
+		},
 		"list": {
 			"append-icon": "$t(asset:generic.add-icon)",
 			"move-down-icon": "$t(asset:generic.next-icon)",
