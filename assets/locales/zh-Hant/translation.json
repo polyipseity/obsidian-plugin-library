@@ -22,6 +22,17 @@
 			"import-from-clipboard": "從$t(generic.import)$t(generic.import)",
 			"reset": "$t(generic.reset)"
 		},
+		"find": {
+			"case-sensitive": "區分大小寫",
+			"close": "$t(generic.close)",
+			"input-placeholder": "$t(generic.find)",
+			"next": "下一個",
+			"previous": "上一個",
+			"regex": "正則表達式",
+			"results": "{{index, number}}/{{count, number}}",
+			"too-many-results": "?/{{limit, number}}+",
+			"whole-word": "全字"
+		},
 		"list": {
 			"append": "後置",
 			"move-down": "下移",
@@ -52,6 +63,7 @@
 		"background": "後台",
 		"cancel": "取消",
 		"clipboard": "剪貼板",
+		"close": "關閉",
 		"command": "命令",
 		"command-palette": "$t(generic.command)面板",
 		"confirm": "確認",
@@ -62,6 +74,7 @@
 		"exist": "存在",
 		"export": "導出",
 		"file": "檔案",
+		"find": "搜尋",
 		"frontmatter": "前文",
 		"import": "導入",
 		"language": "語言",

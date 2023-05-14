@@ -1,7 +1,11 @@
+// eslint-disable-next-line spaced-comment
+/// <reference types="svelte" />
+
 export * from "../assets/locales.js"
 export * from "./@types/lib.es5.js"
 // eslint-disable-next-line import/export
 export * from "./@types/obsidian.js"
+export * from "./components/index.js"
 export * from "./documentation.js"
 export * from "./fixers.js"
 export * from "./i18n.js"
