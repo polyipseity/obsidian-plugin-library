@@ -14,8 +14,8 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: |
-      npm pack --pack-destination=.github
-      for file in .github/*.tgz; do mv "$file' "${file%-*}.tgz"; done
+        npm pack --pack-destination=.github
+        for file in .github/*.tgz; do mv "$file" "${file%-*}.tgz"; done
     - if: ${{github.ref == 'refs/tags/latest'}}
       uses: softprops/action-gh-release@v1
       with:
