@@ -63,7 +63,7 @@
 		"obsidian",
 		"plugin"
 	],
-	"license": "AGPL-3.0-or-later",
+	"license": "MIT",
 	"main": "dist/index.js",
 	"name": "obsidian-plugin-library",
 	"overrides": {
