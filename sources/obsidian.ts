@@ -253,18 +253,23 @@ export function addRibbonIcon(
 	)
 }
 
-export function awaitCSS(
+export async function awaitCSS(
 	element: HTMLElement,
-): void {
+): Promise<void> {
 	const { classList, style, style: { display } } = element
 	style.display = "none"
-	const obsr = onVisible(element, () => {
-		try {
-			style.display = display
-			classList.remove(awaitCSS.CLASS)
-		} finally { obsr.disconnect() }
+	return new Promise((resolve, reject) => {
+		const obsr = onVisible(element, () => {
+			try {
+				style.display = display
+				classList.remove(awaitCSS.CLASS)
+				resolve()
+			} catch (error) {
+				reject(error)
+			} finally { obsr.disconnect() }
+		})
+		classList.add(awaitCSS.CLASS)
 	})
-	classList.add(awaitCSS.CLASS)
 }
 export namespace awaitCSS {
 	export const CLASS = InternalDOMClasses.AWAIT_CSS
