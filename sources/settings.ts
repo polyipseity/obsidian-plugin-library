@@ -22,7 +22,7 @@ import {
 	printError,
 	printMalformedData,
 } from "./obsidian.js"
-import { isEmpty, isNil, throttle } from "lodash-es"
+import { constant, isEmpty, isNil, throttle } from "lodash-es"
 import { Component } from "obsidian"
 import { DialogModal } from "./modals.js"
 import type { Fixer } from "./fixers.js"
@@ -65,9 +65,11 @@ export class SettingsManager<T extends SettingsManager.Type> extends Component {
 		(async (): Promise<void> => {
 			try {
 				const { promise, resolve } = await this.#loader
-				resolve((async (): Promise<void> => {
-					await this.read()
+				resolve((async (): Promise<unknown> => {
+					const loaded: unknown = await this.context.loadData()
+					await this.read(constant(loaded))
 					this.#loaded = true
+					return loaded
 				})())
 				await promise
 				await this.write()
