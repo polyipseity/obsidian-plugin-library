@@ -12,7 +12,13 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`1.0.6...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/1.0.6...main)
+__Full changelog__: [`1.0.7...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/1.0.7...main)
+
+## 1.0.7 (2023-05-15)
+
+Various bug fixes.
+
+__Full changelog__: [`1.0.6...1.0.7`](https://github.com/polyipseity/obsidian-plugin-template/compare/1.0.6...1.0.7)
 
 ## 1.0.6 (2023-05-15)
 
