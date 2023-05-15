@@ -109,6 +109,7 @@ function tsc() {
 			["tsc", "--emitDeclarationOnly", ...DEV ? ["--watch"] : []],
 			{
 				shell: true,
+				stdio: "inherit",
 			},
 		)
 			.once("error", reject)
