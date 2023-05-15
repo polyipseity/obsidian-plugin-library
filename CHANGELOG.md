@@ -12,7 +12,14 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`v1.0.8...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.0.8...main)
+__Full changelog__: [`v1.0.9...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.0.9...main)
+
+## v1.0.9 (2023-05-15)
+
+- Various minor improvements.
+- Fix calling the wrong `tsc`. (`e31455908f9b8e378c0ff00265c997c9369b1c04`)
+
+__Full changelog__: [`v1.0.8...v1.0.9`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.0.8...v1.0.9)
 
 ## v1.0.8 (2023-05-15)
 
