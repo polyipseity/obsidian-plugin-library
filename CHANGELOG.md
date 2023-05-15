@@ -12,6 +12,9 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Fix `tsconfig.json` not found in a monorepo. (`577ca4b769c4a08feeb92e377a55a308d205a147`)
+- Return the original loaded settings in `SettingsManager#onLoaded`. (`181a2e0851d7e0bafb5de67fb5e4e4769c42b006`)
+
 __Full changelog__: [`v1.0.9...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.0.9...main)
 
 ## v1.0.9 (2023-05-15)
