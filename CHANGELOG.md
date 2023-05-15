@@ -12,7 +12,14 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`1.0.5...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/1.0.5...main)
+__Full changelog__: [`1.0.6...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/1.0.6...main)
+
+## 1.0.6 (2023-05-15)
+
+- Fix `latest.yml` not overwriting old assets in the release. (`90835653fbfc9a80cb67f3522273fd822177cc22`..`ff1a040f0dcc0e2f446f24fa5db33ff683ad0b4c`)
+- Add support for `pnpm`. (`884f214a01e51a22f3fa8a64a34e1ecadd689095`)
+
+__Full changelog__: [`1.0.5...1.0.6`](https://github.com/polyipseity/obsidian-plugin-template/compare/1.0.5...1.0.6)
 
 ## 1.0.5 (2023-05-14)
 
