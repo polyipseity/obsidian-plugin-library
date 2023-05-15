@@ -12,11 +12,15 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.1.0...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.1.0...main)
+
+## v1.1.0 (2023-05-16)
+
 - Fix `tsconfig.json` not found in a monorepo. (`577ca4b769c4a08feeb92e377a55a308d205a147`)
 - Return the original loaded settings in `SettingsManager#onLoaded`. (`181a2e0851d7e0bafb5de67fb5e4e4769c42b006`)
 - Improve type parameter defaults in `promisePromise()`. (`13ae19a3261833e705a210c04308cc3bf916e10d`)
 
-__Full changelog__: [`v1.0.9...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.0.9...main)
+__Full changelog__: [`v1.0.9...v1.1.0`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.0.9...v1.1.0)
 
 ## v1.0.9 (2023-05-15)
 
