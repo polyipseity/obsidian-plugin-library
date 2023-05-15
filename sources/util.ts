@@ -673,7 +673,7 @@ export function openExternal(self: Window, url?: URL | string): Window | null {
 	return self.open(url, "_blank", "noreferrer")
 }
 
-export async function promisePromise<T>(): Promise<{
+export async function promisePromise<T = void>(): Promise<{
 	readonly promise: Promise<T>
 	readonly resolve: (value: AsyncOrSync<T>) => void
 	readonly reject: (reason?: unknown) => void

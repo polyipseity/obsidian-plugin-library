@@ -34,7 +34,7 @@ import { simplifyType } from "./types.js"
 export class SettingsManager<T extends SettingsManager.Type> extends Component {
 	public readonly onLoaded
 	#data: DeepReadonly<T>
-	readonly #loader = promisePromise()
+	readonly #loader = promisePromise<unknown>()
 	#loaded = false
 	readonly #onMutateSettings = new EventEmitterLite<readonly []>()
 
