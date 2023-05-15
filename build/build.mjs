@@ -106,7 +106,14 @@ function tsc() {
 	return new Promise((resolve, reject) => {
 		spawn(
 			"npx",
-			["tsc", "--emitDeclarationOnly", ...DEV ? ["--watch"] : []],
+			[
+				"--package",
+				"typescript",
+				"--",
+				"tsc",
+				"--emitDeclarationOnly",
+				...DEV ? ["--watch"] : [],
+			],
 			{
 				shell: true,
 				stdio: "inherit",
