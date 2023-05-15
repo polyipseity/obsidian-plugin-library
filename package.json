@@ -46,7 +46,8 @@
 		"svelte-preprocess": "^5.0.3",
 		"tslib": "^2.5.0",
 		"typescript": "^5.0.4",
-		"typescript-svelte-plugin": "^0.3.25"
+		"typescript-svelte-plugin": "^0.3.25",
+		"which": "^3.0.1"
 	},
 	"displayName": "Obsidian Plugin Library",
 	"files": [

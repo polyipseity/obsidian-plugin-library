@@ -8,6 +8,7 @@ import esbuildSvelte from "esbuild-svelte"
 import { nodeExternalsPlugin } from "esbuild-node-externals"
 import { spawn } from "node:child_process"
 import sveltePreprocess from "svelte-preprocess"
+import which from "which"
 import { writeFile } from "node:fs/promises"
 
 const ARGV_PRODUCTION = 2,
@@ -102,10 +103,11 @@ const ARGV_PRODUCTION = 2,
 		treeShaking: true,
 	})
 
-function tsc() {
+async function tsc() {
+	const npx = await which("npx", {})
 	return new Promise((resolve, reject) => {
 		spawn(
-			"npx",
+			npx,
 			[
 				"--package",
 				"typescript",
@@ -114,10 +116,7 @@ function tsc() {
 				"--emitDeclarationOnly",
 				...DEV ? ["--watch"] : [],
 			],
-			{
-				shell: true,
-				stdio: "inherit",
-			},
+			{ stdio: "inherit" },
 		)
 			.once("error", reject)
 			.once("exit", (code, signal) => {
