@@ -38,6 +38,7 @@
 		"esbuild-node-externals": "^1.7.0",
 		"esbuild-plugin-copy": "^2.1.1",
 		"esbuild-svelte": "^0.7.3",
+		"eslint": "^8.40.0",
 		"eslint-import-resolver-typescript": "^3.5.5",
 		"eslint-plugin-import": "^2.27.5",
 		"eslint-plugin-svelte3": "^4.0.0",
