@@ -12,6 +12,8 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Create `aroundIdentityFactory()`. (`cd65b88f0a44e36562597cbd1fc4897f5823cb0f`)
+
 __Full changelog__: [`v1.1.0...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.1.0...main)
 
 ## v1.1.0 (2023-05-16)
