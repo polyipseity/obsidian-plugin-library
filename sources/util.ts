@@ -140,6 +140,17 @@ export function anyToError(obj: unknown): Error {
 	return obj instanceof Error ? obj : new Error(String(obj))
 }
 
+export function aroundIdentityFactory<T extends (...args: readonly unknown[
+
+]) => unknown>() {
+	return (proto: T) => function fn(
+		this: ThisParameterType<T>,
+		...args: Parameters<T>
+	): ReturnType<T> {
+		return proto.apply(this, args) as ReturnType<T>
+	}
+}
+
 export function asyncDebounce<
 	A extends readonly unknown[], R,
 >(func: DebouncedFunc<(
