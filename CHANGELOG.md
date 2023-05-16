@@ -13,6 +13,7 @@ Versions are ordered by recency.
 ## Unreleased
 
 - Create `aroundIdentityFactory()`. (`cd65b88f0a44e36562597cbd1fc4897f5823cb0f`)
+- Fix broken `esbuild()` in `build.mjs`. (`ddb3311b1021775926e304fbdc5daffdef0cd6ae`)
 
 __Full changelog__: [`v1.1.0...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.1.0...main)
 
