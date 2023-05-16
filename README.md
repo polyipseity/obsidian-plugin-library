@@ -5,13 +5,14 @@
 [Obsidian]: https://obsidian.md/
 [changelog]: https://github.com/polyipseity/obsidian-plugin-library/blob/main/CHANGELOG.md
 [latest release]: https://github.com/polyipseity/obsidian-plugin-library/releases/latest
+[other things]: https://github.com/polyipseity/obsidian-monorepo
 [repository]: https://github.com/polyipseity/obsidian-plugin-library
 
 Library for [Obsidian] plugins.
 
 [![Buy Me a Coffee/embed]][Buy Me a Coffee]
 
-__[Repository] · [Changelog] · [Installation](#installation) · [Contributing](#contributing) · [Security](#security)__
+__[Repository] · [Changelog] · [Other things] · [Installation](#installation) · [Contributing](#contributing) · [Security](#security)__
 
 ## Installation
 
