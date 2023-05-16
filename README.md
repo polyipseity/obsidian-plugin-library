@@ -11,10 +11,7 @@ Library for [Obsidian] plugins.
 
 [![Buy Me a Coffee/embed]][Buy Me a Coffee]
 
-__[Installation](#installation) · [Contributing](#contributing) · [Security](#security)__
-
-- [Repository]
-- [Changelog]
+__[Repository] · [Changelog] · [Installation](#installation) · [Contributing](#contributing) · [Security](#security)__
 
 ## Installation
 
