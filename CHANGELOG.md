@@ -12,11 +12,15 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.2.0...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.2.0...main)
+
+## v1.2.0 (2023-05-17)
+
 - Create `aroundIdentityFactory()`. (`cd65b88f0a44e36562597cbd1fc4897f5823cb0f`)
 - Fix broken `esbuild()` in `build.mjs`. (`ddb3311b1021775926e304fbdc5daffdef0cd6ae`)
 - Allow collaboration in `private.ts`. (`cf11c9443abbe59955d85be39b65de9b1e8f5ccb`..`586b49d53725d9d1ee124f46038b27548d2ae595`)
 
-__Full changelog__: [`v1.1.0...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.1.0...main)
+__Full changelog__: [`v1.1.0...v1.2.0`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.1.0...v1.2.0)
 
 ## v1.1.0 (2023-05-16)
 
