@@ -3,9 +3,17 @@ import type { PluginManifest, SettingTab } from "obsidian"
 import type { Platform } from "../platform.js"
 import type { Private } from "../private.js"
 
+declare const PRIVATE_KEY: unique symbol
+type PrivateKey = typeof PRIVATE_KEY
+declare module "../private.js" {
+	interface PrivateKeys {
+		readonly [PRIVATE_KEY]: never
+	}
+}
+
 declare module "obsidian" {
-	interface App extends Private<$App> { }
-	interface DataAdapter extends Private<$DataAdapter> { }
+	interface App extends Private<$App, PrivateKey> { }
+	interface DataAdapter extends Private<$DataAdapter, PrivateKey> { }
 	interface Scope {
 		// eslint-disable-next-line @typescript-eslint/method-signature-style
 		register(
@@ -14,9 +22,9 @@ declare module "obsidian" {
 			func: KeymapEventListener,
 		): KeymapEventHandler
 	}
-	interface ViewStateResult extends Private<$ViewStateResult> { }
-	interface WorkspaceLeaf extends Private<$WorkspaceLeaf> { }
-	interface WorkspaceRibbon extends Private<$WorkspaceRibbon> { }
+	interface ViewStateResult extends Private<$ViewStateResult, PrivateKey> { }
+	interface WorkspaceLeaf extends Private<$WorkspaceLeaf, PrivateKey> { }
+	interface WorkspaceRibbon extends Private<$WorkspaceRibbon, PrivateKey> { }
 }
 
 interface $App {

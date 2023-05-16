@@ -1,11 +1,16 @@
 import type { PluginContext } from "./plugin.js"
 
-declare const PRIVATE: unique symbol
-export interface Private<T> { readonly [PRIVATE]: T }
-export type RevealPrivate<T extends Private<unknown>> =
-	Omit<T, typeof PRIVATE> & T[typeof PRIVATE]
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PrivateKeys { }
+export type PrivateKeys$ = keyof PrivateKeys
+export type Private<T, P extends keyof PrivateKeys> = { readonly [_ in P]: T }
+export type RevealPrivate<T extends Private<unknown, PrivateKeys$>> =
+	Omit<T, PrivateKeys$> & T[PrivateKeys$]
 
-export function revealPrivate<const As extends readonly Private<unknown>[], R>(
+export function revealPrivate<
+	const As extends readonly Private<unknown, PrivateKeys$>[],
+	R,
+>(
 	context: PluginContext,
 	args: As,
 	func: (
@@ -27,7 +32,7 @@ export function revealPrivate<const As extends readonly Private<unknown>[], R>(
 	}
 }
 export async function revealPrivateAsync<
-	const As extends readonly Private<unknown>[],
+	const As extends readonly Private<unknown, PrivateKeys$>[],
 	R extends PromiseLike<unknown>,
 >(
 	context: PluginContext,
