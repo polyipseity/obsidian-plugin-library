@@ -12,7 +12,13 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`v1.2.0...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.2.0...main)
+__Full changelog__: [`v1.3.0...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.3.0...main)
+
+## v1.3.0 (2023-05-21)
+
+- Remove printing a notice in `printMalformedData()`. See [polyipseity/obsidian-terminal#19](https://github.com/polyipseity/obsidian-terminal/issues/19). (`5adbc68d36cdd0d2ea3476ef0dbece6f18e82140`)
+
+__Full changelog__: [`v1.2.0...v1.3.0`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.2.0...v1.3.0)
 
 ## v1.2.0 (2023-05-17)
 
