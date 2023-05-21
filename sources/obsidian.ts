@@ -302,7 +302,7 @@ export function printMalformedData(
 	actual: unknown,
 	expected?: unknown,
 ): void {
-	const { i18n } = context.language,
+	const { language: { i18n } } = context,
 		tryClone = (thing: unknown): unknown => {
 			try {
 				return cloneDeep(thing)
@@ -315,11 +315,6 @@ export function printMalformedData(
 		i18n.t("errors.malformed-data"),
 		tryClone(actual),
 		tryClone(expected),
-	)
-	notice2(
-		() => i18n.t("errors.malformed-data"),
-		context.settings.copy.errorNoticeTimeout,
-		context,
 	)
 }
 
