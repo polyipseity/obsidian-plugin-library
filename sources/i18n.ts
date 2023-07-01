@@ -1,9 +1,10 @@
 import { Component, moment } from "obsidian"
 import { EventEmitterLite, bracket, promisePromise } from "./util.js"
 import i18next, {
+	type FlatNamespace,
 	type InitOptions,
+	type ParseKeys,
 	type ResourceKey,
-	type TFuncKey,
 	type TypeOptions,
 	createInstance,
 	type i18n,
@@ -19,8 +20,9 @@ export type I18nFormatters = Readonly<Record<string, (
 export type I18nNamespaces =
 	Readonly<Record<string, () => AsyncOrSync<Exclude<ResourceKey, string>>>>
 export type I18nResources = Readonly<Record<string, I18nNamespaces>>
-export type NamespacedTranslationKey =
-	TFuncKey<(keyof TypeOptions["resources"])[]>
+export type TranslationKey =
+	ParseKeys<readonly [TypeOptions["defaultNS"],
+		...readonly Exclude<FlatNamespace, TypeOptions["defaultNS"]>[]]>
 
 export async function createI18n(
 	resources: I18nResources,

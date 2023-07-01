@@ -16,8 +16,8 @@ import {
 } from "./obsidian.js"
 import { capitalize, createChildElement, deepFreeze } from "./util.js"
 import { DOMClasses } from "./magic.js"
-import type { NamespacedTranslationKey } from "./i18n.js"
 import type { PluginContext } from "./plugin.js"
+import type { TranslationKey } from "./i18n.js"
 import { launderUnchecked } from "./types.js"
 
 export class DocumentationMarkdownView extends ItemView {
@@ -161,8 +161,8 @@ export namespace DocumentationMarkdownView {
 	}
 	export interface State {
 		readonly data: string
-		readonly displayTextI18nKey: NamespacedTranslationKey | null
-		readonly iconI18nKey: NamespacedTranslationKey | null
+		readonly displayTextI18nKey: TranslationKey | null
+		readonly iconI18nKey: TranslationKey | null
 	}
 	export namespace State {
 		export const DEFAULT: State = deepFreeze({
@@ -179,13 +179,13 @@ export namespace DocumentationMarkdownView {
 					unc,
 					"displayTextI18nKey",
 					["string", "null"],
-				) as NamespacedTranslationKey | null,
+				) as TranslationKey | null,
 				iconI18nKey: fixTyped(
 					DEFAULT,
 					unc,
 					"iconI18nKey",
 					["string", "null"],
-				) as NamespacedTranslationKey | null,
+				) as TranslationKey | null,
 			})
 		}
 	}
