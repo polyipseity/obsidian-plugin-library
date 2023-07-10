@@ -12,6 +12,11 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Create interface `StatusUI`. (`47e2c752ee993cb3cdc445c506459b4b8daecf2d`)
+- Improve resetting `Setting` in `UpdatableUI`. (`30dd2e6267d2665ec281b14da6f3980a52570d61`)
+- Improve and create utilities: `assignExact`, `composeSetters`, `createChildElement`, `createDocumentFragment`. (`30dd2e6267d2665ec281b14da6f3980a52570d61`..`3ae484d5b53c4a0c663e975bc648c3bb8946bb80`)
+- Add more features to `EditDataModal`. (`5396a54cfafce35794240f84fc8cd5ea3295f227`)
+
 __Full changelog__: [`v1.4.2...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.4.2...main)
 
 ## v1.4.2 (2023-07-10)
