@@ -12,7 +12,14 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`v1.4.1...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.4.1...main)
+__Full changelog__: [`v1.4.2...main`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.4.2...main)
+
+## v1.4.2 (2023-07-10)
+
+- Fix typing characaters into the find textbox not working. (`5345cbdd12d17ebcc6f8da4f6b359f5cd9782fda`)
+- Eliminate the use of `!important` in CSS. (`3e1deee9a4f01aee4fe249bf7fdc97c1a12c30a3`)
+
+__Full changelog__: [`v1.4.1...v1.4.2`](https://github.com/polyipseity/obsidian-plugin-template/compare/v1.4.1...v1.4.2)
 
 ## v1.4.1 (2023-07-01)
 
