@@ -12,6 +12,7 @@ import {
 } from "./magic.js"
 import type { DeepReadonly, DeepWritable } from "ts-essentials"
 import {
+	type StatusUI,
 	UpdatableUI,
 	statusUI,
 	useSettings,
@@ -353,7 +354,10 @@ export class EditDataModal<T extends object> extends Modal {
 	protected readonly data
 	#dataText
 	readonly #callback
+	readonly #dynamicWidth
+	readonly #elements
 	readonly #title
+	readonly #description
 
 	public constructor(
 		protected readonly context: PluginContext,
@@ -365,30 +369,61 @@ export class EditDataModal<T extends object> extends Modal {
 		this.data = simplifyType<T>(cloneAsWritable(protodata))
 		this.#dataText = JSON.stringify(this.data, null, JSON_STRINGIFY_SPACE)
 		this.#callback = options?.callback ?? ((): void => { })
+		this.#dynamicWidth = options?.dynamicWidth ?? true
+		this.#elements =
+			deepFreeze([...options?.elements ?? EditDataModal.ELEMENTS])
 		this.#title = options?.title
+		this.#description = options?.description
 	}
 
 	public override onOpen(): void {
 		super.onOpen()
-		const { modalUI, ui, modalEl, titleEl, context, protodata, fixer } = this,
-			{ element: listEl, remover: listElRemover } = useSettings(this.contentEl),
+		const { modalUI, ui, modalEl, contentEl, titleEl, context } = this,
+			errorEl = statusUI(ui, ((): HTMLElement => {
+				const ret = createChildElement(contentEl, "div", ele => {
+					ele.classList.add(DOMClasses.MOD_WARNING)
+				})
+				ui.new(constant(ret), null, ele => { ele.remove() })
+				return ret
+			})()),
+			{ element: listEl, remover: listElRemover } = useSettings(contentEl),
 			{ language } = context,
-			{ i18n, onChangeLanguage } = language,
-			title = this.#title
+			{ onChangeLanguage } = language,
+			title = this.#title,
+			desc = this.#description
 		modalUI.finally(onChangeLanguage.listen(() => { modalUI.update() }))
 		ui.finally(listElRemover)
 			.finally(onChangeLanguage.listen(() => { ui.update() }))
-		makeModalDynamicWidth(modalUI, modalEl)
+			.finally(() => { this.#resetDataText() })
+		if (this.#dynamicWidth) { makeModalDynamicWidth(modalUI, modalEl) }
 		if (title) {
 			modalUI.new(constant(titleEl), ele => {
 				ele.textContent = title()
 			}, ele => { ele.textContent = null })
 		}
-		const errorEl = statusUI(ui, createChildElement(listEl, "div", ele => {
-			ele.classList.add(DOMClasses.MOD_WARNING)
-		}))
-		ui.finally(() => { this.#resetDataText() })
-			.newSetting(listEl, setting => {
+		if (desc) {
+			ui.new(() => createChildElement(listEl, "div"), ele => {
+				ele.textContent = desc()
+			}, ele => { ele.remove() })
+		}
+		this.draw(ui, listEl, errorEl)
+	}
+
+	public override onClose(): void {
+		super.onClose()
+		this.modalUI.destroy()
+		this.ui.destroy()
+	}
+
+	protected draw(
+		ui: UpdatableUI,
+		element: HTMLElement,
+		errorEl: StatusUI,
+	): void {
+		const { context: { language: { i18n } }, fixer, protodata } = this,
+			els = this.#elements
+		if (els.includes("export")) {
+			ui.newSetting(element, setting => {
 				setting
 					.setName(i18n.t("components.edit-data.export"))
 					.addButton(button => button
@@ -403,12 +438,12 @@ export class EditDataModal<T extends object> extends Modal {
 							} catch (error) {
 								self.console.debug(error)
 								errorEl.report(error)
-								return
 							}
-							errorEl.report()
 						}))
 			})
-			.newSetting(listEl, setting => {
+		}
+		if (els.includes("import")) {
+			ui.newSetting(element, setting => {
 				setting
 					.setName(i18n.t("components.edit-data.import"))
 					.addButton(button => button
@@ -433,11 +468,12 @@ export class EditDataModal<T extends object> extends Modal {
 								return
 							}
 							errorEl.report()
-							this.#resetDataText()
 							await this.postMutate()
 						}))
 			})
-			.newSetting(listEl, setting => {
+		}
+		if (els.includes("data")) {
+			ui.newSetting(element, setting => {
 				setting
 					.setName(i18n.t("components.edit-data.data"))
 					.addTextArea(linkSetting(
@@ -456,7 +492,7 @@ export class EditDataModal<T extends object> extends Modal {
 								return
 							}
 							errorEl.report()
-							await this.postMutate()
+							await this.postMutate(false)
 						},
 					))
 					.addExtraButton(resetButton(
@@ -465,23 +501,16 @@ export class EditDataModal<T extends object> extends Modal {
 						() => {
 							this.replaceData(simplifyType<T>(cloneAsWritable(protodata)))
 						},
-						async () => {
-							this.#resetDataText()
-							await this.postMutate()
-						},
+						async () => this.postMutate(),
 					))
 			})
+		}
 	}
 
-	public override onClose(): void {
-		super.onClose()
-		this.modalUI.destroy()
-		this.ui.destroy()
-	}
-
-	protected async postMutate(): Promise<void> {
+	protected async postMutate(reset = true): Promise<void> {
 		const { data, modalUI, ui } = this,
 			cb = this.#callback(simplifyType<T>(cloneAsWritable(data)))
+		if (reset) { this.#resetDataText() }
 		modalUI.update()
 		ui.update()
 		await cb
@@ -497,9 +526,17 @@ export class EditDataModal<T extends object> extends Modal {
 	}
 }
 export namespace EditDataModal {
+	export const ELEMENTS = deepFreeze([
+		"export",
+		"import",
+		"data",
+	])
 	export interface Options<T> {
 		readonly callback?: (data: DeepWritable<T>) => unknown
+		readonly dynamicWidth?: boolean
+		readonly elements?: readonly typeof ELEMENTS[number][]
 		readonly title?: () => string
+		readonly description?: () => string
 	}
 }
 
