@@ -38,6 +38,10 @@ import type { PluginContext } from "./plugin.js"
 import { around } from "monkey-around"
 import { saveAs } from "file-saver"
 
+export interface StatusUI {
+	readonly report: (status?: unknown) => void
+}
+
 export class UpdatableUI {
 	readonly #updaters = new Functions({ async: false })
 	readonly #finalizers = new Functions({ async: false })
@@ -171,9 +175,7 @@ export class UpdatableUI {
 	}
 }
 
-export function statusUI(ui: UpdatableUI, element: HTMLElement): {
-	readonly report: (status?: unknown) => void
-} {
+export function statusUI(ui: UpdatableUI, element: HTMLElement): StatusUI {
 	ui.new(constant(element), () => { }, () => { element.textContent = null })
 	return deepFreeze({
 		report(status?: unknown) {
