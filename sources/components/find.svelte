@@ -2,8 +2,8 @@
 
 <script context="module" lang="typescript">
 	import type { Direction, Params } from "./find.js";
+	import { consumeEvent, getKeyModifiers } from "../util.js";
 	import type { DeepWritable } from "ts-essentials";
-	import { getKeyModifiers } from "../util.js";
 	import { t as i18nt } from "i18next";
 	import { isEmpty } from "lodash-es";
 	import { setIcon } from "obsidian";
@@ -37,9 +37,10 @@
 <div
 	class="document-search-container"
 	transition:slide
-	on:keydown|preventDefault|stopPropagation={(event) => {
+	on:keydown={(event) => {
 		if (event.key === "Escape" && isEmpty(getKeyModifiers(event))) {
 			onClose();
+			consumeEvent(event);
 		}
 	}}
 >
