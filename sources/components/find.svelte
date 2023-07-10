@@ -111,9 +111,8 @@
 	.document-search {
 		flex-wrap: wrap;
 	}
-	/* .is-mobile */
-	button.mod-cta {
-		background-color: var(--interactive-accent) !important;
-		color: var(--text-on-accent) !important;
+	:global(.is-mobile) .document-search .document-search-button.mod-cta {
+		background-color: var(--interactive-accent);
+		color: var(--text-on-accent);
 	}
 </style>
