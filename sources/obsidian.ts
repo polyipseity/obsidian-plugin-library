@@ -1,5 +1,5 @@
-import { type AnyObject, launderUnchecked } from "./types.js"
 import {
+	AbstractTextComponent,
 	type BaseComponent,
 	ButtonComponent,
 	type Command,
@@ -10,9 +10,11 @@ import {
 	Plugin,
 	type PluginManifest,
 	Setting,
+	ValueComponent,
 	View,
 	type ViewStateResult,
 } from "obsidian"
+import { type AnyObject, launderUnchecked } from "./types.js"
 import {
 	DOMClasses,
 	NOTICE_NO_TIMEOUT,
@@ -78,7 +80,7 @@ export class UpdatableUI {
 				patch = <C extends BaseComponent>(proto: (
 					cb: (component: C) => unknown,
 				) => Setting): (cb: (component: C) => unknown) => Setting => {
-					const components: C[] = []
+					const components: (readonly [C, unknown])[] = []
 					let index = 0
 					return function fn(
 						this: Setting,
@@ -88,16 +90,21 @@ export class UpdatableUI {
 							return proto.call(this, component => {
 								cb(component)
 								try {
-									components.push(component)
+									components.push([
+										component,
+										component instanceof ValueComponent
+											? component.getValue()
+											: null,
+									])
 								} catch (error) {
 									self.console.error(error)
 								}
 							})
 						}
-						const comp = components[index++ % components.length]
+						const [comp, def] = components[index] ?? []
+						index = (index + 1) % components.length
 						if (!comp) { throw new Error(index.toString()) }
 						try {
-							comp.setDisabled(false)
 							if ("onChange" in comp && typeof comp.onChange === "function") {
 								try {
 									comp.onChange((): void => { })
@@ -105,18 +112,19 @@ export class UpdatableUI {
 									self.console.error(error)
 								}
 							}
-							if ("removeCta" in comp && typeof comp.removeCta === "function") {
-								try {
-									comp.removeCta()
-								} catch (error) {
-									self.console.error(error)
-								}
+							comp.setDisabled(false)
+							if (comp instanceof AbstractTextComponent) {
+								comp.setPlaceholder("")
 							}
 							if (comp instanceof ButtonComponent) {
+								comp.removeCta()
 								comp.buttonEl.classList.remove(DOMClasses.MOD_WARNING)
 							}
 							if (comp instanceof DropdownComponent) {
 								comp.selectEl.replaceChildren()
+							}
+							if (comp instanceof ValueComponent) {
+								comp.setValue(def)
 							}
 						} catch (error) {
 							self.console.error(error)
@@ -139,7 +147,11 @@ export class UpdatableUI {
 			} satisfies { [key in (keyof Setting) & `add${string}`]: unknown })
 			return setting
 		}, setting => {
-			configure(setting)
+			configure(setting
+				.setDesc("")
+				.setDisabled(false)
+				.setName("")
+				.setTooltip(""))
 			recording = false
 		}, setting => { setting.settingEl.remove() })
 	}
