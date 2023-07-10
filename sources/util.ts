@@ -151,6 +151,18 @@ export function aroundIdentityFactory<T extends (...args: readonly unknown[
 	}
 }
 
+export function assignExact<K extends keyof any, T extends {
+	[_ in K]?: unknown
+}>(self: T, key: K & keyof T, value?: T[K]): typeof value {
+	if (isUndefined(value)) {
+		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+		delete self[key]
+	} else {
+		self[key] = value
+	}
+	return value
+}
+
 export function asyncDebounce<
 	A extends readonly unknown[], R,
 >(func: DebouncedFunc<(
@@ -270,13 +282,22 @@ export async function copyOnWriteAsync<T extends object>(
 }
 
 export function createChildElement<K extends keyof HTMLElementTagNameMap>(
-	element: HTMLElement,
+	element: ParentNode & { readonly ownerDocument: Document },
 	type: K,
 	callback = (_element: HTMLElementTagNameMap[K]): void => { },
 	options?: ElementCreationOptions,
 ): HTMLElementTagNameMap[K] {
 	const ret = element.ownerDocument.createElement(type, options)
 	element.append(ret)
+	callback(ret)
+	return ret
+}
+
+export function createDocumentFragment(
+	self: Document,
+	callback: (fragment: DocumentFragment) => void,
+): DocumentFragment {
+	const ret = self.createDocumentFragment()
 	callback(ret)
 	return ret
 }
