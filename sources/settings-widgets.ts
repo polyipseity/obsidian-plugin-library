@@ -52,6 +52,29 @@ export function linkSetting<
 	}
 }
 
+export function composeSetters<V, C extends ValueComponent<V>>(
+	...setters: readonly ((
+		value: V,
+		component: C,
+		getter: () => V,
+	) => unknown)[]
+) {
+	return async (
+		value: V,
+		component: C,
+		getter: () => V,
+	): Promise<boolean> => {
+		for (const setter of setters) {
+			// eslint-disable-next-line no-await-in-loop
+			const ret = await setter(value, component, getter)
+			if (typeof ret !== "boolean" || ret) {
+				return true
+			}
+		}
+		return false
+	}
+}
+
 export function setTextToEnum<
 	const Es extends ReadonlyTuple<V>,
 	V,
