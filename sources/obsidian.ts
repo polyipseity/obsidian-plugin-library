@@ -11,7 +11,7 @@ import {
 	type PluginManifest,
 	Setting,
 	ValueComponent,
-	View,
+	type View,
 	type ViewStateResult,
 } from "obsidian"
 import { type AnyObject, launderUnchecked } from "./types.js"
@@ -30,7 +30,6 @@ import {
 	inSet,
 	multireplace,
 	onVisible,
-	replaceAllRegex,
 } from "./util.js"
 import { cloneDeep, constant, isUndefined } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
@@ -420,23 +419,13 @@ export async function saveFileAs(
 	saveAs(data)
 }
 
-export function updateDisplayText(context: PluginContext, view: View): void {
-	revealPrivate(context, [view.leaf], leaf => {
-		const { containerEl } = view,
-			{ tabHeaderEl, tabHeaderInnerTitleEl } = leaf,
-			text = view.getDisplayText(),
-			viewHeaderEl =
-				containerEl.querySelector(`.${DOMClasses.VIEW_HEADER_TITLE}`),
-			{ textContent: oldText } = tabHeaderInnerTitleEl
-		tabHeaderEl.ariaLabel = text
-		tabHeaderInnerTitleEl.textContent = text
-		if (viewHeaderEl) { viewHeaderEl.textContent = text }
-		if (context.app.workspace.getActiveViewOfType(View) === view &&
-			oldText !== null) {
-			const { ownerDocument } = containerEl
-			ownerDocument.title =
-				ownerDocument.title.replace(replaceAllRegex(oldText), text)
-		}
+export function updateView(context: PluginContext, view: View): void {
+	revealPrivate(context, [
+		view.leaf,
+		context.app.workspace,
+	], (leaf, workspace) => {
+		leaf.updateHeader()
+		workspace.requestUpdateLayout()
 	}, _0 => { })
 }
 

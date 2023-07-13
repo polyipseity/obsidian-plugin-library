@@ -11,7 +11,7 @@ import {
 	printMalformedData,
 	readStateCollabratively,
 	recordViewStateHistory,
-	updateDisplayText,
+	updateView,
 	writeStateCollabratively,
 } from "./obsidian.js"
 import { capitalize, createChildElement, deepFreeze } from "./util.js"
@@ -63,7 +63,7 @@ export class DocumentationMarkdownView extends ItemView {
 
 	protected set state(value: DocumentationMarkdownView.State) {
 		this.#state = value
-		updateDisplayText(this.context, this)
+		updateView(this.context, this)
 	}
 
 	public override getViewType(): string {
@@ -115,9 +115,7 @@ export class DocumentationMarkdownView extends ItemView {
 	protected override async onOpen(): Promise<void> {
 		await super.onOpen()
 		const { context, context: { language: { onChangeLanguage } } } = this
-		this.register(onChangeLanguage.listen(() => {
-			updateDisplayText(context, this)
-		}))
+		this.register(onChangeLanguage.listen(() => { updateView(context, this) }))
 	}
 }
 class Registered0 {

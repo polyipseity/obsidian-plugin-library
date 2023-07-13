@@ -23,6 +23,7 @@ declare module "obsidian" {
 		): KeymapEventHandler
 	}
 	interface ViewStateResult extends Private<$ViewStateResult, PrivateKey> { }
+	interface Workspace extends Private<$Workspace, PrivateKey> { }
 	interface WorkspaceLeaf extends Private<$WorkspaceLeaf, PrivateKey> { }
 	interface WorkspaceRibbon extends Private<$WorkspaceRibbon, PrivateKey> { }
 }
@@ -51,10 +52,12 @@ interface $ViewStateResult {
 	history: boolean
 }
 
+interface $Workspace {
+	readonly requestUpdateLayout: () => void
+}
+
 interface $WorkspaceLeaf {
-	readonly tabHeaderEl: HTMLElement
-	readonly tabHeaderInnerIconEl: HTMLElement
-	readonly tabHeaderInnerTitleEl: HTMLElement
+	readonly updateHeader: () => void
 }
 
 interface $WorkspaceRibbon {

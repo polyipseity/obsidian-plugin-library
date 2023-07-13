@@ -21,8 +21,7 @@ export namespace DOMClasses {
 		SHOW_INDENTATION_GUIDE = "show-indentation-guide",
 		STATUS_BAR = "status-bar",
 		VERTICAL_TAB_CONTENT = "vertical-tab-content",
-		VERTICAL_TAB_CONTENT_CONTAINER = "vertical-tab-content-container",
-		VIEW_HEADER_TITLE = "view-header-title"
+		VERTICAL_TAB_CONTENT_CONTAINER = "vertical-tab-content-container"
 }
 
 export namespace FileExtensions {
