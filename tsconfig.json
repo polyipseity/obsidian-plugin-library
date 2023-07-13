@@ -58,7 +58,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "dist",
-    "paths": {},
+    "paths": {
+      "obsidian": [
+        "./node_modules/@polyipseity/obsidian/obsidian.d.ts"
+      ]
+    },
     "plugins": [
       {
         "enableForWorkspaceTypeScriptVersions": false,
