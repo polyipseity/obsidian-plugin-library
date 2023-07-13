@@ -60,7 +60,7 @@
     "outDir": "dist",
     "paths": {
       "obsidian": [
-        "node_modules/@polyipseity/obsidian/obsidian.d.ts"
+        "./node_modules/@polyipseity/obsidian/obsidian.d.ts"
       ]
     },
     "plugins": [
