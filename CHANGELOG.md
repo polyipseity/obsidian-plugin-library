@@ -12,6 +12,10 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.6.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.6.0...main)
+
+## v1.6.0 (2023-07-13)
+
 - Rename `updateDisplayText` to `updateView` and improve its implementation. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
 - Remove `DOMClasses#VIEW_HEADER_TITLE`. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
 - Modify `@types/obsidian.ts`. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
@@ -20,7 +24,7 @@ Versions are ordered by recency.
 - Prepare publishing. (`63184057b184c82f786dc19998d31632b2a8fb17`)
 - Update npm packages. (`9644440814aee326fcdd7fb8ed2f3c6a47695770`)
 
-__Full changelog__: [`v1.5.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.5.0...main)
+__Full changelog__: [`v1.5.0...v1.6.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.5.0...v1.6.0)
 
 ## v1.5.0 (2023-07-10)
 
