@@ -1,5 +1,8 @@
 {
 	"author": "polyipseity",
+	"bugs": {
+		"url": "https://github.com/polyipseity/obsidian-plugin-library/issues"
+	},
 	"dependencies": {
 		"@capacitor/filesystem": "^5.0.5",
 		"async-lock": "^1.4.0",
@@ -64,6 +67,7 @@
 			"url": "https://github.com/sponsors/polyipseity"
 		}
 	],
+	"homepage": "https://github.com/polyipseity/obsidian-plugin-library#readme",
 	"keywords": [
 		"library",
 		"obsidian",
@@ -74,7 +78,7 @@
 	],
 	"license": "MIT",
 	"main": "dist/index.js",
-	"name": "obsidian-plugin-library",
+	"name": "@polyipseity/obsidian-plugin-library",
 	"overrides": {
 		"tsconfig-paths": "^4.0.0"
 	},
@@ -83,7 +87,10 @@
 			"tsconfig-paths": "^4.0.0"
 		}
 	},
-	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/polyipseity/obsidian-plugin-library.git"
+	},
 	"scripts": {
 		"build": "npm run check && npm run build:force",
 		"build:force": "node build/build.mjs",
