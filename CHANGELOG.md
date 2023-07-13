@@ -15,6 +15,8 @@ Versions are ordered by recency.
 - Rename `updateDisplayText` to `updateView` and improve its implementation. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
 - Remove `DOMClasses#VIEW_HEADER_TITLE`. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
 - Modify `@types/obsidian.ts`. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
+- Replace submodule `obsidian` with `@polyipseity/obsidian`. (`2e4f0fc652929bcea42074db04851ced99b68ebb`..`4049f6e4cab1c46a7891fc973924c6fb652277a2`)
+- Upgrade minimum Obsidian API version to v1.2.8. (`4049f6e4cab1c46a7891fc973924c6fb652277a2`)
 
 __Full changelog__: [`v1.5.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.5.0...main)
 
