@@ -12,6 +12,10 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Rename `updateDisplayText` to `updateView` and improve its implementation. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
+- Remove `DOMClasses#VIEW_HEADER_TITLE`. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
+- Modify `@types/obsidian.ts`. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
+
 __Full changelog__: [`v1.5.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.5.0...main)
 
 ## v1.5.0 (2023-07-10)
