@@ -17,6 +17,8 @@ Versions are ordered by recency.
 - Modify `@types/obsidian.ts`. (`4e52de28b8264ae9f0110e1c12176bf2e9b9841f`)
 - Replace submodule `obsidian` with `@polyipseity/obsidian`. (`2e4f0fc652929bcea42074db04851ced99b68ebb`..`4049f6e4cab1c46a7891fc973924c6fb652277a2`)
 - Upgrade minimum Obsidian API version to v1.2.8. (`4049f6e4cab1c46a7891fc973924c6fb652277a2`)
+- Prepare publishing. (`63184057b184c82f786dc19998d31632b2a8fb17`)
+- Update npm packages. (`9644440814aee326fcdd7fb8ed2f3c6a47695770`)
 
 __Full changelog__: [`v1.5.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.5.0...main)
 
