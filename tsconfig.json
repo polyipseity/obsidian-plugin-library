@@ -60,7 +60,7 @@
     "outDir": "dist",
     "paths": {
       "obsidian": [
-        "./node_modules/@polyipseity/obsidian/obsidian.d.ts"
+        "node_modules/@polyipseity/obsidian/obsidian.d.ts"
       ]
     },
     "plugins": [
@@ -82,7 +82,7 @@
     "removeComments": true,
     "resolveJsonModule": true,
     "rootDirs": [
-      "./"
+      "."
     ],
     "skipLibCheck": true,
     "sourceMap": true,
