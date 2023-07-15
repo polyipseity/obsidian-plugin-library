@@ -56,7 +56,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	}
 
 	protected newDescriptionWidget(): void {
-		const { context: { language: { i18n } }, containerEl, ui } = this
+		const { context: { language: { value: i18n } }, containerEl, ui } = this
 		ui.new(() => createChildElement(containerEl, "div"), ele => {
 			ele.textContent = i18n.t("settings.description")
 		})
@@ -71,7 +71,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 			{
 				containerEl,
 				ui,
-				context: { settings, language: { i18n } },
+				context: { settings, language: { value: i18n } },
 			} = this,
 			langs = deepFreeze(["", ...languages.filter(identity)])
 		ui.newSetting(containerEl, setting => {
@@ -79,7 +79,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 				.setName(i18n.t("settings.language"))
 				.setDesc(i18n.t("settings.language-description"))
 				.addDropdown(linkSetting(
-					(): string => settings.copy.language,
+					(): string => settings.value.language,
 					setTextToEnum(
 						langs,
 						async value => settings.mutate(settingsM => {
@@ -114,7 +114,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		const {
 			containerEl,
 			context,
-			context: { settings, language: { i18n } },
+			context: { settings, language: { value: i18n } },
 			ui,
 		} = this
 		ui.newSetting(containerEl, setting => {
@@ -129,7 +129,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 						.onClick(() => {
 							new EditDataModal(
 								context,
-								settings.copy,
+								settings.value,
 								fixer,
 								{
 									callback: async (settings0): Promise<void> => {
@@ -158,7 +158,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 									forth: value => value[1],
 								}),
 								unexpected,
-								Object.entries(settings.copy.recovery),
+								Object.entries(settings.value.recovery),
 								{
 									callback: async (recovery0): Promise<void> => {
 										await settings.mutate(settingsM => {
@@ -174,7 +174,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 								},
 							).open()
 						})
-					if (!isEmpty(settings.copy.recovery)) {
+					if (!isEmpty(settings.value.recovery)) {
 						button.setCta()
 					}
 				})
@@ -223,7 +223,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	): void {
 		const {
 			containerEl,
-			context: { settings, language: { i18n } },
+			context: { settings, language: { value: i18n } },
 			ui,
 		} = this
 		ui.newSetting(containerEl, setting => {
@@ -231,7 +231,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 				.setName(i18n.t("settings.notice-timeout"))
 				.setDesc(i18n.t("settings.notice-timeout-description"))
 				.addText(linkSetting(
-					() => settings.copy.noticeTimeout.toString(),
+					() => settings.value.noticeTimeout.toString(),
 					setTextToNumber(async value => settings.mutate(settingsM => {
 						settingsM.noticeTimeout = value
 					})),
@@ -251,7 +251,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 					.setName(i18n.t("settings.error-notice-timeout"))
 					.setDesc(i18n.t("settings.error-notice-timeout-description"))
 					.addText(linkSetting(
-						() => settings.copy.errorNoticeTimeout.toString(),
+						() => settings.value.errorNoticeTimeout.toString(),
 						setTextToNumber(async value => settings.mutate(settingsM => {
 							settingsM.errorNoticeTimeout = value
 						})),

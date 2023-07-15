@@ -27,7 +27,7 @@ export function revealPrivate<
 		return func(...args as { readonly [A in keyof As]: RevealPrivate<As[A]> })
 	} catch (error) {
 		self.console.warn(
-			context.language.i18n.t("errors.private-API-changed"),
+			context.language.value.t("errors.private-API-changed"),
 			error,
 		)
 		return fallback(error, ...args)
@@ -47,7 +47,7 @@ export async function revealPrivateAsync<
 			{ readonly [A in keyof As]: RevealPrivate<As[A]> })
 	} catch (error) {
 		self.console.warn(
-			context.language.i18n.t("errors.private-API-changed"),
+			context.language.value.t("errors.private-API-changed"),
 			error,
 		)
 		return await fallback(error, ...args)

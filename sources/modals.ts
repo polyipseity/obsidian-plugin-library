@@ -81,7 +81,7 @@ export class ListModal<T> extends Modal {
 		options?: ListModal.Options<T>,
 	) {
 		const { app, language } = context,
-			{ i18n } = language
+			{ value: i18n } = language
 		super(app)
 		this.data = [...data]
 		this.#inputter = inputter
@@ -138,7 +138,7 @@ export class ListModal<T> extends Modal {
 		const { context, placeholder, data, ui, titleEl, modalUI, modalEl } = this,
 			{ element: listEl, remover: listElRemover } = useSettings(this.contentEl),
 			{ language } = context,
-			{ i18n, onChangeLanguage } = language,
+			{ value: i18n, onChangeLanguage } = language,
 			editables = this.#editables,
 			title = this.#title,
 			description = this.#description,
@@ -263,7 +263,7 @@ export class ListModal<T> extends Modal {
 			namer = this.#namer,
 			descriptor = this.#descriptor,
 			{ language } = context,
-			{ i18n } = language
+			{ value: i18n } = language
 		ui.destroy()
 		for (const [index] of data.entries()) {
 			ui.newSetting(element, setting => {
@@ -420,7 +420,7 @@ export class EditDataModal<T extends object> extends Modal {
 		element: HTMLElement,
 		errorEl: StatusUI,
 	): void {
-		const { context: { language: { i18n } }, fixer, protodata } = this,
+		const { context: { language: { value: i18n } }, fixer, protodata } = this,
 			els = this.#elements
 		if (els.includes("export")) {
 			ui.newSetting(element, setting => {
@@ -580,7 +580,7 @@ export class DialogModal extends Modal {
 		super.onOpen()
 		const { context, modalEl, scope, modalUI, titleEl, ui, contentEl } = this,
 			{ language } = context,
-			{ i18n, onChangeLanguage } = language,
+			{ value: i18n, onChangeLanguage } = language,
 			title = this.#title,
 			description = this.#description,
 			doubleConfirmTimeout = this.#doubleConfirmTimeout ?? 0

@@ -102,16 +102,9 @@ export class LanguageManager extends ResourceComponent<i18n> {
 		this.#loader = loader
 	}
 
-	/**
-	 * @deprecated
-	 */
-	public get i18n(): i18n {
-		return this.value
-	}
-
 	public get language(): string {
 		return LanguageManager
-			.interpretLanguage(this.context.settings.copy.language)
+			.interpretLanguage(this.context.settings.value.language)
 	}
 
 	protected static interpretLanguage(language: string): string {
@@ -120,7 +113,7 @@ export class LanguageManager extends ResourceComponent<i18n> {
 
 	public async changeLanguage(language: string): Promise<void> {
 		const lng = LanguageManager.interpretLanguage(language)
-		await this.i18n.changeLanguage(lng)
+		await this.value.changeLanguage(lng)
 		await this.onChangeLanguage.emit(lng)
 	}
 

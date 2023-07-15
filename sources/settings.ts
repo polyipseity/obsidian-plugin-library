@@ -37,7 +37,7 @@ export class SettingsManager<T extends SettingsManager.Type>
 	readonly #write = asyncDebounce(throttle((
 		resolve: (value: AsyncOrSync<void>) => void,
 	) => {
-		resolve(this.context.saveData(this.copy))
+		resolve(this.context.saveData(this.value))
 	}, SAVE_SETTINGS_WAIT * SI_PREFIX_SCALE))
 
 	public constructor(
@@ -45,13 +45,6 @@ export class SettingsManager<T extends SettingsManager.Type>
 		protected readonly fixer: Fixer<T>,
 	) {
 		super()
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public get copy(): DeepReadonly<T> {
-		return this.value
 	}
 
 	public async mutate(mutator: (
@@ -131,7 +124,7 @@ export namespace SettingsManager {
 export function registerSettingsCommands(context: PluginContext): void {
 	const {
 		app: { fileManager, lastEvent, metadataCache, workspace },
-		language: { i18n },
+		language: { value: i18n },
 		settings,
 	} = context
 	addCommand(context, () => i18n.t("commands.export-settings-clipboard"), {
@@ -140,7 +133,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 				try {
 					await activeSelf(lastEvent).navigator.clipboard
 						.writeText(JSON.stringify(
-							settings.copy,
+							settings.value,
 							null,
 							JSON_STRINGIFY_SPACE,
 						))

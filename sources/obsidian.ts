@@ -395,7 +395,7 @@ export function printMalformedData(
 	actual: unknown,
 	expected?: unknown,
 ): void {
-	const { language: { i18n } } = context,
+	const { language: { value: i18n } } = context,
 		tryClone = (thing: unknown): unknown => {
 			try {
 				return cloneDeep(thing)
@@ -456,7 +456,7 @@ export function printError(
 ): void {
 	const { noticeEl } = notice2(
 		() => `${message()}\n${error.name}: ${error.message}`,
-		context?.settings.copy.errorNoticeTimeout,
+		context?.settings.value.errorNoticeTimeout,
 		context,
 	)
 	activeSelf(noticeEl).console.error(`${message()}\n`, error)

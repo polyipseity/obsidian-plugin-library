@@ -72,7 +72,7 @@ export class DocumentationMarkdownView extends ItemView {
 
 	public override getDisplayText(): string {
 		const {
-			context: { language: { i18n, language } },
+			context: { language: { value: i18n, language } },
 			state: { displayTextI18nKey: key },
 		} = this
 		return key === null ? "" : capitalize(String(i18n.t(key)), language)
@@ -80,7 +80,7 @@ export class DocumentationMarkdownView extends ItemView {
 
 	public override getIcon(): string {
 		const {
-			context: { language: { i18n } },
+			context: { language: { value: i18n } },
 			state: { iconI18nKey: key },
 		} = this
 		return key === null ? super.getIcon() : String(i18n.t(key))
