@@ -756,7 +756,7 @@ export function replaceAllRegex(string: string): RegExp {
 }
 
 export function activeSelf(
-	reference?: Element | UIEvent,
+	reference?: Element | UIEvent | null,
 ): Window & typeof globalThis {
 	if (reference) {
 		if ("ownerDocument" in reference) {
@@ -767,6 +767,7 @@ export function activeSelf(
 			const ret = reference.view
 			if (ret) { return correctType(ret) }
 		}
+		correctType(self.activeWindow).console.warn(reference)
 	}
 	return correctType(self.activeWindow)
 }
