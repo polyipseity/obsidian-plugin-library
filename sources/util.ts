@@ -13,6 +13,7 @@ import {
 	type CodePoint,
 	type ReadonlyTuple,
 	contravariant,
+	correctType,
 	simplifyType,
 } from "./types.js"
 import {
@@ -755,6 +756,20 @@ export function requireNonNil<T>(
 ): NonNullable<T> {
 	if (isNonNil(value)) { return value }
 	throw new Error()
+}
+
+export function activeSelf(
+	reference: Element | UIEvent,
+): Window & typeof globalThis {
+	if ("ownerDocument" in reference) {
+		const ret = reference.ownerDocument.defaultView
+		if (ret) { return ret }
+	}
+	if ("view" in reference) {
+		const ret = reference.view
+		if (ret) { return correctType(ret) }
+	}
+	return self
 }
 
 export async function sleep2(timeInSeconds: number): Promise<void> {
