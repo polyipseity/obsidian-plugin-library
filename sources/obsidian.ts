@@ -24,6 +24,7 @@ import {
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem"
 import {
 	Functions,
+	type PromisePromise,
 	activeSelf,
 	clear,
 	cloneAsWritable,
@@ -32,9 +33,11 @@ import {
 	inSet,
 	multireplace,
 	onVisible,
+	promisePromise,
 } from "./util.js"
 import { cloneDeep, constant, isUndefined } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
+import type { AsyncOrSync } from "ts-essentials"
 import { InternalDOMClasses } from "./internals/magic.js"
 import { Platform } from "./platform.js"
 import type { PluginContext } from "./plugin.js"
@@ -66,6 +69,53 @@ export class LambdaComponent extends Component {
 		super.onunload()
 		this.onUnload()
 	}
+}
+
+export abstract class ResourceComponent<T> extends Component {
+	protected static readonly sentinel = Symbol(this.name)
+	#loader = promisePromise<unknown>()
+	#value: T | typeof ResourceComponent.sentinel = ResourceComponent.sentinel
+
+	public constructor(
+		protected readonly context: PluginContext,
+	) {
+		super()
+		context.addChild(this)
+	}
+
+	public get onLoaded(): Promise<T> {
+		return (this.#loader as PromisePromise<T>)
+			.then(async ({ promise }) => promise)
+	}
+
+	public get value(): T {
+		if (this.#value === ResourceComponent.sentinel) { throw new Error() }
+		return this.#value
+	}
+
+	protected set value(value: T) {
+		if (this.#value === ResourceComponent.sentinel) { throw new Error() }
+		this.#value = value
+	}
+
+	public override onload(): void {
+		super.onload()
+		this.register(() => {
+			this.#loader = promisePromise()
+			this.#value = ResourceComponent.sentinel
+		});
+		(async (): Promise<void> => {
+			try {
+				const { promise, resolve } = await (this.#loader as PromisePromise<T>)
+				resolve(this.load0())
+				await promise
+			} catch (error) {
+				self.console.error(error)
+			}
+		})()
+	}
+
+	protected abstract load0(): AsyncOrSync<T>
 }
 
 export interface StatusUI {

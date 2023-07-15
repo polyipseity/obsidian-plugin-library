@@ -1,8 +1,8 @@
+import { clear, remove } from "./util.js"
 import { Component } from "obsidian"
 import { DOMClasses } from "./magic.js"
 import { InternalDOMClasses } from "./internals/magic.js"
 import type { PluginContext } from "./plugin.js"
-import { remove } from "./util.js"
 
 export function getStatusBar(callback?: (
 	element: Element) => void): Element | null {
@@ -23,6 +23,10 @@ export class StatusBarHider extends Component {
 
 	public override onload(): void {
 		super.onload()
+		this.register(() => {
+			clear(this.#hiders)
+			this.update()
+		})
 		this.context.app.workspace.onLayoutReady(() => { this.update() })
 	}
 

@@ -1,6 +1,5 @@
-import { Component, moment } from "obsidian"
-import { EventEmitterLite, bracket, promisePromise } from "./util.js"
-import i18next, {
+import { EventEmitterLite, bracket } from "./util.js"
+import {
 	type FlatNamespace,
 	type InitOptions,
 	type ParseKeys,
@@ -11,6 +10,8 @@ import i18next, {
 } from "i18next"
 import type { AsyncOrSync } from "ts-essentials"
 import type { PluginContext } from "./plugin.js"
+import { ResourceComponent } from "./obsidian.js"
+import { moment } from "obsidian"
 import resourcesToBackend from "i18next-resources-to-backend"
 
 export type I18nFormatters = Readonly<Record<string, (
@@ -88,28 +89,24 @@ export async function createI18n(
 	return ret
 }
 
-export class LanguageManager extends Component {
+export class LanguageManager extends ResourceComponent<i18n> {
 	public readonly onChangeLanguage = new EventEmitterLite<readonly [string]>()
-	public readonly onLoaded
-	readonly #loader0
-	readonly #loader = promisePromise()
-	#loaded = false
-	#i18n = i18next as unknown as i18n
+	readonly #loader
 
 	public constructor(
-		protected readonly context: PluginContext,
+		context: PluginContext,
 		loader: () => AsyncOrSync<i18n>,
 		protected readonly autoChangeLanguage = true,
 	) {
-		super()
-		this.#loader0 = loader
-		this.onLoaded = this.#loader.then(async ({ promise }) => promise)
-		context.addChild(this)
+		super(context)
+		this.#loader = loader
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public get i18n(): i18n {
-		if (!this.#loaded) { throw new Error() }
-		return this.#i18n
+		return this.value
 	}
 
 	public get language(): string {
@@ -128,31 +125,27 @@ export class LanguageManager extends Component {
 	}
 
 	public override onload(): void {
-		super.onload()
-		const {
-			context,
-			context: { settings, settings: { onLoaded } },
-		} = this;
+		super.onload();
 		(async (): Promise<void> => {
 			try {
-				const { promise, resolve } = await this.#loader
-				resolve((async (): Promise<void> => {
-					await onLoaded
-					this.#i18n = await this.#loader0()
-					this.#loaded = true
-					if (this.autoChangeLanguage) {
-						context.register(settings.on(
-							"mutate-settings",
-							settings0 => settings0.language,
-							async cur => this.changeLanguage(cur),
-						))
-					}
-					await this.changeLanguage(this.language)
-				})())
-				await promise
+				await this.changeLanguage(this.language)
 			} catch (error) {
 				self.console.error(error)
 			}
 		})()
+	}
+
+	protected override async load0(): Promise<i18n> {
+		const { context, context: { settings, settings: { onLoaded } } } = this
+		await onLoaded
+		const ret = await this.#loader()
+		if (this.autoChangeLanguage) {
+			context.register(settings.on(
+				"mutate-settings",
+				settings0 => settings0.language,
+				async cur => this.changeLanguage(cur),
+			))
+		}
+		return ret
 	}
 }

@@ -11,19 +11,18 @@ import {
 	anyToError,
 	asyncDebounce,
 	clearProperties,
-	cloneAsFrozen,
 	copyOnWriteAsync,
 	createChildElement,
-	promisePromise,
+	deepFreeze,
 } from "./util.js"
 import {
+	ResourceComponent,
 	addCommand,
 	cleanFrontmatterCache,
 	printError,
 	printMalformedData,
 } from "./obsidian.js"
-import { constant, isEmpty, isNil, throttle } from "lodash-es"
-import { Component } from "obsidian"
+import { isEmpty, isNil, throttle } from "lodash-es"
 import { DialogModal } from "./modals.js"
 import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
@@ -31,11 +30,8 @@ import { SAVE_SETTINGS_WAIT } from "./internals/magic.js"
 import deepEqual from "deep-equal"
 import { simplifyType } from "./types.js"
 
-export class SettingsManager<T extends SettingsManager.Type> extends Component {
-	public readonly onLoaded
-	#data: DeepReadonly<T>
-	readonly #loader = promisePromise<unknown>()
-	#loaded = false
+export class SettingsManager<T extends SettingsManager.Type>
+	extends ResourceComponent<DeepReadonly<T>> {
 	readonly #onMutateSettings = new EventEmitterLite<readonly []>()
 
 	readonly #write = asyncDebounce(throttle((
@@ -45,62 +41,34 @@ export class SettingsManager<T extends SettingsManager.Type> extends Component {
 	}, SAVE_SETTINGS_WAIT * SI_PREFIX_SCALE))
 
 	public constructor(
-		protected readonly context: PluginContext,
-		defaults: DeepReadonly<T>,
+		context: PluginContext,
 		protected readonly fixer: Fixer<T>,
 	) {
-		super()
-		this.#data = simplifyType<T>(cloneAsFrozen(defaults))
-		this.onLoaded = this.#loader.then(async ({ promise }) => promise)
-		context.addChild(this)
+		super(context)
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public get copy(): DeepReadonly<T> {
-		if (!this.#loaded) { throw new Error() }
-		return this.#data
+		return this.value
 	}
 
-	public override onload(): void {
-		super.onload();
-		(async (): Promise<void> => {
-			try {
-				const { promise, resolve } = await this.#loader
-				resolve((async (): Promise<unknown> => {
-					const loaded: unknown = await this.context.loadData()
-					await this.read(constant(loaded))
-					this.#loaded = true
-					return loaded
-				})())
-				await promise
-				await this.write()
-			} catch (error) {
-				self.console.error(error)
-			}
-		})()
-	}
-
-	public async read(reader: () => unknown = async (): Promise<unknown> =>
-		this.context.loadData()): Promise<void> {
-		await this.mutate(async settings => {
-			const read = await reader(),
-				{ value, valid } = this.fixer(read)
-			Object.assign(settings, value)
-			if (!isNil(read) && !valid) {
-				printMalformedData(this.context, read, value)
-				settings.recovery[new Date().toISOString()] =
-					JSON.stringify(read, null, JSON_STRINGIFY_SPACE)
-			}
-		})
+	public async mutate(mutator: (
+		settings: DeepWritable<T>) => unknown): Promise<void> {
+		this.value = await copyOnWriteAsync(this.value, mutator)
+		await this.#onMutateSettings.emit()
 	}
 
 	public async write(): Promise<void> {
 		await this.#write()
 	}
 
-	public async mutate(mutator: (
-		settings: DeepWritable<T>) => unknown): Promise<void> {
-		this.#data = await copyOnWriteAsync(this.#data, mutator)
-		await this.#onMutateSettings.emit()
+	public async read(reader: () => unknown = async (): Promise<unknown> =>
+		this.context.loadData()): Promise<void> {
+		await this.mutate(async settings => {
+			Object.assign(settings, await this.#read(reader))
+		})
 	}
 
 	public on<V>(
@@ -112,10 +80,10 @@ export class SettingsManager<T extends SettingsManager.Type> extends Component {
 			settings: DeepReadonly<T>,
 		) => unknown,
 	): () => void {
-		let prev = accessor(this.#data)
+		let prev = accessor(this.value)
 		return this.#onMutateSettings
 			.listen(async (): Promise<void> => {
-				const settings = this.#data,
+				const settings = this.value,
 					cur = accessor(settings),
 					prev0 = prev
 				if (prev0 !== cur) {
@@ -123,6 +91,33 @@ export class SettingsManager<T extends SettingsManager.Type> extends Component {
 					await callback(cur, prev0, settings)
 				}
 			})
+	}
+
+	public override onload(): void {
+		super.onload();
+		(async (): Promise<void> => {
+			try {
+				await this.write()
+			} catch (error) {
+				self.console.error(error)
+			}
+		})()
+	}
+
+	protected override async load0(): Promise<DeepReadonly<T>> {
+		return simplifyType(deepFreeze(await this.#read()))
+	}
+
+	async #read(reader: () => unknown = async (): Promise<unknown> =>
+		this.context.loadData()): Promise<DeepWritable<T>> {
+		const read = await reader(),
+			{ value, valid } = this.fixer(read)
+		if (!isNil(read) && !valid) {
+			printMalformedData(this.context, read, value)
+			value.recovery[new Date().toISOString()] =
+				JSON.stringify(read, null, JSON_STRINGIFY_SPACE)
+		}
+		return value
 	}
 }
 export namespace SettingsManager {

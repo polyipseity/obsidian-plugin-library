@@ -28,9 +28,6 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	public constructor(protected readonly context: PluginContext<S>) {
 		super(context.app, context)
 		this.#onMutate = this.snapshot()
-		const { ui } = this,
-			{ language: { onChangeLanguage } } = context
-		ui.finally(onChangeLanguage.listen(() => { ui.update() }))
 		context.addChild(new LambdaComponent(
 			() => { this.onLoad() },
 			() => { this.onUnload() },
@@ -43,7 +40,8 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	}
 
 	protected onLoad(): void {
-		// Noop
+		const { context: { language: { onChangeLanguage } }, ui } = this
+		ui.finally(onChangeLanguage.listen(() => { ui.update() }))
 	}
 
 	protected onUnload(): void {
