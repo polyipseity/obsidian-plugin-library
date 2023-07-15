@@ -96,11 +96,17 @@ export abstract class ResourceComponent<T> extends Component {
 		this.register(() => {
 			this.#loader = promisePromise()
 			this.#value = ResourceComponent.sentinel
-		});
+		})
+		let loading: AsyncOrSync<T> | null = null
+		try {
+			loading = this.load0()
+		} catch (error) {
+			loading = Promise.reject(error)
+		}
 		(async (): Promise<void> => {
 			try {
 				const { promise, resolve } = await (this.#loader as PromisePromise<T>)
-				resolve(this.load0())
+				resolve(loading)
 				await promise
 			} catch (error) {
 				self.console.error(error)
