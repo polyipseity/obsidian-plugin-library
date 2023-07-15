@@ -84,7 +84,7 @@ export class Functions<
 	}
 
 	public transform(func: (
-		self: this[number][],
+		self0: this[number][],
 	) => readonly this[number][]): Functions<Async, Args> {
 		return new Functions(this.options, ...func(this))
 	}
@@ -154,12 +154,12 @@ export function aroundIdentityFactory<T extends (this: unknown,
 
 export function assignExact<K extends keyof any, T extends {
 	[_ in K]?: unknown
-}>(self: T, key: K & keyof T, value?: T[K]): typeof value {
+}>(self0: T, key: K & keyof T, value?: T[K]): typeof value {
 	if (isUndefined(value)) {
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-		delete self[key]
+		delete self0[key]
 	} else {
-		self[key] = value
+		self0[key] = value
 	}
 	return value
 }
@@ -207,11 +207,11 @@ export function bigIntReplacer(): (key: string, value: unknown) => unknown {
 }
 
 export function bracket<T extends object, K extends keyof any>(
-	self: T,
+	self0: T,
 	key: K,
 ): { readonly valid: false; readonly value?: never }
 	| { readonly valid: true; readonly value: T[K & keyof T] } {
-	const proof = typedIn(self, key)
+	const proof = typedIn(self0, key)
 	return Object.freeze(proof
 		? { valid: true, value: proof() }
 		: { valid: false })
@@ -233,14 +233,14 @@ export function cartesianProduct<T extends readonly (readonly unknown[])[],
 		{ readonly length: T["length"] })[]
 }
 
-export function clear(self: unknown[]): void {
-	self.length = 0
+export function clear(self0: unknown[]): void {
+	self0.length = 0
 }
 
-export function clearProperties(self: object): void {
-	for (const key of typedOwnKeys(self)) {
+export function clearProperties(self0: object): void {
+	for (const key of typedOwnKeys(self0)) {
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-		delete self[key]
+		delete self0[key]
 	}
 }
 
@@ -295,10 +295,10 @@ export function createChildElement<K extends keyof HTMLElementTagNameMap>(
 }
 
 export function createDocumentFragment(
-	self: Document,
+	self0: Document,
 	callback: (fragment: DocumentFragment) => void,
 ): DocumentFragment {
-	const ret = self.createDocumentFragment()
+	const ret = self0.createDocumentFragment()
 	callback(ret)
 	return ret
 }
@@ -369,19 +369,19 @@ export function getKeyModifiers(
 }
 
 export function typedIn<T extends object, K extends keyof any>(
-	self: T,
+	self0: T,
 	key: K,
 ): (() => T[K & keyof T]) | null {
-	if (key in self) {
-		return () => self[key as K & keyof T]
+	if (key in self0) {
+		return () => self0[key as K & keyof T]
 	}
 	return null
 }
 
 export function typedOwnKeys<T extends object>(
-	self: T,
+	self0: T,
 ): (keyof T & (string | symbol))[] {
-	return Reflect.ownKeys(self) as (keyof T & (string | symbol))[]
+	return Reflect.ownKeys(self0) as (keyof T & (string | symbol))[]
 }
 
 export function typedKeys<T extends readonly (keyof any)[]>() {
@@ -399,11 +399,11 @@ export function inSet<const T extends ReadonlyTuple>(
 }
 
 export function insertAt<T>(
-	self: T[],
+	self0: T[],
 	index: number,
 	...items: readonly T[]
 ): void {
-	self.splice(index, 0, ...items)
+	self0.splice(index, 0, ...items)
 }
 
 export function instanceOf<T extends Node | UIEvent>(
@@ -662,10 +662,10 @@ export function mapFirstCodePoint(
 }
 
 export function multireplace(
-	self: string,
+	self0: string,
 	replacements: Readonly<Record<string, string>>,
 ): string {
-	return self.replace(new RegExp(
+	return self0.replace(new RegExp(
 		Object.keys(replacements)
 			.map(escapeRegExp)
 			.join("|"),
@@ -677,11 +677,10 @@ export function onResize(
 	element: Element,
 	callback: (entry: ResizeObserverEntry) => void,
 ): ResizeObserver {
-	const ret = new (element.ownerDocument.defaultView ?? self)
-		.ResizeObserver(ents => {
-			const ent = ents.at(-1)
-			if (ent) { callback(ent) }
-		})
+	const ret = new (activeSelf(element).ResizeObserver)(ents => {
+		const ent = ents.at(-1)
+		if (ent) { callback(ent) }
+	})
 	ret.observe(element)
 	return ret
 }
@@ -691,23 +690,22 @@ export function onVisible(
 	callback: (entry: IntersectionObserverEntry) => void,
 	transient = false,
 ): IntersectionObserver {
-	const ret = new (element.ownerDocument.defaultView ?? self)
-		.IntersectionObserver(ents => {
-			for (const ent of transient
-				? ents.reverse()
-				: [ents.at(-1) ?? { isIntersecting: false }]) {
-				if (ent.isIntersecting) {
-					callback(ent)
-					break
-				}
+	const ret = new (activeSelf(element).IntersectionObserver)(ents => {
+		for (const ent of transient
+			? ents.reverse()
+			: [ents.at(-1) ?? { isIntersecting: false }]) {
+			if (ent.isIntersecting) {
+				callback(ent)
+				break
 			}
-		})
+		}
+	})
 	ret.observe(element)
 	return ret
 }
 
-export function openExternal(self: Window, url?: URL | string): Window | null {
-	return self.open(url, "_blank", "noreferrer")
+export function openExternal(self0: Window, url?: URL | string): Window | null {
+	return self0.open(url, "_blank", "noreferrer")
 }
 
 export async function promisePromise<T = void>(): Promise<{
@@ -743,12 +741,12 @@ export function rangeCodePoint(
 	)
 }
 
-export function remove<T>(self: T[], item: T): T | undefined {
-	return removeAt(self, self.indexOf(item))
+export function remove<T>(self0: T[], item: T): T | undefined {
+	return removeAt(self0, self0.indexOf(item))
 }
 
-export function removeAt<T>(self: T[], index: number): T | undefined {
-	return self.splice(index, 1)[0]
+export function removeAt<T>(self0: T[], index: number): T | undefined {
+	return self0.splice(index, 1)[0]
 }
 
 export function replaceAllRegex(string: string): RegExp {
@@ -760,26 +758,29 @@ export function activeSelf(
 ): Window & typeof globalThis {
 	if (reference) {
 		if ("ownerDocument" in reference) {
-			const ret = reference.ownerDocument.defaultView
-			if (ret) { return ret }
+			const { ownerDocument: { defaultView } } = reference
+			if (defaultView) { return defaultView }
 		}
 		if ("view" in reference) {
-			const ret = reference.view
-			if (ret) { return correctType(ret) }
+			const { view } = reference
+			if (view) { return correctType(view) }
 		}
 		correctType(self.activeWindow).console.warn(reference)
 	}
 	return correctType(self.activeWindow)
 }
 
-export async function sleep2(timeInSeconds: number): Promise<void> {
+export async function sleep2(
+	self0: WindowOrWorkerGlobalScope,
+	timeInSeconds: number,
+): Promise<void> {
 	return new Promise(resolve => {
-		self.setTimeout(resolve, timeInSeconds * SI_PREFIX_SCALE)
+		self0.setTimeout(resolve, timeInSeconds * SI_PREFIX_SCALE)
 	})
 }
 
-export function swap(self: unknown[], left: number, right: number): void {
-	[self[left], self[right]] = [self[right], self[left]]
+export function swap(self0: unknown[], left: number, right: number): void {
+	[self0[left], self0[right]] = [self0[right], self0[left]]
 }
 
 export function uncapitalize(

@@ -7,6 +7,7 @@ import {
 } from "./magic.js"
 import {
 	EventEmitterLite,
+	activeSelf,
 	anyToError,
 	asyncDebounce,
 	clearProperties,
@@ -134,19 +135,20 @@ export namespace SettingsManager {
 
 export function registerSettingsCommands(context: PluginContext): void {
 	const {
-		app: { workspace, metadataCache, fileManager },
-		settings,
+		app: { fileManager, lastEvent, metadataCache, workspace },
 		language: { i18n },
+		settings,
 	} = context
 	addCommand(context, () => i18n.t("commands.export-settings-clipboard"), {
 		callback() {
 			(async (): Promise<void> => {
 				try {
-					await self.activeWindow.navigator.clipboard.writeText(JSON.stringify(
-						context.settings,
-						null,
-						JSON_STRINGIFY_SPACE,
-					))
+					await activeSelf(lastEvent).navigator.clipboard
+						.writeText(JSON.stringify(
+							context.settings,
+							null,
+							JSON_STRINGIFY_SPACE,
+						))
 				} catch (error) {
 					printError(anyToError(error), () =>
 						i18n.t("errors.error-exporting-settings"), context)
@@ -212,7 +214,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 				try {
 					await settings.read(async () => {
 						const ret: unknown = JSON.parse(
-							await self.activeWindow.navigator.clipboard.readText(),
+							await activeSelf(lastEvent).navigator.clipboard.readText(),
 						)
 						return ret ?? {}
 					})

@@ -168,9 +168,9 @@ export namespace DocumentationMarkdownView {
 			displayTextI18nKey: null,
 			iconI18nKey: null,
 		})
-		export function fix(self: unknown): Fixed<State> {
-			const unc = launderUnchecked<State>(self)
-			return markFixed(self, {
+		export function fix(self0: unknown): Fixed<State> {
+			const unc = launderUnchecked<State>(self0)
+			return markFixed(self0, {
 				data: fixTyped(DEFAULT, unc, "data", ["string"]),
 				displayTextI18nKey: fixTyped(
 					DEFAULT,

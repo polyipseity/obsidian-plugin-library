@@ -426,52 +426,57 @@ export class EditDataModal<T extends object> extends Modal {
 			ui.newSetting(element, setting => {
 				setting
 					.setName(i18n.t("components.edit-data.export"))
-					.addButton(button => button
-						.setIcon(i18n
-							.t("asset:components.edit-data.export-to-clipboard-icon"))
-						.setTooltip(i18n.t("components.edit-data.export-to-clipboard"))
-						.onClick(async () => {
-							try {
-								await activeSelf(button.buttonEl).navigator.clipboard
-									.writeText(this.#dataText)
-							} catch (error) {
-								self.console.debug(error)
-								errorEl.report(error)
-							}
-						}))
+					.addButton(button => {
+						const { buttonEl } = button
+						button
+							.setIcon(i18n
+								.t("asset:components.edit-data.export-to-clipboard-icon"))
+							.setTooltip(i18n.t("components.edit-data.export-to-clipboard"))
+							.onClick(async () => {
+								try {
+									await activeSelf(buttonEl).navigator.clipboard
+										.writeText(this.#dataText)
+								} catch (error) {
+									activeSelf(buttonEl).console.debug(error)
+									errorEl.report(error)
+								}
+							})
+					})
 			})
 		}
 		if (els.includes("import")) {
 			ui.newSetting(element, setting => {
 				setting
 					.setName(i18n.t("components.edit-data.import"))
-					.addButton(button => button
-						.setIcon(i18n
-							.t("asset:components.edit-data.import-from-clipboard-icon"))
-						.setTooltip(i18n.t("components.edit-data.import-from-clipboard"))
-						.onClick(async () => {
-							try {
-								const { value: parsed, valid } =
-									fixer(JSON.parse(
-										await activeSelf(button.buttonEl).navigator.clipboard
-											.readText(),
+					.addButton(button => {
+						const { buttonEl } = button
+						button
+							.setIcon(i18n
+								.t("asset:components.edit-data.import-from-clipboard-icon"))
+							.setTooltip(i18n.t("components.edit-data.import-from-clipboard"))
+							.onClick(async () => {
+								try {
+									const { value: parsed, valid } = fixer(JSON.parse(
+										await activeSelf(buttonEl).navigator.clipboard.readText(),
 									))
-								if (!valid) {
-									throw new Error(i18n.t("errors.malformed-data"))
+									if (!valid) {
+										throw new Error(i18n.t("errors.malformed-data"))
+									}
+									this.replaceData(parsed)
+								} catch (error) {
+									activeSelf(buttonEl).console.debug(error)
+									errorEl.report(error)
+									return
 								}
-								this.replaceData(parsed)
-							} catch (error) {
-								self.console.debug(error)
-								errorEl.report(error)
-								return
-							}
-							errorEl.report()
-							await this.postMutate()
-						}))
+								errorEl.report()
+								await this.postMutate()
+							})
+					})
 			})
 		}
 		if (els.includes("data")) {
 			ui.newSetting(element, setting => {
+				const { settingEl } = setting
 				setting
 					.setName(i18n.t("components.edit-data.data"))
 					.addTextArea(linkSetting(
@@ -485,7 +490,7 @@ export class EditDataModal<T extends object> extends Modal {
 								}
 								this.replaceData(parsed)
 							} catch (error) {
-								self.console.debug(error)
+								activeSelf(settingEl).console.debug(error)
 								errorEl.report(error)
 								return
 							}
@@ -618,7 +623,7 @@ export class DialogModal extends Modal {
 				if (preconfirmed) {
 					await this.confirm(this.#close)
 				} else {
-					(event.view ?? self).setTimeout(() => {
+					activeSelf(event).setTimeout(() => {
 						preconfirmed = false
 						confirmButton?.removeCta().setWarning()
 					}, doubleConfirmTimeout * SI_PREFIX_SCALE)
@@ -647,7 +652,7 @@ export class DialogModal extends Modal {
 			try {
 				await this.cancel(this.#close)
 			} catch (error) {
-				self.console.error(error)
+				activeSelf(this.containerEl).console.error(error)
 			}
 		})()
 	}

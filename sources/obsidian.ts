@@ -24,6 +24,7 @@ import {
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem"
 import {
 	Functions,
+	activeSelf,
 	clear,
 	cloneAsWritable,
 	createChildElement,
@@ -114,6 +115,7 @@ export class UpdatableUI {
 						this: Setting,
 						cb: (component: C) => unknown,
 					): Setting {
+						const { settingEl } = this
 						if (recording) {
 							return proto.call(this, component => {
 								cb(component)
@@ -125,7 +127,7 @@ export class UpdatableUI {
 											: null,
 									])
 								} catch (error) {
-									self.console.error(error)
+									activeSelf(settingEl).console.error(error)
 								}
 							})
 						}
@@ -137,7 +139,7 @@ export class UpdatableUI {
 								try {
 									comp.onChange((): void => { })
 								} catch (error) {
-									self.console.error(error)
+									activeSelf(settingEl).console.error(error)
 								}
 							}
 							comp.setDisabled(false)
@@ -155,7 +157,7 @@ export class UpdatableUI {
 								comp.setValue(def)
 							}
 						} catch (error) {
-							self.console.error(error)
+							activeSelf(settingEl).console.error(error)
 						}
 						cb(comp)
 						return this
@@ -210,7 +212,7 @@ export class UpdatableUI {
 	}
 
 	public destroy(): void {
-		this.#finalizers.transform(self => self.splice(0)).call()
+		this.#finalizers.transform(self0 => self0.splice(0)).call()
 		clear(this.#updaters)
 	}
 }
@@ -383,7 +385,7 @@ export function notice(
 	const unreg = context.language.onChangeLanguage
 		.listen(() => ret.setMessage(message()))
 	if (timeoutMs > 0) {
-		self.setTimeout(unreg, timeoutMs)
+		activeSelf(ret.noticeEl).setTimeout(unreg, timeoutMs)
 	}
 	return ret
 }
@@ -392,10 +394,10 @@ export function notice2(
 	message: () => DocumentFragment | string,
 	timeout = NOTICE_NO_TIMEOUT,
 	context?: PluginContext,
-): void {
-	if (timeout >= 0) {
-		notice(message, timeout, context)
-	}
+): Notice {
+	const ret = notice(message, timeout, context)
+	if (timeout < 0) { ret.hide() }
+	return ret
 }
 
 export function printError(
@@ -403,12 +405,12 @@ export function printError(
 	message = (): string => "",
 	context?: PluginContext,
 ): void {
-	self.console.error(`${message()}\n`, error)
-	notice2(
+	const { noticeEl } = notice2(
 		() => `${message()}\n${error.name}: ${error.message}`,
 		context?.settings.copy.errorNoticeTimeout,
 		context,
 	)
+	activeSelf(noticeEl).console.error(`${message()}\n`, error)
 }
 
 export function readStateCollabratively(
