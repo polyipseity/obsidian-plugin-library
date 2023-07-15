@@ -105,8 +105,9 @@ export class UpdatableUI {
 		return this.new(() => {
 			const setting = new Setting(element),
 				patch = <C extends BaseComponent>(proto: (
+					this: typeof setting,
 					cb: (component: C) => unknown,
-				) => Setting): (cb: (component: C) => unknown) => Setting => {
+				) => typeof setting): typeof proto => {
 					const components: (readonly [C, unknown])[] = []
 					let index = 0
 					return function fn(
