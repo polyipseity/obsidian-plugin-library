@@ -12,8 +12,9 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-- Create `LambdaComponent`. (`fec46cbe7d3ef397690628286ff0da63679f0ce4`)
+- Create `LambdaComponent` and `activeSelf`. (`fec46cbe7d3ef397690628286ff0da63679f0ce4`, `aa78fb01a39af6c012be421e0b36901865c39939`)
 - Add lifecycle management to `AdvancedSettingsTab`. (`b9aaab48e84147fc710a32d8281c67a8166aafdc`)
+- Remove `requireNonNil`. (`7846499944c0091d2c92ef675a151f30dc15d11a`)
 
 __Full changelog__: [`v1.6.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.6.0...main)
 
