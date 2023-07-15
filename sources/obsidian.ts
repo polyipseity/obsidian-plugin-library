@@ -3,6 +3,7 @@ import {
 	type BaseComponent,
 	ButtonComponent,
 	type Command,
+	Component,
 	type DataAdapter,
 	DropdownComponent,
 	type FrontMatterCache,
@@ -38,6 +39,33 @@ import { Platform } from "./platform.js"
 import type { PluginContext } from "./plugin.js"
 import { around } from "monkey-around"
 import { saveAs } from "file-saver"
+
+export class LambdaComponent extends Component {
+	public constructor(
+		protected readonly onLoad = function fn(
+			this: LambdaComponent,
+		): void {
+			// Noop
+		},
+		protected readonly onUnload = function fn(
+			this: LambdaComponent,
+		): void {
+			// Noop
+		},
+	) {
+		super()
+	}
+
+	public override onload(): void {
+		super.onload()
+		this.onLoad()
+	}
+
+	public override onunload(): void {
+		super.onunload()
+		this.onUnload()
+	}
+}
 
 export interface StatusUI {
 	readonly report: (status?: unknown) => void
