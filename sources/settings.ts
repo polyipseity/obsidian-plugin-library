@@ -45,7 +45,6 @@ export class SettingsManager<T extends SettingsManager.Type>
 		protected readonly fixer: Fixer<T>,
 	) {
 		super()
-		context.addChild(this)
 	}
 
 	/**

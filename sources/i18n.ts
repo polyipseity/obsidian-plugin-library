@@ -100,7 +100,6 @@ export class LanguageManager extends ResourceComponent<i18n> {
 	) {
 		super()
 		this.#loader = loader
-		context.addChild(this)
 	}
 
 	/**
