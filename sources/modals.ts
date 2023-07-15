@@ -19,6 +19,7 @@ import {
 	useSubsettings,
 } from "./obsidian.js"
 import {
+	activeSelf,
 	bracket,
 	clearProperties,
 	cloneAsWritable,
@@ -26,7 +27,6 @@ import {
 	createChildElement,
 	deepFreeze,
 	removeAt,
-	requireNonNil,
 	swap,
 	unexpected,
 } from "./util.js"
@@ -432,9 +432,8 @@ export class EditDataModal<T extends object> extends Modal {
 						.setTooltip(i18n.t("components.edit-data.export-to-clipboard"))
 						.onClick(async () => {
 							try {
-								await requireNonNil(
-									button.buttonEl.ownerDocument.defaultView,
-								).navigator.clipboard.writeText(this.#dataText)
+								await activeSelf(button.buttonEl).navigator.clipboard
+									.writeText(this.#dataText)
 							} catch (error) {
 								self.console.debug(error)
 								errorEl.report(error)
@@ -454,9 +453,8 @@ export class EditDataModal<T extends object> extends Modal {
 							try {
 								const { value: parsed, valid } =
 									fixer(JSON.parse(
-										await requireNonNil(
-											button.buttonEl.ownerDocument.defaultView,
-										).navigator.clipboard.readText(),
+										await activeSelf(button.buttonEl).navigator.clipboard
+											.readText(),
 									))
 								if (!valid) {
 									throw new Error(i18n.t("errors.malformed-data"))
@@ -620,7 +618,7 @@ export class DialogModal extends Modal {
 				if (preconfirmed) {
 					await this.confirm(this.#close)
 				} else {
-					self.setTimeout(() => {
+					(event.view ?? self).setTimeout(() => {
 						preconfirmed = false
 						confirmButton?.removeCta().setWarning()
 					}, doubleConfirmTimeout * SI_PREFIX_SCALE)

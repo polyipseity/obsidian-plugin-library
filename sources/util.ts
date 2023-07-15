@@ -751,13 +751,6 @@ export function replaceAllRegex(string: string): RegExp {
 	return new RegExp(escapeRegExp(string), "ug")
 }
 
-export function requireNonNil<T>(
-	value: (T & (null | undefined)) extends never ? never : T,
-): NonNullable<T> {
-	if (isNonNil(value)) { return value }
-	throw new Error()
-}
-
 export function activeSelf(
 	reference: Element | UIEvent,
 ): Window & typeof globalThis {
