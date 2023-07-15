@@ -1,7 +1,5 @@
-import {
-	EditDataModal,
-	ListModal,
-} from "./modals.js"
+import { EditDataModal, ListModal } from "./modals.js"
+import { LambdaComponent, UpdatableUI } from "./obsidian.js"
 import {
 	cloneAsWritable,
 	createChildElement,
@@ -21,8 +19,6 @@ import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
 import { PluginSettingTab } from "obsidian"
 import type { ReadonlyTuple } from "./types.js"
-import { UpdatableUI } from "./obsidian.js"
-
 export abstract class AdvancedSettingTab<S extends PluginContext
 	.Settings> extends PluginSettingTab {
 	protected readonly ui = new UpdatableUI()
@@ -33,13 +29,24 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		this.#onMutate = this.snapshot()
 		const { ui } = this,
 			{ language: { onChangeLanguage } } = context
-		context.register(() => { ui.destroy() })
-		ui.finally(onChangeLanguage.listen(() => { this.ui.update() }))
+		ui.finally(onChangeLanguage.listen(() => { ui.update() }))
+		context.addChild(new LambdaComponent(
+			() => { this.onLoad() },
+			() => { this.onUnload() },
+		))
 	}
 
 	public display(): void {
 		this.#onMutate = this.snapshot()
 		this.ui.update()
+	}
+
+	protected onLoad(): void {
+		// Noop
+	}
+
+	protected onUnload(): void {
+		this.ui.destroy()
 	}
 
 	protected newTitleWidget(): void {
