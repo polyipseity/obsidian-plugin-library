@@ -60,6 +60,12 @@ export class EventEmitterLite<A extends readonly unknown[]> {
 	}
 }
 
+export type PromisePromise<T> = Promise<{
+	readonly promise: Promise<T>
+	readonly resolve: (value: AsyncOrSync<T>) => void
+	readonly reject: (reason?: unknown) => void
+}>
+
 export class Functions<
 	Async extends boolean = false,
 	Args extends readonly unknown[] = [],
@@ -700,11 +706,7 @@ export function openExternal(self0: Window, url?: URL | string): Window | null {
 	return self0.open(url, "_blank", "noreferrer")
 }
 
-export async function promisePromise<T = void>(): Promise<{
-	readonly promise: Promise<T>
-	readonly resolve: (value: AsyncOrSync<T>) => void
-	readonly reject: (reason?: unknown) => void
-}> {
+export async function promisePromise<T = void>(): PromisePromise<T> {
 	return new Promise(resolve0 => {
 		const promise = new Promise<T>((resolve, reject) => {
 			resolve0(Promise.resolve()
