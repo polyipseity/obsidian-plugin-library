@@ -54,6 +54,18 @@
 		"which": "^3.0.1"
 	},
 	"displayName": "Obsidian Plugin Library",
+	"exports": {
+		".": {
+			"types": "./dist/sources/index.d.ts",
+			"module": "./dist/index.js",
+			"import": "./dist/index.js",
+			"require": null,
+			"default": "./dist/index.js"
+		},
+		"./style": {
+			"default": "./dist/style.css"
+		}
+	},
 	"files": [
 		"dist"
 	],
