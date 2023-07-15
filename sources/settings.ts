@@ -14,7 +14,6 @@ import {
 	cloneAsFrozen,
 	copyOnWriteAsync,
 	createChildElement,
-	logError,
 	promisePromise,
 } from "./util.js"
 import {
@@ -218,7 +217,9 @@ export function registerSettingsCommands(context: PluginContext): void {
 						)
 						return ret ?? {}
 					})
-					settings.write().catch(logError)
+					settings.write().catch(error => {
+						activeSelf(lastEvent).console.error(error)
+					})
 				} catch (error) {
 					printError(anyToError(error), () =>
 						i18n.t("errors.error-importing-settings"), context)
@@ -240,7 +241,9 @@ export function registerSettingsCommands(context: PluginContext): void {
 							cleanFrontmatterCache(
 								metadataCache.getFileCache(file)?.frontmatter,
 							))
-						settings.write().catch(logError)
+						settings.write().catch(error => {
+							activeSelf(lastEvent).console.error(error)
+						})
 					} catch (error) {
 						printError(anyToError(error), () =>
 							i18n.t("errors.error-importing-settings"), context)

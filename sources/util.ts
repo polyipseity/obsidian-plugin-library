@@ -565,10 +565,6 @@ export function lazyProxy<T extends Function | object>(
 	return proxy as T
 }
 
-export function logError(thing: unknown, { console } = self): void {
-	console.error(thing)
-}
-
 export function logFormat(
 	options: Options,
 	...args: readonly unknown[]
@@ -645,10 +641,6 @@ export function logFormat(
 		].join("")
 	}
 	return args.map(stringify0).join(" ")
-}
-
-export function logWarn(thing: unknown, { console } = self): void {
-	console.warn(thing)
 }
 
 export function mapFirstCodePoint(

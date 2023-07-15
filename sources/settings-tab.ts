@@ -1,10 +1,10 @@
 import { EditDataModal, ListModal } from "./modals.js"
 import { LambdaComponent, UpdatableUI } from "./obsidian.js"
 import {
+	activeSelf,
 	cloneAsWritable,
 	createChildElement,
 	deepFreeze,
-	logError,
 	unexpected,
 } from "./util.js"
 import { identity, isEmpty } from "lodash-es"
@@ -198,7 +198,9 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 							this.#onMutate.then(() => {
 								undoable = true
 								component.setCta()
-							}).catch(logError)
+							}).catch(error => {
+								activeSelf(component.buttonEl).console.error(error)
+							})
 						},
 					},
 				))
@@ -285,8 +287,10 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	}
 
 	protected postMutate(): void {
-		const { context: { settings }, ui } = this
-		settings.write().catch(logError)
+		const { containerEl, context: { settings }, ui } = this
+		settings.write().catch(error => {
+			activeSelf(containerEl).console.error(error)
+		})
 		ui.update()
 	}
 
