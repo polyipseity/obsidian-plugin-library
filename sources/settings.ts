@@ -145,7 +145,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 				try {
 					await activeSelf(lastEvent).navigator.clipboard
 						.writeText(JSON.stringify(
-							context.settings,
+							settings.copy,
 							null,
 							JSON_STRINGIFY_SPACE,
 						))
