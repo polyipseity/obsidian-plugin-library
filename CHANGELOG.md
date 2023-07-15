@@ -12,11 +12,15 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.9.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.9.0...main)
+
+## v1.9.0 (2023-07-16)
+
 - Create `PromisePromise` and `ResourceComponent`. (`6834e47d17cf889fea273f815c881fcae98f5840`, `84b1d8d72c8812bc171cd1873e120a61d265414a`)
 - Fix lifecycle management. (`84b1d8d72c8812bc171cd1873e120a61d265414a`)
 - Remove `LanguageManager#i18n` and `SettingsManager#copy`. (`c4988df6eca85dc46d9feee2b2a0e757922c0442`)
 
-__Full changelog__: [`v1.8.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.8.0...main)
+__Full changelog__: [`v1.8.0...v1.9.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.8.0...v1.9.0)
 
 ## v1.8.0 (2023-07-15)
 
