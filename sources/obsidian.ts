@@ -44,19 +44,6 @@ import type { PluginContext } from "./plugin.js"
 import { around } from "monkey-around"
 import { saveAs } from "file-saver"
 
-export class AggregateComponent extends Component {
-	public constructor(
-		protected readonly children: readonly Component[],
-	) {
-		super()
-	}
-
-	public override onload(): void {
-		super.onload()
-		for (const child of this.children) { this.addChild(child) }
-	}
-}
-
 export class LambdaComponent extends Component {
 	public constructor(
 		protected readonly onLoad = function fn(
