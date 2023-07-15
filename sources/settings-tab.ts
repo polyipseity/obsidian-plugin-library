@@ -19,6 +19,7 @@ import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
 import { PluginSettingTab } from "obsidian"
 import type { ReadonlyTuple } from "./types.js"
+
 export abstract class AdvancedSettingTab<S extends PluginContext
 	.Settings> extends PluginSettingTab {
 	protected readonly ui = new UpdatableUI()
