@@ -137,11 +137,11 @@ export class LanguageManager extends ResourceComponent<i18n> {
 	}
 
 	protected override async load0(): Promise<i18n> {
-		const { context, context: { settings, settings: { onLoaded } } } = this
+		const { context: { settings, settings: { onLoaded } } } = this
 		await onLoaded
 		const ret = await this.#loader()
 		if (this.autoChangeLanguage) {
-			context.register(settings.on(
+			this.register(settings.on(
 				"mutate-settings",
 				settings0 => settings0.language,
 				async cur => this.changeLanguage(cur),
