@@ -12,6 +12,9 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Create `LambdaComponent`. (`fec46cbe7d3ef397690628286ff0da63679f0ce4`)
+- Add lifecycle management to `AdvancedSettingsTab`. (`b9aaab48e84147fc710a32d8281c67a8166aafdc`)
+
 __Full changelog__: [`v1.6.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.6.0...main)
 
 ## v1.6.0 (2023-07-13)
