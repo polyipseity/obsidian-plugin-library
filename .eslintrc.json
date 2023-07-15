@@ -552,7 +552,6 @@
     // https://github.com/microsoft/TypeScript/issues/14306#issuecomment-753379360
     "no-restricted-globals": [
       "error",
-      // "self",
       "addEventListener",
       "blur",
       "captureEvents",
@@ -716,6 +715,7 @@
       "scrollX",
       "scrollY",
       "scrollbars",
+      // "self",
       "setInterval",
       "setTimeout",
       "speechSynthesis",
