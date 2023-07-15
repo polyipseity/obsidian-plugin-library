@@ -338,6 +338,10 @@ export function destroyWithOutro(self0: SvelteComponent): void {
 	}
 }
 
+export function escapeJavaScriptString(value: string): string {
+	return `\`${value.replace(/(?<char>`|\\|\$)/ug, "\\$<char>")}\``
+}
+
 export function escapeQuerySelectorAttribute(value: string): string {
 	return multireplace(value, {
 		// eslint-disable-next-line @typescript-eslint/naming-convention
