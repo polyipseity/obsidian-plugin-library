@@ -12,9 +12,12 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-- Create `LambdaComponent` and `activeSelf`. (`fec46cbe7d3ef397690628286ff0da63679f0ce4`, `aa78fb01a39af6c012be421e0b36901865c39939`)
+- Create `LambdaComponent`, `activeSelf`, and `escapeJavaScriptString`. (`fec46cbe7d3ef397690628286ff0da63679f0ce4`, `aa78fb01a39af6c012be421e0b36901865c39939`, `f1fdf387091e0bcd54ed39978e73352b8160c82d`)
 - Add lifecycle management to `AdvancedSettingsTab`. (`b9aaab48e84147fc710a32d8281c67a8166aafdc`)
-- Remove `requireNonNil`. (`7846499944c0091d2c92ef675a151f30dc15d11a`)
+- Remove `requireNonNil`, `logError`, and `logWarn`. (`7846499944c0091d2c92ef675a151f30dc15d11a`, `6fcb7e1b2b23a046abae8123d38763e25ac70e51`)
+- Replace most `self` with `activeSelf`. (`b839194b38f37de51f2393011d76d64ab279d11b`)
+- `sleep2` now requires a `Window`. (`b839194b38f37de51f2393011d76d64ab279d11b`)
+- Fix the command to export settings to clipboard. (`1e163c217f817a74eb4bb46e99b88068478ca787`)
 
 __Full changelog__: [`v1.6.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.6.0...main)
 
