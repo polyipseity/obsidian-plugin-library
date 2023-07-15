@@ -141,9 +141,9 @@ export function anyToError(obj: unknown): Error {
 	return obj instanceof Error ? obj : new Error(String(obj))
 }
 
-export function aroundIdentityFactory<T extends (...args: readonly unknown[
-
-]) => unknown>() {
+export function aroundIdentityFactory<T extends (this: unknown,
+	...args: readonly unknown[]
+) => unknown>() {
 	return (proto: T) => function fn(
 		this: ThisParameterType<T>,
 		...args: Parameters<T>
@@ -752,17 +752,19 @@ export function replaceAllRegex(string: string): RegExp {
 }
 
 export function activeSelf(
-	reference: Element | UIEvent,
+	reference?: Element | UIEvent,
 ): Window & typeof globalThis {
-	if ("ownerDocument" in reference) {
-		const ret = reference.ownerDocument.defaultView
-		if (ret) { return ret }
+	if (reference) {
+		if ("ownerDocument" in reference) {
+			const ret = reference.ownerDocument.defaultView
+			if (ret) { return ret }
+		}
+		if ("view" in reference) {
+			const ret = reference.view
+			if (ret) { return correctType(ret) }
+		}
 	}
-	if ("view" in reference) {
-		const ret = reference.view
-		if (ret) { return correctType(ret) }
-	}
-	return self
+	return correctType(self.activeWindow)
 }
 
 export async function sleep2(timeInSeconds: number): Promise<void> {
