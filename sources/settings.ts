@@ -98,6 +98,7 @@ export class SettingsManager<T extends SettingsManager.Type>
 		super.onload();
 		(async (): Promise<void> => {
 			try {
+				await this.onLoaded
 				await this.write()
 			} catch (error) {
 				self.console.error(error)

@@ -107,7 +107,7 @@ export abstract class ResourceComponent<T> extends Component {
 			try {
 				const { promise, resolve } = await (this.#loader as PromisePromise<T>)
 				resolve(loading)
-				await promise
+				this.#value = await promise
 			} catch (error) {
 				self.console.error(error)
 			}

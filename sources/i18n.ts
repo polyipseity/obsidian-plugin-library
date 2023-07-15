@@ -125,21 +125,9 @@ export class LanguageManager extends ResourceComponent<i18n> {
 		await this.onChangeLanguage.emit(lng)
 	}
 
-	public override onload(): void {
-		super.onload();
-		(async (): Promise<void> => {
-			try {
-				await this.changeLanguage(this.language)
-			} catch (error) {
-				self.console.error(error)
-			}
-		})()
-	}
-
 	protected override async load0(): Promise<i18n> {
-		const { context: { settings, settings: { onLoaded } } } = this
-		await onLoaded
-		const ret = await this.#loader()
+		const { context: { settings, settings: { onLoaded } } } = this,
+			[{ language }, ret] = await Promise.all([onLoaded, this.#loader()])
 		if (this.autoChangeLanguage) {
 			this.register(settings.on(
 				"mutate-settings",
@@ -147,6 +135,7 @@ export class LanguageManager extends ResourceComponent<i18n> {
 				async cur => this.changeLanguage(cur),
 			))
 		}
+		await ret.changeLanguage(LanguageManager.interpretLanguage(language))
 		return ret
 	}
 }
