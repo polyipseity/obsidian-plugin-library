@@ -41,10 +41,11 @@ export class SettingsManager<T extends SettingsManager.Type>
 	}, SAVE_SETTINGS_WAIT * SI_PREFIX_SCALE))
 
 	public constructor(
-		context: PluginContext,
+		protected readonly context: PluginContext,
 		protected readonly fixer: Fixer<T>,
 	) {
-		super(context)
+		super()
+		context.addChild(this)
 	}
 
 	/**

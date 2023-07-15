@@ -76,13 +76,6 @@ export abstract class ResourceComponent<T> extends Component {
 	#loader = promisePromise<unknown>()
 	#value: T | typeof ResourceComponent.sentinel = ResourceComponent.sentinel
 
-	public constructor(
-		protected readonly context: PluginContext,
-	) {
-		super()
-		context.addChild(this)
-	}
-
 	public get onLoaded(): Promise<T> {
 		return (this.#loader as PromisePromise<T>)
 			.then(async ({ promise }) => promise)

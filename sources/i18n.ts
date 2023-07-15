@@ -94,12 +94,13 @@ export class LanguageManager extends ResourceComponent<i18n> {
 	readonly #loader
 
 	public constructor(
-		context: PluginContext,
+		protected readonly context: PluginContext,
 		loader: () => AsyncOrSync<i18n>,
 		protected readonly autoChangeLanguage = true,
 	) {
-		super(context)
+		super()
 		this.#loader = loader
+		context.addChild(this)
 	}
 
 	/**
