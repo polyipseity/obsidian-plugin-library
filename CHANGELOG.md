@@ -12,6 +12,9 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Support using `@polyipseity/obsidian-plugin-library/style` to import the CSS stylesheet. (`ed3a0448c64299dd738f698a666e6f75fd3dae50`)
+- Create export `@polyipseity/obsidian-plugin-library/inject`. (`7369e16810e55ee6aa763197602fa48b2ea60158`)
+
 __Full changelog__: [`v1.7.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.7.0...main)
 
 ## v1.7.0 (2023-07-15)
