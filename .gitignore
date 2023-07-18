@@ -132,8 +132,5 @@ dist
 # }
 
 # self {
-/.eslintcache
-/.tsbuildinfo
-/dist/
 /metafile.json
 # }
