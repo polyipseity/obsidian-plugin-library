@@ -135,7 +135,5 @@ dist
 /.eslintcache
 /.tsbuildinfo
 /dist/
-/main.js
 /metafile.json
-/styles.css
 # }
