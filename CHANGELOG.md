@@ -12,13 +12,17 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.10.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.0...main)
+
+## v1.10.0 (2023-07-20)
+
 - Fix `updateView` not updating the inner title. (`a6e4ccba0bc7113c629c96c946d1e367e6cd652d`)
 - Improve `instanceOf` to accept `unknown` values. (`a6e4ccba0bc7113c629c96c946d1e367e6cd652d`)
 - Improve `revealPrivate` to recursively reveal privates. (`d96ca8f14e0c041208ea0bfe0155a59331abe7e1`)
 - Fix dependency cycle between the language and settings manager. (`09cb7891af23054de6c603534b31cac36a67ade9`)
 - Make event `mutate-settings` a function `onMutate` instead. (`edb9017b70d0f5c26927383b9f4ba30db2b724ed..e7513ae11204869734a4ae9ab9c19e5efff8ab7d`)
 
-__Full changelog__: [`v1.9.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.9.0...main)
+__Full changelog__: [`v1.9.0...v1.10.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.9.0...v1.10.0)
 
 ## v1.9.0 (2023-07-16)
 
