@@ -6,13 +6,18 @@ import type { UnionToIntersection } from "ts-essentials"
 export interface PrivateKeys { }
 export type PrivateKeys$ = keyof PrivateKeys
 export type Private<T, P extends keyof PrivateKeys> = { readonly [_ in P]: T }
-export type RevealPrivate<T extends Private<unknown, never>> =
+export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = {
+	readonly [K in P]: Private<unknown, K>
+}[P]
+type RevealPrivate0<T extends HasPrivate> =
 	Omit<T, PrivateKeys$> & UnionToIntersection<DistributeValues<T, PrivateKeys$>>
+export type RevealPrivate<T extends HasPrivate> = {
+	[K in keyof RevealPrivate0<T>]: RevealPrivate0<T>[K
+	] extends HasPrivate ? RevealPrivate<
+		RevealPrivate0<T>[K]> : RevealPrivate0<T>[K]
+}
 
-export function revealPrivate<
-	const As extends readonly Private<unknown, never>[],
-	R,
->(
+export function revealPrivate<const As extends readonly HasPrivate[], R>(
 	context: PluginContext,
 	args: As,
 	func: (
@@ -34,7 +39,7 @@ export function revealPrivate<
 	}
 }
 export async function revealPrivateAsync<
-	const As extends readonly Private<unknown, never>[],
+	const As extends readonly HasPrivate[],
 	R extends PromiseLike<unknown>,
 >(
 	context: PluginContext,
