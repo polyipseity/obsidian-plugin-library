@@ -32,7 +32,7 @@ import { simplifyType } from "./types.js"
 
 export class SettingsManager<T extends SettingsManager.Type>
 	extends ResourceComponent<DeepReadonly<T>> {
-	readonly #onMutateSettings = new EventEmitterLite<readonly []>()
+	readonly #onMutate = new EventEmitterLite<readonly []>()
 
 	readonly #write = asyncDebounce(throttle((
 		resolve: (value: AsyncOrSync<void>) => void,
@@ -50,7 +50,7 @@ export class SettingsManager<T extends SettingsManager.Type>
 	public async mutate(mutator: (
 		settings: DeepWritable<T>) => unknown): Promise<void> {
 		this.value = await copyOnWriteAsync(this.value, mutator)
-		await this.#onMutateSettings.emit()
+		await this.#onMutate.emit()
 	}
 
 	public async write(): Promise<void> {
@@ -73,7 +73,7 @@ export class SettingsManager<T extends SettingsManager.Type>
 		) => unknown,
 	): () => void {
 		let prev = accessor(this.value)
-		return this.#onMutateSettings
+		return this.#onMutate
 			.listen(async (): Promise<void> => {
 				const settings = this.value,
 					cur = accessor(settings),
