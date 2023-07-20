@@ -14,6 +14,7 @@ Versions are ordered by recency.
 
 - Fix `updateView` not updating the inner title. (`a6e4ccba0bc7113c629c96c946d1e367e6cd652d`)
 - Improve `instanceOf` to accept `unknown` values. (`a6e4ccba0bc7113c629c96c946d1e367e6cd652d`)
+- Improve `revealPrivate` to recursively reveal privates. (`d96ca8f14e0c041208ea0bfe0155a59331abe7e1`)
 
 __Full changelog__: [`v1.9.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.9.0...main)
 
