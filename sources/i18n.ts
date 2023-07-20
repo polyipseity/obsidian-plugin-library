@@ -128,7 +128,7 @@ export class LanguageManager extends ResourceComponent<i18n> {
 					])
 				if (this.autoChangeLanguage) {
 					this.register(settings.on(
-						"mutate-settings",
+						"mutate",
 						settings0 => settings0.language,
 						async cur => this.changeLanguage(cur),
 					))

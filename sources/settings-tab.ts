@@ -272,7 +272,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		const { context: { settings } } = this,
 			snapshot = this.snapshot0()
 		return new Promise((resolve, reject) => {
-			const unregister = settings.on("mutate-settings", identity, () => {
+			const unregister = settings.on("mutate", identity, () => {
 				try {
 					resolve(snapshot)
 				} catch (error) {
