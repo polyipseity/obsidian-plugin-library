@@ -21,6 +21,7 @@ import {
 	escapeRegExp,
 	isEmpty,
 	isNil,
+	isObject,
 	isUndefined,
 	noop,
 	range,
@@ -317,9 +318,7 @@ function deepFreeze0<T>(value: T, freezing: WeakSet<object>): DeepReadonly<T> {
 		freezing.add(value)
 		for (const subkey of typedOwnKeys(value)) {
 			const subvalue = value[subkey]
-			if ((typeof subvalue === "object" || typeof subvalue === "function") &&
-				subvalue &&
-				!freezing.has(subvalue)) {
+			if (isObject(subvalue) && !freezing.has(subvalue)) {
 				deepFreeze0(subvalue, freezing)
 			}
 		}
@@ -420,15 +419,17 @@ export function instanceOf<T extends Node | UIEvent>(
 	if (self0 instanceof type) { return true }
 	const { name } = type,
 		typeMain: unknown = Reflect.get(self, name)
-	if (typeof typeMain === "function" &&
-		self0 instanceof typeMain) { return true }
+	if (typeof typeMain === "function" && self0 instanceof typeMain) {
+		return true
+	}
 	const
 		win = "ownerDocument" in self0
 			? self0.ownerDocument?.defaultView
 			: self0.view,
 		typeWin: unknown = win ? Reflect.get(win, name) : null
-	if (typeof typeWin === "function" &&
-		self0 instanceof typeWin) { return true }
+	if (typeof typeWin === "function" && self0 instanceof typeWin) {
+		return true
+	}
 	return false
 }
 
@@ -490,9 +491,7 @@ export function lazyProxy<T extends Function | object>(
 					argArray,
 					newTarget === target ? target0 : newTarget,
 				)
-				if ((typeof ret === "object" || typeof ret === "function") && ret) {
-					return ret
-				}
+				if (isObject(ret)) { return ret }
 				throw new TypeError(String(ret))
 			},
 			defineProperty(target, property, attributes): boolean {
