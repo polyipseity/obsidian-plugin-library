@@ -99,6 +99,7 @@ export class SettingsManager<T extends SettingsManager.Type>
 	}
 
 	protected override async load0(): Promise<DeepReadonly<T>> {
+		await this.context.language.onLoaded
 		return simplifyType(deepFreeze(await this.#read()))
 	}
 
