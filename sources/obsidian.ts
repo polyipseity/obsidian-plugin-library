@@ -343,7 +343,7 @@ export function addRibbonIcon(
 				ele.replaceWith(([ele, title0] = ribbon())[0])
 			}))
 		},
-		_0 => { context.addRibbonIcon(icon, id, callback) },
+		() => { context.addRibbonIcon(icon, id, callback) },
 	)
 }
 
@@ -476,7 +476,7 @@ export function recordViewStateHistory(
 ): void {
 	revealPrivate(context, [result], result0 => {
 		result0.history = true
-	}, _0 => { })
+	}, () => { })
 }
 
 export async function saveFileAs(
@@ -494,7 +494,7 @@ export async function saveFileAs(
 					path: data.name,
 				})).uri,
 			)
-		}, async _0 => { })
+		}, () => { })
 		return
 	}
 	saveAs(data)
@@ -507,7 +507,7 @@ export function updateView(context: PluginContext, view: View): void {
 	], (leaf, workspace) => {
 		leaf.updateHeader()
 		workspace.requestUpdateLayout()
-	}, _0 => { })
+	}, () => { })
 	if ("titleEl" in view) {
 		const { titleEl } = view
 		if (instanceOf(titleEl, Node)) {
