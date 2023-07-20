@@ -3,19 +3,21 @@ import {
 	group_outros as $groupOutros,
 	transition_out as $transitionOut,
 } from "svelte/internal"
+import {
+	type AnyObject,
+	type CodePoint,
+	type ReadonlyTuple,
+	contravariant,
+	correctType,
+	launderUnchecked,
+	simplifyType,
+} from "./types.js"
 import type {
 	AsyncOrSync,
 	DeepReadonly,
 	DeepWritable,
 	Newable,
 } from "ts-essentials"
-import {
-	type CodePoint,
-	type ReadonlyTuple,
-	contravariant,
-	correctType,
-	simplifyType,
-} from "./types.js"
 import {
 	type DebouncedFunc,
 	escapeRegExp,
@@ -412,10 +414,10 @@ export function insertAt<T>(
 }
 
 export function instanceOf<T extends Node | UIEvent>(
-	self0: Node | UIEvent | null | undefined,
+	self0: unknown,
 	type: Newable<T>,
 ): self0 is T {
-	if (!self0) { return false }
+	if (!isObject(self0)) { return false }
 	if (self0 instanceof type) { return true }
 	const { name } = type,
 		typeMain: unknown = Reflect.get(self, name)
@@ -424,9 +426,9 @@ export function instanceOf<T extends Node | UIEvent>(
 	}
 	const
 		win = "ownerDocument" in self0
-			? self0.ownerDocument?.defaultView
-			: self0.view,
-		typeWin: unknown = win ? Reflect.get(win, name) : null
+			? launderUnchecked<AnyObject>(self0.ownerDocument)["defaultView"]
+			: launderUnchecked<AnyObject>(self0)["view"],
+		typeWin: unknown = isObject(win) ? Reflect.get(win, name) : null
 	if (typeof typeWin === "function" && self0 instanceof typeWin) {
 		return true
 	}

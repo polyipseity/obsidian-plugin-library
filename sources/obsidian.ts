@@ -31,6 +31,7 @@ import {
 	createChildElement,
 	deepFreeze,
 	inSet,
+	instanceOf,
 	multireplace,
 	onVisible,
 	promisePromise,
@@ -507,6 +508,12 @@ export function updateView(context: PluginContext, view: View): void {
 		leaf.updateHeader()
 		workspace.requestUpdateLayout()
 	}, _0 => { })
+	if ("titleEl" in view) {
+		const { titleEl } = view
+		if (instanceOf(titleEl, Node)) {
+			titleEl.textContent = view.getDisplayText()
+		}
+	}
 }
 
 export function useSettings(element: HTMLElement): {
