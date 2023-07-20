@@ -12,6 +12,8 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Improve type inferring in `revealPrivate`. (`c0da867f5befe2826846c1d0f7c81dca35835f6b`)
+
 __Full changelog__: [`v1.10.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.0...main)
 
 ## v1.10.0 (2023-07-20)
