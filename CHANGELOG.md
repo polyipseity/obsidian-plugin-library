@@ -12,6 +12,9 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Fix `updateView` not updating the inner title. (`a6e4ccba0bc7113c629c96c946d1e367e6cd652d`)
+- Improve `instanceOf` to accept `unknown` values. (`a6e4ccba0bc7113c629c96c946d1e367e6cd652d`)
+
 __Full changelog__: [`v1.9.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.9.0...main)
 
 ## v1.9.0 (2023-07-16)
