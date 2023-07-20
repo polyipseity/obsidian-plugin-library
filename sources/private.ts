@@ -43,7 +43,7 @@ export async function revealPrivateAsync<
 	context: PluginContext,
 	args: As,
 	func: (...args: { readonly [A in keyof As]: RevealPrivate<As[A]> }) => R,
-	fallback: (error: unknown, ...args: As) => R,
+	fallback: (error: unknown, ...args: As) => Awaited<R> | R,
 ): Promise<Awaited<R>> {
 	try {
 		return await func(...args as
