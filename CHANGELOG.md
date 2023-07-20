@@ -12,10 +12,14 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.10.1...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.1...main)
+
+## v1.10.1 (2023-07-21)
+
 - Improve type inferring in `revealPrivate`. (`c0da867f5befe2826846c1d0f7c81dca35835f6b`)
 - Fix potential concurrent modification in `EventEmitterLite#emit`. (`990109ec89b1e0e21961fb8e23091b3570cd7635`)
 
-__Full changelog__: [`v1.10.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.0...main)
+__Full changelog__: [`v1.10.0...v1.10.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.0...v1.10.1)
 
 ## v1.10.0 (2023-07-20)
 
