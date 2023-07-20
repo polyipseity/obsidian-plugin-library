@@ -1,6 +1,6 @@
+import type { Builtin, UnionToIntersection } from "ts-essentials"
 import type { DistributeValues } from "./types.js"
 import type { PluginContext } from "./plugin.js"
-import type { UnionToIntersection } from "ts-essentials"
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PrivateKeys { }
@@ -9,12 +9,10 @@ export type Private<T, P extends keyof PrivateKeys> = { readonly [_ in P]: T }
 export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = {
 	readonly [K in P]: Private<unknown, K>
 }[P]
-type RevealPrivate0<T extends HasPrivate> =
+type RevealPrivate0<T> =
 	Omit<T, PrivateKeys$> & UnionToIntersection<DistributeValues<T, PrivateKeys$>>
-export type RevealPrivate<T extends HasPrivate> = {
-	[K in keyof RevealPrivate0<T>]: RevealPrivate0<T>[K
-	] extends HasPrivate ? RevealPrivate<
-		RevealPrivate0<T>[K]> : RevealPrivate0<T>[K]
+export type RevealPrivate<T> = T extends Builtin ? T : {
+	[K in keyof RevealPrivate0<T>]: RevealPrivate<RevealPrivate0<T>[K]>
 }
 
 export function revealPrivate<const As extends readonly HasPrivate[], R>(
