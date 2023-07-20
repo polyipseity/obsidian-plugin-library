@@ -49,7 +49,8 @@ export class EventEmitterLite<A extends readonly unknown[]> {
 	public async emit(...args: A): Promise<void> {
 		return new Promise((resolve, reject) => {
 			this.lock.acquire(EventEmitterLite.emitLock, async () => {
-				const emitted = this.#listeners
+				// Copy to prevent concurrent modification
+				const emitted = [...this.#listeners]
 					.map(async list => { await list(...args) })
 				resolve(Promise.all(emitted).then(noop))
 				await Promise.allSettled(emitted)
