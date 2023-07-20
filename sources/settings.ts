@@ -64,8 +64,7 @@ export class SettingsManager<T extends SettingsManager.Type>
 		})
 	}
 
-	public on<V>(
-		_event: "mutate",
+	public onMutate<V>(
 		accessor: (settings: DeepReadonly<T>) => V,
 		callback: (
 			cur: V,
