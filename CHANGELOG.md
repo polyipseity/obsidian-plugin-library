@@ -12,11 +12,15 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.11.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.0...main)
+
+## v1.11.0 (2023-07-21)
+
 - Add `startCase` formatter in `locales.ts`. (`8542051c06f281b91ea8083c2d209edc98e660cb`)
 - Create `startCase`. (`8542051c06f281b91ea8083c2d209edc98e660cb`)
 - Improve `mapFirstCodePoint` and change its signature. (`8542051c06f281b91ea8083c2d209edc98e660cb`)
 
-__Full changelog__: [`v1.10.1...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.1...main)
+__Full changelog__: [`v1.10.1...v1.11.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.1...v1.11.0)
 
 ## v1.10.1 (2023-07-21)
 
