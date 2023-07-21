@@ -12,10 +12,14 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.11.1...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.1...main)
+
+## v1.11.1 (2023-07-21)
+
 - Create `DOMClasses#SETTING_ITEM`.
 - Improve styling of some HTML elements.
 
-__Full changelog__: [`v1.11.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.0...main)
+__Full changelog__: [`v1.11.0...v1.11.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.0...v1.11.1)
 
 ## v1.11.0 (2023-07-21)
 
