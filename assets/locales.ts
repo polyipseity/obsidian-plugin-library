@@ -19,6 +19,7 @@ import type {
 import {
 	capitalize,
 	deepFreeze,
+	startCase,
 	typedKeys,
 	uncapitalize,
 } from "../sources/util.js"
@@ -99,6 +100,7 @@ export namespace LibraryLocales {
 		}),
 		FORMATTERS = deepFreeze({
 			capitalize: lng => (value): string => capitalize(String(value), lng),
+			startCase: lng => (value): string => startCase(String(value), lng),
 			uncapitalize: lng => (value): string => uncapitalize(String(value), lng),
 		}) satisfies I18nFormatters
 	const sync = syncLocale<typeof en>()

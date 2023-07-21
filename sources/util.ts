@@ -21,6 +21,7 @@ import type {
 import {
 	type DebouncedFunc,
 	escapeRegExp,
+	identity,
 	isEmpty,
 	isNil,
 	isObject,
@@ -231,7 +232,7 @@ export function capitalize(
 	str: string,
 	locales?: string[] | string,
 ): string {
-	return mapFirstCodePoint(first => first.toLocaleUpperCase(locales), str)
+	return mapFirstCodePoint(str, first => first.toLocaleUpperCase(locales))
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
@@ -652,13 +653,14 @@ export function logFormat(
 }
 
 export function mapFirstCodePoint(
-	map: (value: string) => string,
 	str: string,
+	map: (value: string) => string,
+	mapRest: (value: string) => string = identity,
 ): string {
 	const cp0 = str.codePointAt(0)
 	if (isUndefined(cp0)) { return "" }
 	const char0 = String.fromCodePoint(cp0)
-	return `${map(char0)}${str.slice(char0.length)}`
+	return `${map(char0)}${mapRest(str.slice(char0.length))}`
 }
 
 export function multireplace(
@@ -749,6 +751,14 @@ export function replaceAllRegex(string: string): RegExp {
 	return new RegExp(escapeRegExp(string), "ug")
 }
 
+export function startCase(str: string, locales?: string[] | string): string {
+	return str.replace(/\w\S*/gu, ss => mapFirstCodePoint(
+		ss,
+		str0 => str0.toLocaleUpperCase(locales),
+		str0 => str0.toLocaleLowerCase(locales),
+	))
+}
+
 export function activeSelf(
 	reference?: Element | UIEvent | null,
 ): Window & typeof globalThis {
@@ -783,7 +793,7 @@ export function uncapitalize(
 	str: string,
 	locales?: string[] | string,
 ): string {
-	return mapFirstCodePoint(first => first.toLocaleLowerCase(locales), str)
+	return mapFirstCodePoint(str, first => first.toLocaleLowerCase(locales))
 }
 
 export function unexpected(): never {
