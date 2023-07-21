@@ -12,7 +12,6 @@ import {
 	asyncDebounce,
 	clearProperties,
 	copyOnWriteAsync,
-	createChildElement,
 	deepFreeze,
 } from "./util.js"
 import {
@@ -178,13 +177,10 @@ export function registerSettingsCommands(context: PluginContext): void {
 							close()
 							process()
 						},
-						doubleConfirmTimeout: DOUBLE_ACTION_WAIT,
-						draw(ui, element): void {
-							ui.new(() => createChildElement(element, "div"), ele => {
-								ele.textContent =
-									i18n.t("dialogs.overwrite-existing-frontmatter")
-							}, ele => { ele.remove() })
+						description(): string {
+							return i18n.t("dialogs.overwrite-existing-frontmatter")
 						},
+						doubleConfirmTimeout: DOUBLE_ACTION_WAIT,
 						title(): string {
 							return i18n.t("commands.export-settings-current-file")
 						},

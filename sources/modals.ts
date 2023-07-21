@@ -155,6 +155,7 @@ export class ListModal<T> extends Modal {
 		}
 		if (description) {
 			ui.new(() => createChildElement(listEl, "div"), ele => {
+				ele.classList.add(DOMClasses.SETTING_ITEM)
 				ele.textContent = description()
 			})
 		}
@@ -403,6 +404,7 @@ export class EditDataModal<T extends object> extends Modal {
 		}
 		if (desc) {
 			ui.new(() => createChildElement(listEl, "div"), ele => {
+				ele.classList.add(DOMClasses.SETTING_ITEM)
 				ele.textContent = desc()
 			}, ele => { ele.remove() })
 		}

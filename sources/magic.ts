@@ -18,6 +18,7 @@ export namespace DOMClasses {
 		MODAL = "modal",
 		MODAL_CLOSE_BUTTON = "modal-close-button",
 		NODE_INSERT_EVENT = "node-insert-event",
+		SETTING_ITEM = "setting-item",
 		SHOW_INDENTATION_GUIDE = "show-indentation-guide",
 		STATUS_BAR = "status-bar",
 		VERTICAL_TAB_CONTENT = "vertical-tab-content",

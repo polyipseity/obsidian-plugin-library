@@ -12,6 +12,9 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Create `DOMClasses#SETTING_ITEM`.
+- Improve styling of some HTML elements.
+
 __Full changelog__: [`v1.11.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.0...main)
 
 ## v1.11.0 (2023-07-21)

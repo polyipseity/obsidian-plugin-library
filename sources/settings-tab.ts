@@ -14,6 +14,7 @@ import {
 	setTextToEnum,
 	setTextToNumber,
 } from "./settings-widgets.js"
+import { DOMClasses } from "./magic.js"
 import type { DeepReadonly } from "ts-essentials"
 import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
@@ -58,6 +59,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	protected newDescriptionWidget(): void {
 		const { context: { language: { value: i18n } }, containerEl, ui } = this
 		ui.new(() => createChildElement(containerEl, "div"), ele => {
+			ele.classList.add(DOMClasses.SETTING_ITEM)
 			ele.textContent = i18n.t("settings.description")
 		})
 	}
