@@ -12,7 +12,13 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`v1.12.1...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.1...main)
+__Full changelog__: [`v1.13.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.13.0...main)
+
+## v1.13.0 (2023-07-22)
+
+- Fix `RevealPrivate`. (`9ccb94be13da962d29c0b32e0bb7847e77f338ac`)
+
+__Full changelog__: [`v1.12.1...v1.13.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.1...v1.13.0)
 
 ## v1.12.1 (2023-07-22)
 
