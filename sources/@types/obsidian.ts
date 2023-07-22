@@ -16,6 +16,7 @@ declare module "obsidian" {
 	interface WorkspaceRibbon extends Private<$WorkspaceRibbon, PrivateKey> { }
 }
 import type { PluginManifest, SettingTab } from "obsidian"
+import type { Deopaque } from "../types.js"
 import type { Platform } from "../platform.js"
 import type { Private } from "../private.js"
 
@@ -42,8 +43,8 @@ interface $App {
 interface $DataAdapter {
 	readonly fs: {
 		readonly open: <T extends Platform.Current>(
-			path: T extends Platform.Mobile ? string : never,
-		) => T extends Platform.Mobile ? PromiseLike<void> : never
+			path: Deopaque<T> extends Platform.Mobile ? string : never,
+		) => Deopaque<T> extends Platform.Mobile ? PromiseLike<void> : never
 	}
 }
 

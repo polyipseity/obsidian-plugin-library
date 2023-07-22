@@ -484,9 +484,10 @@ export async function saveFileAs(
 	adapter: DataAdapter,
 	data: File,
 ): Promise<void> {
-	if (inSet(Platform.MOBILE, Platform.CURRENT)) {
+	const { CURRENT, MOBILE } = Platform
+	if (inSet(MOBILE, CURRENT)) {
 		await revealPrivateAsync(context, [adapter], async ({ fs }) => {
-			await fs.open<typeof Platform.CURRENT>(
+			await fs.open<typeof CURRENT>(
 				(await Filesystem.writeFile({
 					data: await data.text(),
 					directory: Directory.Cache,
