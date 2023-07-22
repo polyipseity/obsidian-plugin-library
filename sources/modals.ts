@@ -157,7 +157,7 @@ export class ListModal<T> extends Modal {
 			ui.new(() => createChildElement(listEl, "div"), ele => {
 				ele.classList.add(DOMClasses.SETTING_ITEM)
 				ele.textContent = description()
-			})
+			}, ele => { ele.remove() })
 		}
 		ui.newSetting(listEl, setting => {
 			if (!editables.includes("prepend")) {

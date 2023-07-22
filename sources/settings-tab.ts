@@ -65,7 +65,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		ui.new(() => createChildElement(containerEl, "div"), ele => {
 			ele.classList.add(DOMClasses.SETTING_ITEM)
 			ele.textContent = i18n.t("settings.description")
-		})
+		}, ele => { ele.remove() })
 	}
 
 	protected newLanguageWidget(

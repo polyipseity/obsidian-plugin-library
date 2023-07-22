@@ -128,8 +128,8 @@ export class UpdatableUI {
 
 	public new<V>(
 		create: () => V,
-		configure?: ((value: V) => void) | null,
-		destroy?: ((value: V) => void) | null,
+		configure: ((value: V) => void) | null,
+		destroy: ((value: V) => void) | null,
 	): this {
 		const value = create()
 		try {
