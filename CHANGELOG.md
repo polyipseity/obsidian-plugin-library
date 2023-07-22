@@ -1,43 +1,50 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.13.1
+
+### Patch Changes
+
+- b5c0e5a: Fix `addChild` loading too early in the constructor of `AdvancedSettingTab`.
+- 16a7553: Automate changelog using changesets.
+
 ## v1.13.0 (2023-07-22)
 
 - Fix `RevealPrivate`. (`9ccb94be13da962d29c0b32e0bb7847e77f338ac`)
 
-__Full changelog__: [`v1.12.1...v1.13.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.1...v1.13.0)
+**Full changelog**: [`v1.12.1...v1.13.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.1...v1.13.0)
 
 ## v1.12.1 (2023-07-22)
 
 - Fix platform checking not working. (`7e957a25540404dc42072fd1f81408a8d10247a2`)
 - Name unnamed types in `obsidian.ts`. (`c030be4e7be5e4f9670eaaebdbcdd2abee155430`)
 
-__Full changelog__: [`v1.12.0...v1.12.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.0...v1.12.1)
+**Full changelog**: [`v1.12.0...v1.12.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.0...v1.12.1)
 
 ## v1.12.0 (2023-07-22)
 
 - Add new platforms: `desktop`, `mobile`. (`8b89706a858ca957ec517817ef011bae25ab3f9b`)
 - Use Obsidian's `Platform` to detect platform. (`8b89706a858ca957ec517817ef011bae25ab3f9b`)
 
-__Full changelog__: [`v1.11.3...v1.12.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.3...v1.12.0)
+**Full changelog**: [`v1.11.3...v1.12.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.3...v1.12.0)
 
 ## v1.11.3 (2023-07-22)
 
 - Use the package `moment`, which is to be replaced by the bundler. (`294c963e9c602853b9e70dcc9597900d637272be`)
 
-__Full changelog__: [`v1.11.2...v1.11.3`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.2...v1.11.3)
+**Full changelog**: [`v1.11.2...v1.11.3`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.2...v1.11.3)
 
 ## v1.11.2 (2023-07-22)
 
 - Create `patchWindows`. (`52c977f05462913fc8ed01bd2179079aca4f77c9`)
 
-__Full changelog__: [`v1.11.1...v1.11.2`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.1...v1.11.2)
+**Full changelog**: [`v1.11.1...v1.11.2`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.1...v1.11.2)
 
 ## v1.11.1 (2023-07-21)
 
 - Create `DOMClasses#SETTING_ITEM`.
 - Improve styling of some HTML elements.
 
-__Full changelog__: [`v1.11.0...v1.11.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.0...v1.11.1)
+**Full changelog**: [`v1.11.0...v1.11.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.0...v1.11.1)
 
 ## v1.11.0 (2023-07-21)
 
@@ -45,14 +52,14 @@ __Full changelog__: [`v1.11.0...v1.11.1`](https://github.com/polyipseity/obsidia
 - Create `startCase`. (`8542051c06f281b91ea8083c2d209edc98e660cb`)
 - Improve `mapFirstCodePoint` and change its signature. (`8542051c06f281b91ea8083c2d209edc98e660cb`)
 
-__Full changelog__: [`v1.10.1...v1.11.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.1...v1.11.0)
+**Full changelog**: [`v1.10.1...v1.11.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.1...v1.11.0)
 
 ## v1.10.1 (2023-07-21)
 
 - Improve type inferring in `revealPrivate`. (`c0da867f5befe2826846c1d0f7c81dca35835f6b`)
 - Fix potential concurrent modification in `EventEmitterLite#emit`. (`990109ec89b1e0e21961fb8e23091b3570cd7635`)
 
-__Full changelog__: [`v1.10.0...v1.10.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.0...v1.10.1)
+**Full changelog**: [`v1.10.0...v1.10.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.10.0...v1.10.1)
 
 ## v1.10.0 (2023-07-20)
 
@@ -62,7 +69,7 @@ __Full changelog__: [`v1.10.0...v1.10.1`](https://github.com/polyipseity/obsidia
 - Fix dependency cycle between the language and settings manager. (`09cb7891af23054de6c603534b31cac36a67ade9`)
 - Make event `mutate-settings` a function `onMutate` instead. (`edb9017b70d0f5c26927383b9f4ba30db2b724ed..e7513ae11204869734a4ae9ab9c19e5efff8ab7d`)
 
-__Full changelog__: [`v1.9.0...v1.10.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.9.0...v1.10.0)
+**Full changelog**: [`v1.9.0...v1.10.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.9.0...v1.10.0)
 
 ## v1.9.0 (2023-07-16)
 
@@ -70,14 +77,14 @@ __Full changelog__: [`v1.9.0...v1.10.0`](https://github.com/polyipseity/obsidian
 - Fix lifecycle management. (`84b1d8d72c8812bc171cd1873e120a61d265414a`)
 - Remove `LanguageManager#i18n` and `SettingsManager#copy`. (`c4988df6eca85dc46d9feee2b2a0e757922c0442`)
 
-__Full changelog__: [`v1.8.0...v1.9.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.8.0...v1.9.0)
+**Full changelog**: [`v1.8.0...v1.9.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.8.0...v1.9.0)
 
 ## v1.8.0 (2023-07-15)
 
 - Support using `@polyipseity/obsidian-plugin-library/style` to import the CSS stylesheet. (`ed3a0448c64299dd738f698a666e6f75fd3dae50`)
 - Create export `@polyipseity/obsidian-plugin-library/inject`. (`7369e16810e55ee6aa763197602fa48b2ea60158`)
 
-__Full changelog__: [`v1.7.0...v1.8.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.7.0...v1.8.0)
+**Full changelog**: [`v1.7.0...v1.8.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.7.0...v1.8.0)
 
 ## v1.7.0 (2023-07-15)
 
@@ -88,7 +95,7 @@ __Full changelog__: [`v1.7.0...v1.8.0`](https://github.com/polyipseity/obsidian-
 - `sleep2` now requires a `Window`. (`b839194b38f37de51f2393011d76d64ab279d11b`)
 - Fix the command to export settings to clipboard. (`1e163c217f817a74eb4bb46e99b88068478ca787`)
 
-__Full changelog__: [`v1.6.0...v1.7.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.6.0...v1.7.0)
+**Full changelog**: [`v1.6.0...v1.7.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.6.0...v1.7.0)
 
 ## v1.6.0 (2023-07-13)
 
@@ -100,7 +107,7 @@ __Full changelog__: [`v1.6.0...v1.7.0`](https://github.com/polyipseity/obsidian-
 - Prepare publishing. (`63184057b184c82f786dc19998d31632b2a8fb17`)
 - Update npm packages. (`9644440814aee326fcdd7fb8ed2f3c6a47695770`)
 
-__Full changelog__: [`v1.5.0...v1.6.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.5.0...v1.6.0)
+**Full changelog**: [`v1.5.0...v1.6.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.5.0...v1.6.0)
 
 ## v1.5.0 (2023-07-10)
 
@@ -109,33 +116,33 @@ __Full changelog__: [`v1.5.0...v1.6.0`](https://github.com/polyipseity/obsidian-
 - Improve and create utilities: `assignExact`, `composeSetters`, `createChildElement`, `createDocumentFragment`. (`30dd2e6267d2665ec281b14da6f3980a52570d61`..`3ae484d5b53c4a0c663e975bc648c3bb8946bb80`)
 - Add more features to `EditDataModal`. (`5396a54cfafce35794240f84fc8cd5ea3295f227`)
 
-__Full changelog__: [`v1.4.2...v1.5.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.2...v1.5.0)
+**Full changelog**: [`v1.4.2...v1.5.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.2...v1.5.0)
 
 ## v1.4.2 (2023-07-10)
 
 - Fix typing characaters into the find textbox not working. (`5345cbdd12d17ebcc6f8da4f6b359f5cd9782fda`)
 - Eliminate the use of `!important` in CSS. (`3e1deee9a4f01aee4fe249bf7fdc97c1a12c30a3`)
 
-__Full changelog__: [`v1.4.1...v1.4.2`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.1...v1.4.2)
+**Full changelog**: [`v1.4.1...v1.4.2`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.1...v1.4.2)
 
 ## v1.4.1 (2023-07-01)
 
 - Fix `obsidian` version. (`9eb1a1cba7cfa8a7e6fa6395e18bfac826bc1b87`)
 
-__Full changelog__: [`v1.4.0...v1.4.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.0...v1.4.1)
+**Full changelog**: [`v1.4.0...v1.4.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.0...v1.4.1)
 
 ## v1.4.0 (2023-07-01)
 
 - Update npm packages to remove vulnerabilities. (`5921ac38e2c71ad82eb9f1c6ce767ad5b58b4b59`)
 - Rename `NamespacedTranslationKey` to `TranslationKey` and fix it. (`b9e09a66b523d1c51afb03468366f2c8a0f7876a`)
 
-__Full changelog__: [`v1.3.0...v1.4.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.0...main)
+**Full changelog**: [`v1.3.0...v1.4.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.0...main)
 
 ## v1.3.0 (2023-05-21)
 
 - Remove printing a notice in `printMalformedData()`. See [polyipseity/obsidian-terminal#19](https://github.com/polyipseity/obsidian-terminal/issues/19). (`5adbc68d36cdd0d2ea3476ef0dbece6f18e82140`)
 
-__Full changelog__: [`v1.2.0...v1.3.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.2.0...v1.3.0)
+**Full changelog**: [`v1.2.0...v1.3.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.2.0...v1.3.0)
 
 ## v1.2.0 (2023-05-17)
 
@@ -143,7 +150,7 @@ __Full changelog__: [`v1.2.0...v1.3.0`](https://github.com/polyipseity/obsidian-
 - Fix broken `esbuild()` in `build.mjs`. (`ddb3311b1021775926e304fbdc5daffdef0cd6ae`)
 - Allow collaboration in `private.ts`. (`cf11c9443abbe59955d85be39b65de9b1e8f5ccb`..`586b49d53725d9d1ee124f46038b27548d2ae595`)
 
-__Full changelog__: [`v1.1.0...v1.2.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.1.0...v1.2.0)
+**Full changelog**: [`v1.1.0...v1.2.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.1.0...v1.2.0)
 
 ## v1.1.0 (2023-05-16)
 
@@ -151,56 +158,56 @@ __Full changelog__: [`v1.1.0...v1.2.0`](https://github.com/polyipseity/obsidian-
 - Return the original loaded settings in `SettingsManager#onLoaded`. (`181a2e0851d7e0bafb5de67fb5e4e4769c42b006`)
 - Improve type parameter defaults in `promisePromise()`. (`13ae19a3261833e705a210c04308cc3bf916e10d`)
 
-__Full changelog__: [`v1.0.9...v1.1.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.9...v1.1.0)
+**Full changelog**: [`v1.0.9...v1.1.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.9...v1.1.0)
 
 ## v1.0.9 (2023-05-15)
 
 - Various minor improvements.
 - Fix calling the wrong `tsc`. (`e31455908f9b8e378c0ff00265c997c9369b1c04`)
 
-__Full changelog__: [`v1.0.8...v1.0.9`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.8...v1.0.9)
+**Full changelog**: [`v1.0.8...v1.0.9`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.8...v1.0.9)
 
 ## v1.0.8 (2023-05-15)
 
-__Full changelog__: [`v1.0.7...v1.0.8`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.7...v1.0.8)
+**Full changelog**: [`v1.0.7...v1.0.8`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.7...v1.0.8)
 
 ## v1.0.7 (2023-05-15)
 
 Various bug fixes.
 
-__Full changelog__: [`v1.0.6...v1.0.7`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.6...v1.0.7)
+**Full changelog**: [`v1.0.6...v1.0.7`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.6...v1.0.7)
 
 ## v1.0.6 (2023-05-15)
 
 - Fix `latest.yml` not overwriting old assets in the release. (`90835653fbfc9a80cb67f3522273fd822177cc22`..`ff1a040f0dcc0e2f446f24fa5db33ff683ad0b4c`)
 - Add support for `pnpm`. (`884f214a01e51a22f3fa8a64a34e1ecadd689095`)
 
-__Full changelog__: [`v1.0.5...v1.0.6`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.5...v1.0.6)
+**Full changelog**: [`v1.0.5...v1.0.6`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.5...v1.0.6)
 
 ## v1.0.5 (2023-05-14)
 
 Finally got it working properly.
 
-__Full changelog__: [`v1.0.4...v1.0.5`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.4...v1.0.5)
+**Full changelog**: [`v1.0.4...v1.0.5`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.4...v1.0.5)
 
 ## v1.0.4 (2023-05-14)
 
-__Full changelog__: [`v1.0.3...v1.0.4`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.3...v1.0.4)
+**Full changelog**: [`v1.0.3...v1.0.4`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.3...v1.0.4)
 
 ## v1.0.3 (2023-05-14)
 
-__Full changelog__: [`v1.0.2...v1.0.3`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.2...v1.0.3)
+**Full changelog**: [`v1.0.2...v1.0.3`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.2...v1.0.3)
 
 ## v1.0.2 (2023-05-14)
 
-__Full changelog__: [`v1.0.1...v1.0.2`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.1...v1.0.2)
+**Full changelog**: [`v1.0.1...v1.0.2`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.1...v1.0.2)
 
 ## v1.0.1 (2023-05-14)
 
-__Full changelog__: [`v1.0.0...v1.0.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.0...v1.0.1)
+**Full changelog**: [`v1.0.0...v1.0.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.0.0...v1.0.1)
 
 ## v1.0.0 (2023-05-14)
 
 This package was extracted from `obsidian-plugin-library`, which was extracted from `obsidian-terminal`.
 
-__Full changelog__: [`bdbbd87321b97b84f424136b7f29663660be7027...v1.0.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/bdbbd87321b97b84f424136b7f29663660be7027...v1.0.0)
+**Full changelog**: [`bdbbd87321b97b84f424136b7f29663660be7027...v1.0.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/bdbbd87321b97b84f424136b7f29663660be7027...v1.0.0)
