@@ -12,7 +12,13 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`v1.11.2...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.2...main)
+__Full changelog__: [`v1.11.3...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.3...main)
+
+## v1.11.3 (2023-07-22)
+
+- Use the package `moment`, which is to be replaced by the bundler. (`294c963e9c602853b9e70dcc9597900d637272be`)
+
+__Full changelog__: [`v1.11.2...v1.11.3`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.2...v1.11.3)
 
 ## v1.11.2 (2023-07-22)
 
