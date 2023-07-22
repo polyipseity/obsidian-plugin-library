@@ -262,7 +262,7 @@ export class UpdatableUI {
 	}
 
 	public destroy(): void {
-		this.#finalizers.transform(self0 => self0.splice(0)).call()
+		this.#finalizers.transform(self0 => self0.splice(0).reverse()).call()
 		clear(this.#updaters)
 	}
 }
