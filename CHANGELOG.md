@@ -12,9 +12,13 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+__Full changelog__: [`v1.11.2...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.2...main)
+
+## v1.11.2 (2023-07-22)
+
 - Create `patchWindows`. (`52c977f05462913fc8ed01bd2179079aca4f77c9`)
 
-__Full changelog__: [`v1.11.1...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.1...main)
+__Full changelog__: [`v1.11.1...v1.11.2`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.1...v1.11.2)
 
 ## v1.11.1 (2023-07-21)
 
