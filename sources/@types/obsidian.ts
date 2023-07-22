@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 declare module "obsidian" {
 	interface App extends Private<$App, PrivateKey> { }
-	interface AppSettingTab extends Private<$AppSettingTab, PrivateKey> { }
 	interface CommunityPluginsSettingTab
 		extends Private<$CommunityPluginsSettingTab, PrivateKey> { }
 	interface DataAdapter extends Private<$DataAdapter, PrivateKey> { }
@@ -14,16 +13,19 @@ declare module "obsidian" {
 			func: KeymapEventListener,
 		): KeymapEventHandler
 	}
+	interface UnknownSettingTab
+		extends Private<$UnknownSettingTab, PrivateKey> { }
 	interface ViewStateResult extends Private<$ViewStateResult, PrivateKey> { }
 	interface Workspace extends Private<$Workspace, PrivateKey> { }
 	interface WorkspaceLeaf extends Private<$WorkspaceLeaf, PrivateKey> { }
 	interface WorkspaceRibbon extends Private<$WorkspaceRibbon, PrivateKey> { }
 }
 import type {
-	AppSettingTab,
+	CommunityPluginsSettingTab,
 	FileSystem,
 	PluginManifest,
 	SettingTab,
+	UnknownSettingTab,
 } from "obsidian"
 import type { Deopaque } from "../types.js"
 import type { Platform } from "../platform.js"
@@ -39,13 +41,10 @@ declare module "../private.js" {
 
 interface $App {
 	readonly setting: {
-		readonly settingTabs: readonly AppSettingTab[]
+		readonly settingTabs:
+		readonly (CommunityPluginsSettingTab | UnknownSettingTab)[]
 	}
 }
-
-type $AppSettingTab = ($CommunityPluginsSettingTab | (SettingTab & {
-	readonly id: unique symbol
-}))
 
 interface $CommunityPluginsSettingTab extends SettingTab {
 	readonly id: "community-plugins"
@@ -63,6 +62,10 @@ interface $FileSystem {
 	readonly open: <T extends Platform.Current>(
 		path: Deopaque<T> extends Platform.Mobile ? string : never,
 	) => Deopaque<T> extends Platform.Mobile ? PromiseLike<void> : never
+}
+
+interface $UnknownSettingTab extends SettingTab {
+	readonly id: unique symbol
 }
 
 interface $ViewStateResult {

@@ -11,10 +11,14 @@ export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = {
 }[P]
 type RevealPrivate0<T> =
 	Omit<T, PrivateKeys$> & UnionToIntersection<DistributeValues<T, PrivateKeys$>>
-export type RevealPrivate<T> = T extends Builtin ? T : {
-	[K in keyof RevealPrivate0<T>]: RevealPrivate<RevealPrivate0<T>[K]>
-}
+export type RevealPrivate<T> =
+	T extends Exclude<Builtin, Error> ? T : RevealPrivate2<T>
+type RevealPrivate2<T> = T extends readonly (infer U)[] ? T extends U[
 
+] ? RevealPrivate<U>[] : readonly RevealPrivate<U>[] : RevealPrivate3<T>
+type RevealPrivate3<T> = T extends object ? {
+	[K in keyof RevealPrivate0<T>]: RevealPrivate<RevealPrivate0<T>[K]>
+} : T
 export function revealPrivate<const As extends readonly HasPrivate[], R>(
 	context: PluginContext,
 	args: As,
