@@ -57,6 +57,7 @@
 		"malformed-data": "Malformed $t(generic.data)",
 		"missing-interpolation": "Missing interpolation of name '{{name}}' is replaced by '{{value}}': {{text}}",
 		"missing-translation": "Missing translation of key '{{key}}' is replaced by '{{value}}'",
+		"no-formatter": "No formatter",
 		"private-API-changed": "Private $t(generic.API) changed",
 		"retry-outdated-frontmatter": "Please $t(generic.retry) as $t(generic.frontmatter) was updated in the $t(generic.background)"
 	},

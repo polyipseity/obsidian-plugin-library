@@ -83,9 +83,11 @@ export async function createI18n(
 	await ret.init()
 	const { services } = ret,
 		{ formatter } = services
-	for (const [key, value] of Object.entries(formatters)) {
-		formatter?.addCached(key, value)
-	}
+	if (formatter) {
+		for (const [key, value] of Object.entries(formatters)) {
+			formatter.addCached(key, value)
+		}
+	} else { self.console.warn(ret.t("errors.no-formatter")) }
 	return ret
 }
 
