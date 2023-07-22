@@ -12,7 +12,14 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`v1.11.3...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.3...main)
+__Full changelog__: [`v1.12.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.0...main)
+
+## v1.12.0 (2023-07-22)
+
+- Add new platforms: `desktop`, `mobile`. (`8b89706a858ca957ec517817ef011bae25ab3f9b`)
+- Use Obsidian's `Platform` to detect platform. (`8b89706a858ca957ec517817ef011bae25ab3f9b`)
+
+__Full changelog__: [`v1.11.3...v1.12.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.3...v1.12.0)
 
 ## v1.11.3 (2023-07-22)
 
