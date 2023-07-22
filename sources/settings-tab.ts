@@ -29,10 +29,14 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 	public constructor(protected readonly context: PluginContext<S>) {
 		super(context.app, context)
 		this.#onMutate = this.snapshot()
-		context.addChild(new LambdaComponent(
-			() => { this.onLoad() },
-			() => { this.onUnload() },
-		))
+		Promise.resolve()
+			.then(() => {
+				context.addChild(new LambdaComponent(
+					() => { this.onLoad() },
+					() => { this.onUnload() },
+				))
+			})
+			.catch(error => { activeSelf(this.containerEl).console.error(error) })
 	}
 
 	public display(): void {
