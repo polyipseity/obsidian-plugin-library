@@ -12,7 +12,14 @@ Versions are ordered by recency.
 
 ## Unreleased
 
-__Full changelog__: [`v1.12.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.0...main)
+__Full changelog__: [`v1.12.1...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.1...main)
+
+## v1.12.1 (2023-07-22)
+
+- Fix platform checking not working. (`7e957a25540404dc42072fd1f81408a8d10247a2`)
+- Name unnamed types in `obsidian.ts`. (`c030be4e7be5e4f9670eaaebdbcdd2abee155430`)
+
+__Full changelog__: [`v1.12.0...v1.12.1`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.12.0...v1.12.1)
 
 ## v1.12.0 (2023-07-22)
 
