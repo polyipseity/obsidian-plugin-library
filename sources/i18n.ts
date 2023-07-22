@@ -11,7 +11,7 @@ import {
 import type { AsyncOrSync } from "ts-essentials"
 import type { PluginContext } from "./plugin.js"
 import { ResourceComponent } from "./obsidian.js"
-import { moment } from "obsidian"
+import { locale } from "moment"
 import resourcesToBackend from "i18next-resources-to-backend"
 
 export type I18nFormatters = Readonly<Record<string, (
@@ -108,7 +108,7 @@ export class LanguageManager extends ResourceComponent<i18n> {
 	}
 
 	protected static interpretLanguage(language: string): string {
-		return language || moment.locale() || language
+		return language || locale() || language
 	}
 
 	public async changeLanguage(language: string): Promise<void> {
