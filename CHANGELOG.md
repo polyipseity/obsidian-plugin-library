@@ -12,6 +12,8 @@ Versions are ordered by recency.
 
 ## Unreleased
 
+- Create `patchWindows`. (`52c977f05462913fc8ed01bd2179079aca4f77c9`)
+
 __Full changelog__: [`v1.11.1...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.11.1...main)
 
 ## v1.11.1 (2023-07-21)
