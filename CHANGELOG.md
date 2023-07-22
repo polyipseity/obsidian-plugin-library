@@ -1,18 +1,4 @@
-# Changelog for Plugin Library
-
-[Buy Me a Coffee]: https://buymeacoffee.com/polyipseity
-[Buy Me a Coffee/embed]: https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=polyipseity&button_colour=40DCA5&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00
-[readme]: https://github.com/polyipseity/obsidian-plugin-library/blob/main/README.md
-
-[![Buy Me a Coffee/embed]][Buy Me a Coffee]
-
-Versions are ordered by recency.
-
-- [Readme]
-
-## Unreleased
-
-__Full changelog__: [`v1.13.0...main`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.13.0...main)
+# @polyipseity/obsidian-plugin-library
 
 ## v1.13.0 (2023-07-22)
 
