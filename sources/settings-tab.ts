@@ -4,6 +4,7 @@ import {
 	activeSelf,
 	cloneAsWritable,
 	createChildElement,
+	createDocumentFragment,
 	deepFreeze,
 	unexpected,
 } from "./util.js"
@@ -53,11 +54,25 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		this.ui.destroy()
 	}
 
+	protected newSectionWidget(
+		text: () => DocumentFragment | string,
+		// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+		heading: 1 | 2 | 3 | 4 | 5 | 6 = 2,
+	): void {
+		const { containerEl, ui } = this
+		ui.new(() => createChildElement(containerEl, `h${heading}`), ele => {
+			const text0 = text()
+			ele.replaceChildren(typeof text0 === "string"
+				? createDocumentFragment(ele.ownerDocument, frag2 => {
+					frag2.textContent = text0
+				})
+				: text0)
+		}, ele => { ele.remove() })
+	}
+
 	protected newTitleWidget(): void {
-		const { context, containerEl, ui } = this
-		ui.new(() => createChildElement(containerEl, "h1"), ele => {
-			ele.textContent = context.displayName()
-		})
+		const { context } = this
+		this.newSectionWidget(() => context.displayName(), 1)
 	}
 
 	protected newDescriptionWidget(): void {
