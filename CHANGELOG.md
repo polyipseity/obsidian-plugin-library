@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.13.2
+
+### Patch Changes
+
+- 7aa5694: Create `AdvancedSettingTab#newSectionWidget`.
+
 ## 1.13.1
 
 ### Patch Changes
