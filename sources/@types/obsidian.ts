@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 declare module "obsidian" {
 	interface App extends Private<$App, PrivateKey> { }
+	interface AppSettingTab extends Private<$AppSettingTab, PrivateKey> { }
+	interface CommunityPluginsSettingTab
+		extends Private<$CommunityPluginsSettingTab, PrivateKey> { }
 	interface DataAdapter extends Private<$DataAdapter, PrivateKey> { }
+	interface FileSystem extends Private<$FileSystem, PrivateKey> { }
 	interface Scope {
 		// eslint-disable-next-line @typescript-eslint/method-signature-style
 		register(
@@ -15,7 +19,12 @@ declare module "obsidian" {
 	interface WorkspaceLeaf extends Private<$WorkspaceLeaf, PrivateKey> { }
 	interface WorkspaceRibbon extends Private<$WorkspaceRibbon, PrivateKey> { }
 }
-import type { PluginManifest, SettingTab } from "obsidian"
+import type {
+	AppSettingTab,
+	FileSystem,
+	PluginManifest,
+	SettingTab,
+} from "obsidian"
 import type { Deopaque } from "../types.js"
 import type { Platform } from "../platform.js"
 import type { Private } from "../private.js"
@@ -30,22 +39,30 @@ declare module "../private.js" {
 
 interface $App {
 	readonly setting: {
-		readonly settingTabs: readonly (SettingTab & ({
-			readonly id: "community-plugins"
-			readonly renderInstalledPlugin: (
-				manifest: PluginManifest,
-				element: HTMLElement
-			) => void
-		} | { readonly id: unique symbol }))[]
+		readonly settingTabs: readonly AppSettingTab[]
 	}
 }
 
+type $AppSettingTab = ($CommunityPluginsSettingTab | (SettingTab & {
+	readonly id: unique symbol
+}))
+
+interface $CommunityPluginsSettingTab extends SettingTab {
+	readonly id: "community-plugins"
+	readonly renderInstalledPlugin: (
+		manifest: PluginManifest,
+		element: HTMLElement
+	) => void
+}
+
 interface $DataAdapter {
-	readonly fs: {
-		readonly open: <T extends Platform.Current>(
-			path: Deopaque<T> extends Platform.Mobile ? string : never,
-		) => Deopaque<T> extends Platform.Mobile ? PromiseLike<void> : never
-	}
+	readonly fs: FileSystem
+}
+
+interface $FileSystem {
+	readonly open: <T extends Platform.Current>(
+		path: Deopaque<T> extends Platform.Mobile ? string : never,
+	) => Deopaque<T> extends Platform.Mobile ? PromiseLike<void> : never
 }
 
 interface $ViewStateResult {
