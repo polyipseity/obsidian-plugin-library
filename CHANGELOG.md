@@ -142,7 +142,7 @@
 - Update npm packages to remove vulnerabilities. (`5921ac38e2c71ad82eb9f1c6ce767ad5b58b4b59`)
 - Rename `NamespacedTranslationKey` to `TranslationKey` and fix it. (`b9e09a66b523d1c51afb03468366f2c8a0f7876a`)
 
-**Full changelog**: [`v1.3.0...v1.4.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.4.0...main)
+**Full changelog**: [`v1.3.0...v1.4.0`](https://github.com/polyipseity/obsidian-plugin-library/compare/v1.3.0...v1.4.0)
 
 ## v1.3.0 (2023-05-21)
 
