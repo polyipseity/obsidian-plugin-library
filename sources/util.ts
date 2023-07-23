@@ -200,6 +200,10 @@ export function asyncDebounce<
 		})
 }
 
+export function asyncFunction(self0: typeof globalThis): typeof Function {
+	return self0.eval("(async function() {}).constructor") as typeof Function
+}
+
 export function basename(path: string, ext = ""): string {
 	const ret = path.slice(Math.max(
 		path.lastIndexOf("/"),
