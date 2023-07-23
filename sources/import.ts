@@ -16,10 +16,13 @@ export function dynamicRequireLazy<T extends object>(
 	return lazyProxy(() => dynamicRequireSync(...args))
 }
 
-export function dynamicRequireSync<T>(bundle: Bundle, module: string): T {
+export function dynamicRequireSync<T>(
+	bundle: Bundle,
+	module: string,
+	require0 = require,
+): T {
 	const { valid, value } = bracket(bundle, module),
-		// eslint-disable-next-line @typescript-eslint/no-require-imports
-		ret: unknown = valid ? value() : require(module)
+		ret: unknown = valid ? value() : require0(module)
 	if (isNil(ret)) { throw new Error(module) }
 	return ret as T
 }
