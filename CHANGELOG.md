@@ -1,5 +1,18 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.14.0
+
+### Minor Changes
+
+- 3e84682: Make uses of `Proxy` enforce [invariants](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html#sec-proxy-object-internal-methods-and-internal-slots).
+
+### Patch Changes
+
+- f26782c: Create `asyncFunction` for getting `AsyncFunction` from a global object.
+- 72e2fbe: Augment `FunctionConstructor`.
+- 715d0ef: Allow custom `require` in `dynamicRequireSync`.
+- e7d8eaa: Create `AsyncFunctionConstructor`.
+
 ## 1.13.2
 
 ### Patch Changes
