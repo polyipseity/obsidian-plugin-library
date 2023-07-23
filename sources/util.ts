@@ -42,6 +42,19 @@ import type { SvelteComponent } from "svelte"
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift"
 
+export interface AsyncFunctionConstructor {
+	<const A extends readonly string[]>(
+		...args: A
+	): (this: unknown, ...args: A extends readonly [...infer B, unknown] ? {
+		readonly [I in keyof B]: unknown
+	} : []) => Promise<unknown>
+	new <const A extends readonly string[]>(
+		...args: A
+	): (this: unknown, ...args: A extends readonly [...infer B, unknown] ? {
+		readonly [I in keyof B]: unknown
+	} : []) => Promise<unknown>
+}
+
 export class EventEmitterLite<A extends readonly unknown[]> {
 	protected static readonly emitLock = "emit"
 	protected readonly lock = new AsyncLock({ maxPending: MAX_LOCK_PENDING })
@@ -200,8 +213,12 @@ export function asyncDebounce<
 		})
 }
 
-export function asyncFunction(self0: typeof globalThis): typeof Function {
-	return self0.eval("(async function() {}).constructor") as typeof Function
+export function asyncFunction(
+	self0: typeof globalThis,
+): AsyncFunctionConstructor {
+	return self0.eval(
+		"(async function() {}).constructor",
+	) as AsyncFunctionConstructor
 }
 
 export function basename(path: string, ext = ""): string {
