@@ -55,7 +55,6 @@
 		"typescript-svelte-plugin": "^0.3.29",
 		"which": "^3.0.1"
 	},
-	"displayName": "Obsidian Plugin Library",
 	"exports": {
 		".": {
 			"types": "./dist/sources/index.d.ts",
