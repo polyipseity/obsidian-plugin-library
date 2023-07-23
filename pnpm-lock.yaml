@@ -46,6 +46,9 @@ importers:
       semver:
         specifier: ^7.5.4
         version: 7.5.4
+      svelte:
+        specifier: ^3.59.2
+        version: 3.59.2
       ts-deepmerge:
         specifier: ^6.2.0
         version: 6.2.0
@@ -131,9 +134,6 @@ importers:
       moment:
         specifier: ^2.29.4
         version: 2.29.4
-      svelte:
-        specifier: ^3.59.2
-        version: 3.59.2
       svelte-preprocess:
         specifier: ^5.0.4
         version: 5.0.4(svelte@3.59.2)(typescript@5.1.6)
@@ -3420,7 +3420,6 @@ packages:
   /svelte@3.59.2:
     resolution: {integrity: sha512-vzSyuGr3eEoAtT/A6bmajosJZIUWySzY2CzB3w2pgPvnkUjGqlDnsNnA0PMO+mMAhuyMul6C2uuZzY6ELSkzyA==}
     engines: {node: '>= 8'}
-    dev: true
 
   /synckit@0.8.5:
     resolution: {integrity: sha512-L1dapNV6vu2s/4Sputv8xGsCdAVlb5nRDMFU/E27D44l5U6cw1g0dGd45uLc+OXjNMmF4ntiMdCimzcjFKQI8Q==}
