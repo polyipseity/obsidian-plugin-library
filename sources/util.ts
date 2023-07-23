@@ -520,12 +520,27 @@ export function lazyProxy<T extends Function | object>(
 				throw new TypeError(String(ret))
 			},
 			defineProperty(target, property, attributes): boolean {
+				if (!(attributes.configurable ?? true) &&
+					!Reflect.defineProperty(target, property, attributes)) {
+					return false
+				}
 				return Reflect.defineProperty(target(), property, attributes)
 			},
 			deleteProperty(target, property): boolean {
+				const own = Reflect.getOwnPropertyDescriptor(target, property)
+				if (!(own?.configurable ?? true) &&
+					!Reflect.deleteProperty(target, property)) {
+					return false
+				}
 				return Reflect.deleteProperty(target(), property)
 			},
 			get(target, property, receiver): unknown {
+				const own = Reflect.getOwnPropertyDescriptor(target, property)
+				if (!(own?.configurable ?? true) &&
+					// eslint-disable-next-line @typescript-eslint/no-extra-parens
+					(!(own?.writable ?? true) || (own?.set && !own.get))) {
+					return Reflect.get(target, property, receiver)
+				}
 				const ret = Reflect.get(
 					target(),
 					property,
@@ -563,24 +578,46 @@ export function lazyProxy<T extends Function | object>(
 				target,
 				property,
 			): PropertyDescriptor | undefined {
-				return Reflect.getOwnPropertyDescriptor(target(), property)
+				let ret = Reflect.getOwnPropertyDescriptor(target(), property)
+				if (ret && !(ret.configurable ?? true) &&
+					!Reflect.defineProperty(target, property, ret)) {
+					ret = UNDEFINED
+				}
+				return ret
 			},
 			getPrototypeOf(target): object | null {
 				return Reflect.getPrototypeOf(target())
 			},
 			has(target, property): boolean {
-				return Reflect.has(target(), property)
+				return Reflect.getOwnPropertyDescriptor(target, property)
+					?.configurable ?? true
+					? Reflect.has(target(), property)
+					: Reflect.has(target, property)
 			},
 			isExtensible(target): boolean {
-				return Reflect.isExtensible(target())
+				return Reflect.isExtensible(target)
 			},
 			ownKeys(target): ArrayLike<string | symbol> {
-				return Reflect.ownKeys(target())
+				return [
+					...new Set([
+						Reflect.ownKeys(target()),
+						Reflect.ownKeys(target)
+							.filter(key => !(Reflect.getOwnPropertyDescriptor(target, key)
+								?.configurable ?? true)),
+					].flat()),
+				]
 			},
 			preventExtensions(target): boolean {
-				return Reflect.preventExtensions(target())
+				return Reflect.preventExtensions(target)
 			},
 			set(target, property, newValue, receiver): boolean {
+				const own = Reflect.getOwnPropertyDescriptor(target, property)
+				if (!(own?.configurable ?? true) &&
+					// eslint-disable-next-line @typescript-eslint/no-extra-parens
+					(!(own?.writable ?? true) || (own?.get && !own.set)) &&
+					!Reflect.set(target, property, newValue, receiver)) {
+					return false
+				}
 				return Reflect.set(
 					target(),
 					property,
