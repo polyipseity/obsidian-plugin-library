@@ -5,6 +5,7 @@ import {
 } from "svelte/internal"
 import {
 	type AnyObject,
+	type Base64String,
 	type CodePoint,
 	type ReadonlyTuple,
 	contravariant,
@@ -221,6 +222,14 @@ export function asyncFunction(
 	) as AsyncFunctionConstructor
 }
 
+export function base64ToBytes(base64: Base64String): Uint8Array {
+	return Uint8Array.from(self.atob(base64), byte => byte.codePointAt(0) ?? NaN)
+}
+
+export function base64ToString(base64: Base64String): string {
+	return new TextDecoder().decode(base64ToBytes(base64))
+}
+
 export function basename(path: string, ext = ""): string {
 	const ret = path.slice(Math.max(
 		path.lastIndexOf("/"),
@@ -247,6 +256,12 @@ export function bracket<T extends object, K extends keyof any>(
 	return Object.freeze(proof
 		? { valid: true, value: proof() }
 		: { valid: false })
+}
+
+export function bytesToBase64(bytes: Uint8Array): Base64String {
+	return self.btoa(Array
+		.from(bytes, byte => String.fromCodePoint(byte))
+		.join("")) as Base64String
 }
 
 export function capitalize(
@@ -815,6 +830,10 @@ export function startCase(str: string, locales?: string[] | string): string {
 		str0 => str0.toLocaleUpperCase(locales),
 		str0 => str0.toLocaleLowerCase(locales),
 	))
+}
+
+export function stringToBase64(string: string): Base64String {
+	return bytesToBase64(new TextEncoder().encode(string))
 }
 
 export function activeSelf(

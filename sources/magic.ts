@@ -34,5 +34,6 @@ export namespace LibraryUUIDs {
 	export const
 		UUID0 = "2af98ef6-0537-4fd3-a1e1-269517bca44d",
 		UUID1 = "fec54e0c-8342-4418-bc4b-57ea4d92c3d4",
-		UUID2 = "387823d1-e81d-4ed2-8148-4023aeae81a6"
+		UUID2 = "387823d1-e81d-4ed2-8148-4023aeae81a6",
+		UUID3 = "c4ba1170-c0b7-4fde-a4a5-047c74ea5298"
 }
