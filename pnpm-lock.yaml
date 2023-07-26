@@ -3,152 +3,150 @@ lockfileVersion: '6.0'
 overrides:
   tsconfig-paths: ^4.0.0
 
-importers:
+dependencies:
+  '@capacitor/filesystem':
+    specifier: ^5.1.1
+    version: 5.1.1(@capacitor/core@5.2.0)
+  async-lock:
+    specifier: ^1.4.0
+    version: 1.4.0
+  browser-util-inspect:
+    specifier: ^0.2.0
+    version: 0.2.0
+  deep-equal:
+    specifier: ^2.2.2
+    version: 2.2.2
+  file-saver:
+    specifier: ^2.0.5
+    version: 2.0.5
+  i18next:
+    specifier: ^23.2.11
+    version: 23.2.11
+  i18next-resources-to-backend:
+    specifier: ^1.1.4
+    version: 1.1.4
+  lodash-es:
+    specifier: ^4.17.21
+    version: 4.17.21
+  lucide:
+    specifier: ^0.263.0
+    version: 0.263.0
+  monkey-around:
+    specifier: ^2.3.0
+    version: 2.3.0
+  obsidian:
+    specifier: ^1.2.8
+    version: 1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
+  p-lazy:
+    specifier: ^4.0.0
+    version: 4.0.0
+  semver:
+    specifier: ^7.5.4
+    version: 7.5.4
+  svelte:
+    specifier: ^3.59.2
+    version: 3.59.2
+  ts-deepmerge:
+    specifier: ^6.2.0
+    version: 6.2.0
+  ts-essentials:
+    specifier: ^9.3.2
+    version: 9.3.2(typescript@5.1.6)
 
-  .:
-    dependencies:
-      '@capacitor/filesystem':
-        specifier: ^5.1.1
-        version: 5.1.1(@capacitor/core@5.2.0)
-      async-lock:
-        specifier: ^1.4.0
-        version: 1.4.0
-      browser-util-inspect:
-        specifier: ^0.2.0
-        version: 0.2.0
-      deep-equal:
-        specifier: ^2.2.2
-        version: 2.2.2
-      file-saver:
-        specifier: ^2.0.5
-        version: 2.0.5
-      i18next:
-        specifier: ^23.2.11
-        version: 23.2.11
-      i18next-resources-to-backend:
-        specifier: ^1.1.4
-        version: 1.1.4
-      lodash-es:
-        specifier: ^4.17.21
-        version: 4.17.21
-      lucide:
-        specifier: ^0.263.0
-        version: 0.263.0
-      monkey-around:
-        specifier: ^2.3.0
-        version: 2.3.0
-      obsidian:
-        specifier: ^1.2.8
-        version: 1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
-      p-lazy:
-        specifier: ^4.0.0
-        version: 4.0.0
-      semver:
-        specifier: ^7.5.4
-        version: 7.5.4
-      svelte:
-        specifier: ^3.59.2
-        version: 3.59.2
-      ts-deepmerge:
-        specifier: ^6.2.0
-        version: 6.2.0
-      ts-essentials:
-        specifier: ^9.3.2
-        version: 9.3.2(typescript@5.1.6)
-    devDependencies:
-      '@changesets/cli':
-        specifier: ^2.26.2
-        version: 2.26.2
-      '@polyipseity/obsidian':
-        specifier: ^1.2.8
-        version: 1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
-      '@tsconfig/esm':
-        specifier: ^1.0.4
-        version: 1.0.4
-      '@tsconfig/node16':
-        specifier: ^16.1.0
-        version: 16.1.0
-      '@tsconfig/recommended':
-        specifier: ^1.0.2
-        version: 1.0.2
-      '@tsconfig/strictest':
-        specifier: ^2.0.1
-        version: 2.0.1
-      '@tsconfig/svelte':
-        specifier: ^5.0.0
-        version: 5.0.0
-      '@types/async-lock':
-        specifier: ^1.4.0
-        version: 1.4.0
-      '@types/browser-util-inspect':
-        specifier: ^0.2.1
-        version: 0.2.1
-      '@types/deep-equal':
-        specifier: ^1.0.1
-        version: 1.0.1
-      '@types/file-saver':
-        specifier: ^2.0.5
-        version: 2.0.5
-      '@types/lodash-es':
-        specifier: ^4.17.8
-        version: 4.17.8
-      '@types/node':
-        specifier: ^20.4.3
-        version: 20.4.3
-      '@types/semver':
-        specifier: ^7.5.0
-        version: 7.5.0
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^6.1.0
-        version: 6.1.0(@typescript-eslint/parser@6.1.0)(eslint@8.45.0)(typescript@5.1.6)
-      '@typescript-eslint/parser':
-        specifier: ^6.1.0
-        version: 6.1.0(eslint@8.45.0)(typescript@5.1.6)
-      esbuild:
-        specifier: ^0.18.15
-        version: 0.18.15
-      esbuild-compress:
-        specifier: ^1.2.2
-        version: 1.2.2(esbuild@0.18.15)
-      esbuild-node-externals:
-        specifier: ^1.8.0
-        version: 1.8.0(esbuild@0.18.15)
-      esbuild-plugin-copy:
-        specifier: ^2.1.1
-        version: 2.1.1(esbuild@0.18.15)
-      esbuild-svelte:
-        specifier: ^0.7.4
-        version: 0.7.4(esbuild@0.18.15)(svelte@3.59.2)
-      eslint:
-        specifier: ^8.45.0
-        version: 8.45.0
-      eslint-import-resolver-typescript:
-        specifier: ^3.5.5
-        version: 3.5.5(@typescript-eslint/parser@6.1.0)(eslint-plugin-import@2.27.5)(eslint@8.45.0)
-      eslint-plugin-import:
-        specifier: ^2.27.5
-        version: 2.27.5(@typescript-eslint/parser@6.1.0)(eslint-import-resolver-typescript@3.5.5)(eslint@8.45.0)
-      eslint-plugin-svelte3:
-        specifier: ^4.0.0
-        version: 4.0.0(eslint@8.45.0)(svelte@3.59.2)
-      moment:
-        specifier: ^2.29.4
-        version: 2.29.4
-      svelte-preprocess:
-        specifier: ^5.0.4
-        version: 5.0.4(svelte@3.59.2)(typescript@5.1.6)
-      tslib:
-        specifier: ^2.6.0
-        version: 2.6.0
-      typescript:
-        specifier: ^5.1.6
-        version: 5.1.6
-      typescript-svelte-plugin:
-        specifier: ^0.3.29
-        version: 0.3.29(svelte@3.59.2)(typescript@5.1.6)
-      which:
-        specifier: ^3.0.1
-        version: 3.0.1
+devDependencies:
+  '@changesets/cli':
+    specifier: ^2.26.2
+    version: 2.26.2
+  '@polyipseity/obsidian':
+    specifier: ^1.2.8
+    version: 1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
+  '@tsconfig/esm':
+    specifier: ^1.0.4
+    version: 1.0.4
+  '@tsconfig/node16':
+    specifier: ^16.1.0
+    version: 16.1.0
+  '@tsconfig/recommended':
+    specifier: ^1.0.2
+    version: 1.0.2
+  '@tsconfig/strictest':
+    specifier: ^2.0.1
+    version: 2.0.1
+  '@tsconfig/svelte':
+    specifier: ^5.0.0
+    version: 5.0.0
+  '@types/async-lock':
+    specifier: ^1.4.0
+    version: 1.4.0
+  '@types/browser-util-inspect':
+    specifier: ^0.2.1
+    version: 0.2.1
+  '@types/deep-equal':
+    specifier: ^1.0.1
+    version: 1.0.1
+  '@types/file-saver':
+    specifier: ^2.0.5
+    version: 2.0.5
+  '@types/lodash-es':
+    specifier: ^4.17.8
+    version: 4.17.8
+  '@types/node':
+    specifier: ^20.4.3
+    version: 20.4.3
+  '@types/semver':
+    specifier: ^7.5.0
+    version: 7.5.0
+  '@typescript-eslint/eslint-plugin':
+    specifier: ^6.1.0
+    version: 6.1.0(@typescript-eslint/parser@6.1.0)(eslint@8.45.0)(typescript@5.1.6)
+  '@typescript-eslint/parser':
+    specifier: ^6.1.0
+    version: 6.1.0(eslint@8.45.0)(typescript@5.1.6)
+  esbuild:
+    specifier: ^0.18.15
+    version: 0.18.15
+  esbuild-compress:
+    specifier: ^1.2.2
+    version: 1.2.2(esbuild@0.18.15)
+  esbuild-node-externals:
+    specifier: ^1.8.0
+    version: 1.8.0(esbuild@0.18.15)
+  esbuild-plugin-copy:
+    specifier: ^2.1.1
+    version: 2.1.1(esbuild@0.18.15)
+  esbuild-svelte:
+    specifier: ^0.7.4
+    version: 0.7.4(esbuild@0.18.15)(svelte@3.59.2)
+  eslint:
+    specifier: ^8.45.0
+    version: 8.45.0
+  eslint-import-resolver-typescript:
+    specifier: ^3.5.5
+    version: 3.5.5(@typescript-eslint/parser@6.1.0)(eslint-plugin-import@2.27.5)(eslint@8.45.0)
+  eslint-plugin-import:
+    specifier: ^2.27.5
+    version: 2.27.5(@typescript-eslint/parser@6.1.0)(eslint-import-resolver-typescript@3.5.5)(eslint@8.45.0)
+  eslint-plugin-svelte3:
+    specifier: ^4.0.0
+    version: 4.0.0(eslint@8.45.0)(svelte@3.59.2)
+  moment:
+    specifier: ^2.29.4
+    version: 2.29.4
+  svelte-preprocess:
+    specifier: ^5.0.4
+    version: 5.0.4(svelte@3.59.2)(typescript@5.1.6)
+  tslib:
+    specifier: ^2.6.0
+    version: 2.6.0
+  typescript:
+    specifier: ^5.1.6
+    version: 5.1.6
+  typescript-svelte-plugin:
+    specifier: ^0.3.29
+    version: 0.3.29(svelte@3.59.2)(typescript@5.1.6)
+  which:
+    specifier: ^3.0.1
+    version: 3.0.1
 
 packages:
 
