@@ -257,6 +257,11 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 						settingsM.noticeTimeout = value
 					})),
 					() => { this.postMutate() },
+					{
+						post(component) {
+							component.inputEl.type = "number"
+						},
+					},
 				))
 				.addExtraButton(resetButton(
 					i18n.t("asset:settings.notice-timeout-icon"),
@@ -277,6 +282,11 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 							settingsM.errorNoticeTimeout = value
 						})),
 						() => { this.postMutate() },
+						{
+							post(component) {
+								component.inputEl.type = "number"
+							},
+						},
 					))
 					.addExtraButton(resetButton(
 						i18n.t("asset:settings.error-notice-timeout-icon"),
