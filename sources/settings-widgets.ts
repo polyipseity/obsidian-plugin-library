@@ -108,7 +108,7 @@ export function setTextToNumber<C extends ValueComponent<string>>(
 		component: C,
 		getter: () => string,
 	): Promise<boolean> => {
-		const num = value === "-" ? 0 : Number(value)
+		const num = ["+", "-"].includes(value) ? 0 : Number(value)
 		if (!(integer ? Number.isSafeInteger(num) : isFinite(num))) {
 			return false
 		}
