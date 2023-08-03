@@ -742,6 +742,7 @@ export function multireplace(
 ): string {
 	return self0.replace(new RegExp(
 		Object.keys(replacements)
+			.sort(({ length: left }, { length: right }) => right - left)
 			.map(escapeRegExp)
 			.join("|"),
 		"ug",
