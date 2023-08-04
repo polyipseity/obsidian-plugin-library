@@ -162,6 +162,18 @@ export async function acquireConditionally<T>(
 	return condition ? lock.acquire(key, fn) : fn()
 }
 
+export function alternativeRegExp(strs: readonly string[]): RegExp {
+	return isEmpty(strs)
+		? /^\b$/gu
+		: new RegExp(
+			[...strs]
+				.sort(({ length: left }, { length: right }) => right - left)
+				.map(escapeRegExp)
+				.join("|"),
+			"gu",
+		)
+}
+
 export function anyToError(obj: unknown): Error {
 	return obj instanceof Error ? obj : new Error(String(obj))
 }
@@ -740,13 +752,10 @@ export function multireplace(
 	self0: string,
 	replacements: Readonly<Record<string, string>>,
 ): string {
-	return self0.replace(new RegExp(
-		Object.keys(replacements)
-			.sort(({ length: left }, { length: right }) => right - left)
-			.map(escapeRegExp)
-			.join("|"),
-		"ug",
-	), match => replacements[match] ?? match)
+	return self0.replace(
+		alternativeRegExp(Object.keys(replacements)),
+		match => replacements[match] ?? match,
+	)
 }
 
 export function onResize(
