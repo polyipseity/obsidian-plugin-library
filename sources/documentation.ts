@@ -66,6 +66,7 @@ export class DocumentationMarkdownView extends ItemView {
 		updateView(this.context, this)
 	}
 
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	public override getViewType(): string {
 		return DocumentationMarkdownView.#namespacedType
 	}

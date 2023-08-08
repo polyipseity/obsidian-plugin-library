@@ -227,7 +227,7 @@ export class ListModal<T> extends Modal {
 							DISABLED_TOOLTIP,
 							unexpected,
 							unexpected,
-							{ post(component) { component.setDisabled(true) } },
+							{ post: component => { component.setDisabled(true) } },
 						))
 					return
 				}
@@ -318,6 +318,7 @@ export class ListModal<T> extends Modal {
 		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	#setupListSubUI = (): void => { }
 }
 export namespace ListModal {
