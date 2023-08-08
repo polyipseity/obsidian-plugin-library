@@ -1,5 +1,18 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.14.1
+
+### Patch Changes
+
+- 220ff2d: Handle `+` in `setTextToNumber`.
+- a893d20: Create `alternativeRegExp`.
+- a8caa2e: Set numeric settings input type to `number` so that mobile users are shown the numeric keyboard.
+- a1d32aa: Create `Base64String`, `base64ToBytes`, `base64ToString`, `bytesToBase64`, and `stringToBase64`.
+- 3252bb1: Create 4 source map utilities: `attachFunctionSourceMap`, `attachSourceMap`, `generateFunctionSourceMap`, and `generateSourceMap`.
+- 2de4c59: Create `splitLines`.
+- ac5be73: Sort regex in `multireplace`.
+- 026bcbb: Update npm packages.
+
 ## 1.14.0
 
 ### Minor Changes
