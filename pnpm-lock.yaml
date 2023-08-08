@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   tsconfig-paths: ^4.0.0
 
@@ -43,6 +47,9 @@ dependencies:
   semver:
     specifier: ^7.5.4
     version: 7.5.4
+  source-map:
+    specifier: ^0.7.4
+    version: 0.7.4
   svelte:
     specifier: ^3.59.2
     version: 3.59.2
@@ -3219,6 +3226,11 @@ packages:
       minimist: 1.2.8
       sander: 0.5.1
     dev: true
+
+  /source-map@0.7.4:
+    resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
+    engines: {node: '>= 8'}
+    dev: false
 
   /spawndamnit@2.0.0:
     resolution: {integrity: sha512-j4JKEcncSjFlqIwU5L/rp2N5SIPsdxaRsIv678+TZxZ0SRDJTm8JrxJMjE/XuiEZNEir3S8l0Fa3Ke339WI4qA==}
