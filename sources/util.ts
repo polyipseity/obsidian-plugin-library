@@ -834,6 +834,13 @@ export function replaceAllRegex(string: string): RegExp {
 	return new RegExp(escapeRegExp(string), "ug")
 }
 
+export function splitLines(
+	str: string,
+	delimiter = /\r\n|[\n\v\f\r\x85\u2028\u2029]/u,
+): readonly string[] {
+	return str.split(delimiter)
+}
+
 export function startCase(str: string, locales?: string[] | string): string {
 	return str.replace(/\w\S*/gu, ss => mapFirstCodePoint(
 		ss,
