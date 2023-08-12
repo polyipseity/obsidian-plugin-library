@@ -35,6 +35,8 @@
 		"cancel-icon": "x",
 		"confirm-icon": "check",
 		"data-icon": "curly-braces",
+		"edit-icon": "edit",
+		"edit-list-icon": "list",
 		"input-from-clipboard-icon": "clipboard-paste",
 		"input-from-file-icon": "file-output",
 		"load-icon": "loader",
