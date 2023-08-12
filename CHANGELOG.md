@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.14.2
+
+### Patch Changes
+
+- 73c083b: Add more translations related to editing lists.
+
 ## 1.14.1
 
 ### Patch Changes
