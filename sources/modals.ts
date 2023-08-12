@@ -30,6 +30,7 @@ import {
 	swap,
 	unexpected,
 } from "./util.js"
+import { constant, noop } from "lodash-es"
 import {
 	dropdownSelect,
 	linkSetting,
@@ -37,7 +38,6 @@ import {
 } from "./settings-widgets.js"
 import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
-import { constant } from "lodash-es"
 import { simplifyType } from "./types.js"
 
 export function makeModalDynamicWidth(
@@ -63,6 +63,7 @@ export class ListModal<T> extends Modal {
 	readonly #presets
 	readonly #presetPlaceholder
 	readonly #dynamicWidth
+	#setupListSubUI = noop
 
 	public constructor(
 		protected readonly context: PluginContext,
@@ -317,9 +318,6 @@ export class ListModal<T> extends Modal {
 			})
 		}
 	}
-
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
-	#setupListSubUI = (): void => { }
 }
 export namespace ListModal {
 	export const EDITABLES = deepFreeze([
@@ -575,7 +573,7 @@ export class DialogModal extends Modal {
 		this.#confirm = options?.confirm ?? ((close): void => { close() })
 		this.#title = options?.title
 		this.#description = options?.description
-		this.#draw = options?.draw ?? ((): void => { })
+		this.#draw = options?.draw ?? noop
 		this.#dynamicWidth = options?.dynamicWidth ?? false
 	}
 

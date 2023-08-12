@@ -187,7 +187,7 @@ export class UpdatableUI {
 						try {
 							if ("onChange" in comp && typeof comp.onChange === "function") {
 								try {
-									comp.onChange((): void => { })
+									comp.onChange(noop)
 								} catch (error) {
 									activeSelf(settingEl).console.error(error)
 								}
