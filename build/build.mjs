@@ -91,7 +91,9 @@ const ARGV_PRODUCTION = 2,
 						replace: [],
 						sourceMap: false,
 						typescript: {
-							compilerOptions: {},
+							compilerOptions: {
+								module: "ESNext",
+							},
 							handleMixedImports: true,
 							reportDiagnostics: true,
 							tsconfigDirectory: "./",
