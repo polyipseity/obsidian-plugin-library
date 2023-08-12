@@ -34,7 +34,7 @@
       "ES2022"
     ],
     "maxNodeModuleJsDepth": 0,
-    "module": "ESNext",
+    "module": "NodeNext",
     "moduleDetection": "force",
     "moduleResolution": "nodenext",
     "moduleSuffixes": [
