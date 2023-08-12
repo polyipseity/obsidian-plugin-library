@@ -1,9 +1,7 @@
 export const
 	FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT = "LoremIpsum",
 	MAX_LOCK_PENDING = 1000,
-	SAVE_SETTINGS_WAIT = 2,
-	// eslint-disable-next-line no-void
-	UNDEFINED = void 0
+	SAVE_SETTINGS_WAIT = 2
 
 export namespace InternalDOMClasses {
 	const NAMESPACE = "obsidian-plugin-library"

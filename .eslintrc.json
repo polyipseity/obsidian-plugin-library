@@ -744,6 +744,9 @@
         "allowAfterThis": true
       }
     ],
+    "no-void": [
+      "off"
+    ],
     "object-curly-spacing": [
       "error",
       "always"

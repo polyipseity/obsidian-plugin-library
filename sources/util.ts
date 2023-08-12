@@ -33,7 +33,6 @@ import {
 import {
 	FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT,
 	MAX_LOCK_PENDING,
-	UNDEFINED,
 } from "./internals/magic.js"
 import {
 	type Position,
@@ -158,7 +157,7 @@ export class Functions<
 				}
 			}
 			: (func): void => { func.call(thisArg, ...args) })
-		return UNDEFINED
+		return void 0
 	}
 }
 
@@ -703,7 +702,7 @@ export function lazyProxy<T extends Function | object>(
 				let ret = Reflect.getOwnPropertyDescriptor(target(), property)
 				if (ret && !(ret.configurable ?? true) &&
 					!Reflect.defineProperty(target, property, ret)) {
-					ret = UNDEFINED
+					ret = void 0
 				}
 				return ret
 			},
