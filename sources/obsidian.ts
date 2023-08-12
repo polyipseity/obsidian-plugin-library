@@ -36,7 +36,7 @@ import {
 	onVisible,
 	promisePromise,
 } from "./util.js"
-import { cloneDeep, constant, isUndefined } from "lodash-es"
+import { cloneDeep, constant, isUndefined, noop } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
 import type { AsyncOrSync } from "ts-essentials"
 import { InternalDOMClasses } from "./internals/magic.js"
@@ -268,7 +268,7 @@ export class UpdatableUI {
 }
 
 export function statusUI(ui: UpdatableUI, element: HTMLElement): StatusUI {
-	ui.new(constant(element), () => { }, () => { element.textContent = null })
+	ui.new(constant(element), noop, () => { element.textContent = null })
 	return deepFreeze({
 		report(status?: unknown) {
 			element.textContent = isUndefined(status) ? null : String(status)
@@ -476,7 +476,7 @@ export function recordViewStateHistory(
 ): void {
 	revealPrivate(context, [result], result0 => {
 		result0.history = true
-	}, () => { })
+	}, noop)
 }
 
 export async function saveFileAs(
@@ -495,7 +495,7 @@ export async function saveFileAs(
 					path: data.name,
 				})).uri,
 			)
-		}, () => { })
+		}, noop)
 		return
 	}
 	saveAs(data)
@@ -508,7 +508,7 @@ export function updateView(context: PluginContext, view: View): void {
 	], (leaf, workspace) => {
 		leaf.updateHeader()
 		workspace.requestUpdateLayout()
-	}, () => { })
+	}, noop)
 	if ("titleEl" in view) {
 		const { titleEl } = view
 		if (instanceOf(titleEl, Node)) {
