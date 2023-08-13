@@ -1,5 +1,13 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.15.1
+
+### Patch Changes
+
+- 7279d1e: Add an asset.
+- 695cfd9: Fix parsing `RegExp` in `Rules`.
+- 189a700: Add rule interpreters.
+
 ## 1.15.0
 
 ### Minor Changes
