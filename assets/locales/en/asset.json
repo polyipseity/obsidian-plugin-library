@@ -44,7 +44,8 @@
 		"output-to-clipboard-icon": "clipboard-copy",
 		"output-to-file-icon": "file-input",
 		"previous-icon": "arrow-up",
-		"remove-icon": "minus"
+		"remove-icon": "minus",
+		"rule-icon": "ruler"
 	},
 	"settings": {
 		"all-settings-actions": {
