@@ -34,6 +34,7 @@ import {
 	FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT,
 	MAX_LOCK_PENDING,
 } from "./internals/magic.js"
+import { NEVER_REGEX_G, SI_PREFIX_SCALE } from "./magic.js"
 import {
 	type Position,
 	SourceMapGenerator,
@@ -46,7 +47,6 @@ import {
 } from "./typeof.js"
 import inspect, { type Options } from "browser-util-inspect"
 import AsyncLock from "async-lock"
-import { SI_PREFIX_SCALE } from "./magic.js"
 import type { SvelteComponent } from "svelte"
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift"
@@ -172,7 +172,7 @@ export async function acquireConditionally<T>(
 
 export function alternativeRegExp(strs: readonly string[]): RegExp {
 	return isEmpty(strs)
-		? /^\b$/gu
+		? NEVER_REGEX_G
 		: new RegExp(
 			[...strs]
 				.sort(({ length: left }, { length: right }) => right - left)

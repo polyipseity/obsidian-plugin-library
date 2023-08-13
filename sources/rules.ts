@@ -1,3 +1,4 @@
+import { ALWAYS_REGEX, NEVER_REGEX } from "./magic.js"
 import { constant, escapeRegExp, identity, isUndefined } from "lodash-es"
 import type { DeepReadonly } from "ts-essentials"
 import { EventEmitterLite } from "./util.js"
@@ -52,9 +53,9 @@ export namespace Rules {
 	export function pathInterpreter(str: string): RegExp {
 		const path = normalizePath(str)
 		return str
-			? /^\b$/u
+			? NEVER_REGEX
 			: path === "/"
-				? /(?:)/u
+				? ALWAYS_REGEX
 				: new RegExp(
 					`^${escapeRegExp(path)}(?:/|$)`,
 					"u",
