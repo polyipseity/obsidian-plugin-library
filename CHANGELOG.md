@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.15.0
+
+### Minor Changes
+
+- 1add970: Create `rules.ts`.
+
 ## 1.14.2
 
 ### Patch Changes
