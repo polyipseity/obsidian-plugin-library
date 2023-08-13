@@ -27,10 +27,10 @@ export namespace Rules {
 				str2 = str2.slice("-".length)
 			}
 			const [, pattern, flags] =
-				(/^\/(?<pattern>(?:\\\/|[^/])+)\/(?<flags>[dgimsuvy]*)$/u)
+				(/^\/(?<pattern>(?:\\\/|[^/])+)\/(?<flags>[dgimsuvy]*)$/)
 					.exec(str2) ?? []
 			if (!isUndefined(pattern) && !isUndefined(flags)) {
-				return { op, value: new RegExp(pattern, `${flags}u`) }
+				return { op, value: new RegExp(pattern, flags) }
 			}
 			return { op, value: interpreter(str2) }
 		})
