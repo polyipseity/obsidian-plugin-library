@@ -1,5 +1,12 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.15.2
+
+### Patch Changes
+
+- a948e6c: Fix inverted condition in `pathInterpreter`.
+- 39cfea6: Create always and never regexes.
+
 ## 1.15.1
 
 ### Patch Changes
