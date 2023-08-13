@@ -3,6 +3,7 @@ import type { DeepReadonly } from "ts-essentials"
 import { EventEmitterLite } from "./util.js"
 import { ListModal } from "./modals.js"
 import type { PluginContext } from "./plugin.js"
+import { normalizePath } from "obsidian"
 
 export interface Rule {
 	readonly op: "-" | "+"
@@ -15,7 +16,7 @@ export interface Rules extends Rules0 { }
 export namespace Rules {
 	export function parse(
 		strs: readonly string[],
-		interpreter = (str: string): RegExp => new RegExp(escapeRegExp(str), "u"),
+		interpreter = identityInterpreter,
 	): Rules {
 		return strs.map(str => {
 			let op: Rule["op"] = "+",
@@ -27,7 +28,7 @@ export namespace Rules {
 				str2 = str2.slice("-".length)
 			}
 			const [, pattern, flags] =
-				(/^\/(?<pattern>(?:\\\/|[^/])+)\/(?<flags>[dgimsuvy]*)$/)
+				(/^\/(?<pattern>(?:\\\/|[^/])+)\/(?<flags>[dgimsuvy]*)$/u)
 					.exec(str2) ?? []
 			if (!isUndefined(pattern) && !isUndefined(flags)) {
 				return { op, value: new RegExp(pattern, flags) }
@@ -42,6 +43,22 @@ export namespace Rules {
 			if (op === (ret ? "-" : "+") && value.test(str)) { ret = !ret }
 		}
 		return ret
+	}
+
+	export function identityInterpreter(str: string): RegExp {
+		return new RegExp(escapeRegExp(str), "u")
+	}
+
+	export function pathInterpreter(str: string): RegExp {
+		const path = normalizePath(str)
+		return str
+			? /^\b$/u
+			: path === "/"
+				? /(?:)/u
+				: new RegExp(
+					`^${escapeRegExp(path)}(?:/|$)`,
+					"u",
+				)
 	}
 }
 
