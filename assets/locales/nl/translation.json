@@ -44,6 +44,9 @@
 			"prepend": "Prepend",
 			"preset-placeholder": "$t(components.dropdown.placeholder)",
 			"remove": "Remove"
+		},
+		"rules-list": {
+			"description": "$t(generic.rule_other, capitalize) are executed from top to bottom. If no $t(generic.rule_other) match, it is excluded. JavaScript regexp literals are supported. Prepend nothing or \"+\" for inclusion and \"-\" for exclusion."
 		}
 	},
 	"dialogs": {
@@ -102,6 +105,9 @@
 		"plugin": "plugin",
 		"reset": "reset",
 		"retry": "retry",
+		"rule": "$t(generic.rule_one)",
+		"rule_one": "rule",
+		"rule_other": "rules",
 		"setting": "$t(generic.setting_one)",
 		"setting_one": "setting",
 		"setting_other": "settings",

@@ -41,6 +41,9 @@
 			"prepend": "前置",
 			"preset-placeholder": "$t(components.dropdown.placeholder)",
 			"remove": "刪除"
+		},
+		"rules-list": {
+			"description": "$t(generic.rule)是從上到下執行的。如果沒有$t(generic.rule)匹配，則排除。支持JavaScript正則表達式。不前置任何文字或前置「+」表示包含，「-」表示排除。"
 		}
 	},
 	"dialogs": {
@@ -89,6 +92,7 @@
 		"plugin": "外掛程式",
 		"reset": "重設",
 		"retry": "重試",
+		"rule": "規則",
 		"setting": "設置",
 		"timeout": "超時",
 		"use": "使用"
