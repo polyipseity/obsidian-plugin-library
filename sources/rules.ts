@@ -53,13 +53,13 @@ export namespace Rules {
 	export function pathInterpreter(str: string): RegExp {
 		const path = normalizePath(str)
 		return str
-			? NEVER_REGEX
-			: path === "/"
+			? path === "/"
 				? ALWAYS_REGEX
 				: new RegExp(
 					`^${escapeRegExp(path)}(?:/|$)`,
 					"u",
 				)
+			: NEVER_REGEX
 	}
 }
 
