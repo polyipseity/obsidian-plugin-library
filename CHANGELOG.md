@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.16.0
+
+### Minor Changes
+
+- d22b8e1: Make `generateSourceMap` respect existing source maps and accept `sourceRoot` as an option.
+
 ## 1.15.2
 
 ### Patch Changes
