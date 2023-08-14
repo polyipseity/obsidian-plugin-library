@@ -1,20 +1,26 @@
 import {
+	type Mapping,
 	type Position,
 	SourceMapGenerator,
 	type StartOfSourceMap,
 } from "source-map"
-import { assignExact, splitLines, stringToBase64 } from "./util.js"
+import {
+	TraceMap,
+	originalPositionFor,
+	sourceContentFor,
+} from "@jridgewell/trace-mapping"
+import { assignExact, splitLines } from "./util.js"
+import { fromObject, fromSource } from "convert-source-map"
 import type { AsyncFunctionConstructor } from "./types.js"
 import { FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT } from "./internals/magic.js"
+import { isEmpty } from "lodash-es"
 
 export function attachFunctionSourceMap(
 	...args: Parameters<typeof generateFunctionSourceMap>
 ): string {
 	const [, script] = args
 	return `${script}
-//# sourceMappingURL=data:application/json;base64,${stringToBase64(
-		generateFunctionSourceMap(...args).toString(),
-	)}`
+${fromObject(generateFunctionSourceMap(...args).toJSON()).toComment()}`
 }
 
 export function attachSourceMap(
@@ -22,9 +28,7 @@ export function attachSourceMap(
 ): string {
 	const [script] = args
 	return `${script}
-//# sourceMappingURL=data:application/json;base64,${stringToBase64(
-		generateSourceMap(...args).toString(),
-	)}`
+${fromObject(generateSourceMap(...args).toJSON()).toComment()}`
 }
 
 const FUNCTION_CONSTRUCTOR_OFFSETS =
@@ -58,15 +62,24 @@ export function generateSourceMap(
 	options?: {
 		readonly source?: string
 		readonly file?: string
+		readonly sourceRoot?: string
 		readonly deletions?: readonly Position[]
 		readonly offset?: Position
 	},
 ): SourceMapGenerator {
-	const offset = options?.offset ?? { column: 0, line: 1 },
+	const subSourceMap0 = fromSource(script),
+		offset = options?.offset ?? { column: 0, line: 1 },
 		genOpts: StartOfSourceMap = { skipValidation: true }
 	assignExact(genOpts, "file", options?.file)
+	assignExact(genOpts, "sourceRoot", options?.sourceRoot)
+	let subSourceMap = null
+	try {
+		if (subSourceMap0) {
+			subSourceMap = new TraceMap(subSourceMap0.toJSON())
+		}
+	} catch (error) { self.console.debug(error) }
 	const generator = new SourceMapGenerator(genOpts),
-		source = options?.source ?? "",
+		source = options?.source ?? (isEmpty(subSourceMap?.sources) ? "" : "."),
 		content = [],
 		deletions = new Set((options?.deletions ?? [])
 			.map(({ line, column }) => `${line}:${column}`))
@@ -80,15 +93,35 @@ export function generateSourceMap(
 				continue
 			}
 			content.push(char)
-			generator.addMapping({
-				generated: { column: offset.column + column, line: offset.line + line },
+			const mapping: Mapping = {
+				generated: {
+					column: offset.column + column,
+					line: offset.line + line,
+				},
 				original: { column: column + columnOffset, line: 1 + line },
 				source,
-			})
+			}
+			if (subSourceMap) {
+				const subMapping = originalPositionFor(subSourceMap, mapping.original)
+				if (subMapping.source !== null) {
+					mapping.original = subMapping
+					mapping.source = subMapping.source
+					assignExact(mapping, "name", subMapping.name ?? void 0)
+				}
+			}
+			generator.addMapping(mapping)
 		}
 		content.push("\n")
 	}
 	content.pop()
+	if (subSourceMap) {
+		for (const src of subSourceMap.sources) {
+			if (src === null) { continue }
+			const ct = sourceContentFor(subSourceMap, src)
+			if (ct === null) { continue }
+			generator.setSourceContent(src, ct)
+		}
+	}
 	generator.setSourceContent(source, content.join(""))
 	return generator
 }
