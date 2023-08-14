@@ -9,6 +9,18 @@ import SemVer from "semver/classes/semver.js"
 import { isUndefined } from "lodash-es"
 
 export type AnyObject = Readonly<Record<keyof any, unknown>>
+export interface AsyncFunctionConstructor {
+	<const A extends readonly string[]>(
+		...args: A
+	): (this: unknown, ...args: A extends readonly [...infer B, unknown] ? {
+		readonly [I in keyof B]: unknown
+	} : []) => Promise<unknown>
+	new <const A extends readonly string[]>(
+		...args: A
+	): (this: unknown, ...args: A extends readonly [...infer B, unknown] ? {
+		readonly [I in keyof B]: unknown
+	} : []) => Promise<unknown>
+}
 export type Base64String = Opaque<string, typeof LibraryUUIDs["UUID3"]>
 export type CodePoint = Opaque<string, typeof LibraryUUIDs["UUID0"]> & {
 	readonly codePointAt: (pos: 0) => number
