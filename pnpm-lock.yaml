@@ -42,8 +42,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       lucide:
-        specifier: ^0.265.0
-        version: 0.265.0
+        specifier: ^0.268.0
+        version: 0.268.0
       monkey-around:
         specifier: ^2.3.0
         version: 2.3.0
@@ -109,8 +109,8 @@ importers:
         specifier: ^4.17.8
         version: 4.17.8
       '@types/node':
-        specifier: ^20.4.10
-        version: 20.4.10
+        specifier: ^20.5.0
+        version: 20.5.0
       '@types/semver':
         specifier: ^7.5.0
         version: 7.5.0
@@ -812,8 +812,8 @@ packages:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
     dev: true
 
-  /@types/node@20.4.10:
-    resolution: {integrity: sha512-vwzFiiy8Rn6E0MtA13/Cxxgpan/N6UeNYR9oUu6kuJWxu6zCk98trcDp8CBhbtaeuq9SykCmXkFr2lWLoPcvLg==}
+  /@types/node@20.5.0:
+    resolution: {integrity: sha512-Mgq7eCtoTjT89FqNoTzzXg2XvCi5VMhRV6+I2aYanc6kQCBImeNaAYRs/DyoVqk1YEUJK5gN9VO7HRIdz4Wo3Q==}
     dev: true
 
   /@types/normalize-package-data@2.4.1:
@@ -2497,8 +2497,8 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide@0.265.0:
-    resolution: {integrity: sha512-UftGwLDfBwI4lKz2XjcyGQZrDObx3GNlqLO9s22T8+MhdvJEqJnNRErpOdL/6K6Z1i/iO1PeD4q4kqDXVhL5jw==}
+  /lucide@0.268.0:
+    resolution: {integrity: sha512-Ls1/KjaD8gj60qvWLroS5pB5PrnEVdzVtgC0hixeAVBsjfmF/qxuBMReGok5lmmZu8KX0Y24uVl8FclbQWXdLw==}
     dev: false
 
   /lz-string@1.5.0:
