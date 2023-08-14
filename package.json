@@ -127,7 +127,7 @@
 	"style": "dist/style.css",
 	"type": "module",
 	"types": "dist/sources/index.d.ts",
-	"version": "1.15.2",
+	"version": "1.16.0",
 	"workspaces": [
 		".",
 		"build/*"
