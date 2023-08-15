@@ -31,9 +31,7 @@ const ARGV_PRODUCTION = 2,
 		format: "esm",
 		jsx: "transform",
 		legalComments: "inline",
-		loader: {
-			".json": "compressed-json",
-		},
+		loader: {},
 		logLevel: "info",
 		logLimit: 0,
 		metafile: true,
@@ -51,7 +49,12 @@ const ARGV_PRODUCTION = 2,
 				],
 			}),
 			esbuildCompress({
-				lazy: true,
+				compressors: [
+					{
+						filter: /.json$/u,
+						loader: "json",
+					},
+				],
 			}),
 			esbuildSvelte({
 				cache: "overzealous",
