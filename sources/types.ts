@@ -6,7 +6,6 @@ import type {
 } from "ts-essentials"
 import type { LibraryUUIDs } from "./magic.js"
 import SemVer from "semver/classes/semver.js"
-import { isUndefined } from "lodash-es"
 
 export type AnyObject = Readonly<Record<keyof any, unknown>>
 export interface AsyncFunctionConstructor {
@@ -77,7 +76,7 @@ export function opaqueOrDefault<T, I extends string, D>(
 }
 export function codePoint(value: string): CodePoint {
 	const cp = value.codePointAt(0)
-	if (isUndefined(cp) || String.fromCharCode(cp) !== value) {
+	if (cp === void 0 || String.fromCharCode(cp) !== value) {
 		throw new TypeError(value)
 	}
 	return value as CodePoint

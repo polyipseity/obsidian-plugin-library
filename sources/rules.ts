@@ -1,5 +1,5 @@
 import { ALWAYS_REGEX, NEVER_REGEX } from "./magic.js"
-import { constant, escapeRegExp, identity, isUndefined } from "lodash-es"
+import { constant, escapeRegExp, identity } from "lodash-es"
 import type { DeepReadonly } from "ts-essentials"
 import { EventEmitterLite } from "./util.js"
 import { ListModal } from "./modals.js"
@@ -31,7 +31,7 @@ export namespace Rules {
 			const [, pattern, flags] =
 				(/^\/(?<pattern>(?:\\\/|[^/])+)\/(?<flags>[dgimsuvy]*)$/u)
 					.exec(str2) ?? []
-			if (!isUndefined(pattern) && !isUndefined(flags)) {
+			if (pattern !== void 0 && flags !== void 0) {
 				return { op, value: new RegExp(pattern, flags) }
 			}
 			return { op, value: interpreter(str2) }

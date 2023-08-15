@@ -1,6 +1,6 @@
 import { PACKAGE_ID, PATHS } from "./util.mjs"
 import { analyzeMetafile, context, formatMessages } from "esbuild"
-import { constant, isEmpty, isUndefined, kebabCase } from "lodash-es"
+import { constant, isEmpty, kebabCase } from "lodash-es"
 import { argv } from "node:process"
 import { copy } from "esbuild-plugin-copy"
 import esbuildCompress from "esbuild-compress"
@@ -146,7 +146,7 @@ async function esbuild() {
 			const { errors, warnings, metafile } = await BUILD.rebuild()
 			await Promise.all([
 				(async () => {
-					if (!isUndefined(metafile)) {
+					if (metafile) {
 						console.log(await analyzeMetafile(metafile, {
 							color: true,
 							verbose: true,
@@ -175,13 +175,15 @@ async function esbuild() {
 						logging()
 					}
 				})(),
-				isUndefined(metafile)
-					? null
-					: writeFile(
-						PATHS.metafile,
-						JSON.stringify(metafile, null, "\t"),
-						{ encoding: "utf-8" },
-					),
+				...metafile
+					? [
+						writeFile(
+							PATHS.metafile,
+							JSON.stringify(metafile, null, "\t"),
+							{ encoding: "utf-8" },
+						),
+					]
+					: [],
 			])
 		} finally {
 			await BUILD.dispose()

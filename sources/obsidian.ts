@@ -36,7 +36,7 @@ import {
 	onVisible,
 	promisePromise,
 } from "./util.js"
-import { cloneDeep, constant, isUndefined, noop } from "lodash-es"
+import { cloneDeep, constant, noop } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
 import type { AsyncOrSync } from "ts-essentials"
 import { InternalDOMClasses } from "./internals/magic.js"
@@ -271,7 +271,7 @@ export function statusUI(ui: UpdatableUI, element: HTMLElement): StatusUI {
 	ui.new(constant(element), noop, () => { element.textContent = null })
 	return deepFreeze({
 		report(status?: unknown) {
-			element.textContent = isUndefined(status) ? null : String(status)
+			element.textContent = status === void 0 ? null : String(status)
 		},
 	})
 }

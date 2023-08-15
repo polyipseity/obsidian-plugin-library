@@ -27,7 +27,6 @@ import {
 	isEmpty,
 	isNil,
 	isObject,
-	isUndefined,
 	noop,
 	range,
 } from "lodash-es"
@@ -180,7 +179,7 @@ export function aroundIdentityFactory<T extends (this: unknown,
 export function assignExact<K extends keyof any, T extends {
 	[_ in K]?: unknown
 }>(self0: T, key: K & keyof T, value?: T[K]): typeof value {
-	if (isUndefined(value)) {
+	if (value === void 0) {
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		delete self0[key]
 	} else {
@@ -671,7 +670,7 @@ export function logFormat(
 					yield format.slice(back, sub)
 					back = sub + "%".length
 					const type = format.codePointAt(back)
-					if (isUndefined(type)) {
+					if (type === void 0) {
 						yield "%"
 						continue
 					}
@@ -729,7 +728,7 @@ export function mapFirstCodePoint(
 	mapRest: (value: string) => string = identity,
 ): string {
 	const cp0 = str.codePointAt(0)
-	if (isUndefined(cp0)) { return "" }
+	if (cp0 === void 0) { return "" }
 	const char0 = String.fromCodePoint(cp0)
 	return `${map(char0)}${mapRest(str.slice(char0.length))}`
 }
