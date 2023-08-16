@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.17.0
+
+### Minor Changes
+
+- 0d33642: Add a small output compression plugin under `./esbuild-compress`.
+
 ## 1.16.0
 
 ### Minor Changes
