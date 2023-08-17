@@ -4,7 +4,12 @@ import { readFile, writeFile } from "node:fs/promises"
 function generateNamedExports(filename, code) {
 	return `export {
 ${[...new Set(
-		[...code.matchAll(/^export[^]+?(class|const|function|interface|let|namespace|type|var)[ \n]+([^ \n(<]+)/gmu)]
+		[
+			...code.matchAll(/^export[^]+?(class|const|function|interface|let|namespace|type|var)[ \n]+([^ \n(<]+)/gmu),
+			...[...code.matchAll(/^export +(?:const|let)([^]+?)(?<!,)\n\n/gmu)]
+				.flatMap(([, vars]) => vars.split("\n"))
+				.map(line => line.split("=")[0].trim()),
+		]
 			.map(([, keyword, name]) =>
 				`${["interface", "type"].includes(keyword) ? "type " : ""}${name}`),
 	)]
