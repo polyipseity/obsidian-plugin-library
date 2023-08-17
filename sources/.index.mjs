@@ -1,24 +1,25 @@
 // Await https://github.com/evanw/esbuild/issues/1420
-// npm install --global ts-file-exports
 import { readFile, writeFile } from "node:fs/promises"
-import tsFileExports from "ts-file-exports"
 
-async function generateNamedExports(filename) {
-	console.log(filename)
-	const filename2 = filename.replace(/\.js$/u, ".ts")
-	let exports = []
-	try {
-		exports.push(...tsFileExports.default(filename2))
-	} catch {
-		console.log("error")
-		const code = await readFile(filename2, { encoding: "utf-8" })
-		exports.push(...[
+function generateNamedExports(filename, code) {
+	return `export {
+${[...new Set(
+		[
 			...code.matchAll(/^export[^]+?(class|const|function|interface|let|namespace|type|var)[ \n]+([^ \n(<]+)/gmu),
-		].map(([, , name]) => name))
-	}
-	exports = [...new Set(exports)].sort()
-	exports.push("")
-	return `export {\n${exports.join(",\n")}} from "${filename}"`
+			...[...code.matchAll(/^export +(?:const|let)([^]+?)(?<!,)\n\n/gmu)]
+				.flatMap(([, vars]) => vars.split("\n"))
+				.map(line => line.split("=")[0].trim()),
+		]
+			.map(([, keyword, name]) =>
+				`${["interface", "type"].includes(keyword) ? "type " : ""}${name}`),
+	)]
+			.sort((left, right) => {
+				const left2 = left.replace(/^type /u, "")
+				const right2 = right.replace(/^type /u, "")
+				return left2 > right2 ? 1 : left2 < right2 ? -1 : 0
+			})
+			.concat([""])
+			.join(",\n")}} from "${filename}"`
 }
 
 const regex = /^export[^]+?from[^"]+"([^"]*)"$/gmu,
@@ -28,7 +29,13 @@ const regex = /^export[^]+?from[^"]+"([^"]*)"$/gmu,
 			[...index.matchAll(regex)]
 				.map(async ([, filename]) => [
 					filename,
-					await generateNamedExports(filename),
+					generateNamedExports(
+						filename,
+						await readFile(
+							filename.replace(/\.js$/u, ".ts"),
+							{ encoding: "utf-8" },
+						),
+					),
 				]),
 		),
 	)
