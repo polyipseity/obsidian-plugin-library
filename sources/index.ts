@@ -47,9 +47,18 @@ export {
 	importable,
 } from "./import.js"
 export {
+	ALWAYS_REGEX,
+	ALWAYS_REGEX_G,
+	DISABLED_TOOLTIP,
 	DOMClasses,
+	DOUBLE_ACTION_WAIT,
 	FileExtensions,
+	JSON_STRINGIFY_SPACE,
 	LibraryUUIDs,
+	NEVER_REGEX,
+	NEVER_REGEX_G,
+	NOTICE_NO_TIMEOUT,
+	SI_PREFIX_SCALE,
 } from "./magic.js"
 export {
 	DialogModal,
@@ -88,8 +97,8 @@ export {
 export {
 	Platform,
 } from "./platform.js"
-export type {
-	PluginContext,
+export {
+	type PluginContext,
 } from "./plugin.js"
 export {
 	type HasPrivate,

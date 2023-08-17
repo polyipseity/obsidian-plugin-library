@@ -6,9 +6,11 @@ function generateNamedExports(filename, code) {
 ${[...new Set(
 		[
 			...code.matchAll(/^export[^]+?(class|const|function|interface|let|namespace|type|var)[ \n]+([^ \n(<]+)/gmu),
-			...[...code.matchAll(/^export +(?:const|let)([^]+?)(?<!,)\n\n/gmu)]
-				.flatMap(([, vars]) => vars.split("\n"))
-				.map(line => line.split("=")[0].trim()),
+			...[...code.matchAll(/^export[ \n]+(const|let|var)([^]+?)\r?\n\r?\n/gmu)]
+				.flatMap(([, , vars]) => vars.split("\n"))
+				.filter(line => line.includes("="))
+				.map(line => line.split("=")[0].trim())
+				.map(name => [, "var", name]),
 		]
 			.map(([, keyword, name]) =>
 				`${["interface", "type"].includes(keyword) ? "type " : ""}${name}`),
