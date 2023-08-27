@@ -1,5 +1,5 @@
 ---
-"@polyipseity/obsidian-plugin-library": patch
+"@polyipseity/obsidian-plugin-library": minor
 ---
 
 Revert "Add new platforms: `desktop`, `mobile`".
