@@ -95,7 +95,10 @@ const ARGV_PRODUCTION = 2,
 						replace: [],
 						sourceMap: false,
 						typescript: {
-							compilerOptions: {},
+							compilerOptions: {
+								module: "ESNext",
+								moduleResolution: "node10",
+							},
 							handleMixedImports: true,
 							reportDiagnostics: true,
 							tsconfigDirectory: "./",
