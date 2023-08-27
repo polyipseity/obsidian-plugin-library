@@ -37,7 +37,7 @@ export default function esbuildCompress(options?: Options): Plugin {
 						"color",
 						"define",
 						"drop",
-						"dropLabels",
+						// "dropLabels",
 						"format",
 						"globalName",
 						"ignoreAnnotations",
@@ -49,7 +49,7 @@ export default function esbuildCompress(options?: Options): Plugin {
 						"jsxSideEffects",
 						"keepNames",
 						"legalComments",
-						"lineLimit",
+						// "lineLimit",
 						"logLevel",
 						"logLimit",
 						"logOverride",
@@ -69,7 +69,7 @@ export default function esbuildCompress(options?: Options): Plugin {
 						"supported",
 						"target",
 						"treeShaking",
-						"tsconfigRaw",
+						// "tsconfigRaw",
 					] as const) {
 						assignExact(tOpts, key, initialOptions[key])
 					}
