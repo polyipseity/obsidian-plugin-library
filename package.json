@@ -45,7 +45,7 @@
 		"@types/semver": "^7.5.0",
 		"@typescript-eslint/eslint-plugin": "^6.4.1",
 		"@typescript-eslint/parser": "^6.4.1",
-		"esbuild": "^0.18.20",
+		"esbuild": "^0.17.19",
 		"esbuild-compress": "^2.0.0",
 		"esbuild-node-externals": "^1.8.0",
 		"esbuild-plugin-copy": "^2.1.1",
