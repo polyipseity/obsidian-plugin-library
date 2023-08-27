@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.18.0
+
+### Minor Changes
+
+- eb214f6: Revert "Add new platforms: `desktop`, `mobile`".
+
 ## 1.17.0
 
 ### Minor Changes
