@@ -130,7 +130,8 @@ export function registerSettingsCommands(context: PluginContext): void {
 		callback() {
 			(async (): Promise<void> => {
 				try {
-					await activeSelf(app.lastEvent).navigator.clipboard
+					const { lastEvent } = app
+					await activeSelf(lastEvent).navigator.clipboard
 						.writeText(JSON.stringify(
 							settings.value,
 							null,
@@ -196,14 +197,15 @@ export function registerSettingsCommands(context: PluginContext): void {
 		callback() {
 			(async (): Promise<void> => {
 				try {
+					const { lastEvent } = app
 					await settings.read(async () => {
 						const ret: unknown = JSON.parse(
-							await activeSelf(app.lastEvent).navigator.clipboard.readText(),
+							await activeSelf(lastEvent).navigator.clipboard.readText(),
 						)
 						return ret ?? {}
 					})
 					settings.write().catch(error => {
-						activeSelf(app.lastEvent).console.error(error)
+						activeSelf(lastEvent).console.error(error)
 					})
 				} catch (error) {
 					printError(anyToError(error), () =>
@@ -222,12 +224,13 @@ export function registerSettingsCommands(context: PluginContext): void {
 			if (!checking) {
 				(async (): Promise<void> => {
 					try {
+						const { lastEvent } = app
 						await settings.read(() =>
 							cleanFrontmatterCache(
 								metadataCache.getFileCache(file)?.frontmatter,
 							))
 						settings.write().catch(error => {
-							activeSelf(app.lastEvent).console.error(error)
+							activeSelf(lastEvent).console.error(error)
 						})
 					} catch (error) {
 						printError(anyToError(error), () =>
