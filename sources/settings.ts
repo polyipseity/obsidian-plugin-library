@@ -122,7 +122,7 @@ export namespace SettingsManager {
 
 export function registerSettingsCommands(context: PluginContext): void {
 	const {
-		app: { fileManager, lastEvent, metadataCache, workspace },
+		app, app: { fileManager, metadataCache, workspace },
 		language: { value: i18n },
 		settings,
 	} = context
@@ -130,7 +130,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 		callback() {
 			(async (): Promise<void> => {
 				try {
-					await activeSelf(lastEvent).navigator.clipboard
+					await activeSelf(app.lastEvent).navigator.clipboard
 						.writeText(JSON.stringify(
 							settings.value,
 							null,
@@ -198,12 +198,12 @@ export function registerSettingsCommands(context: PluginContext): void {
 				try {
 					await settings.read(async () => {
 						const ret: unknown = JSON.parse(
-							await activeSelf(lastEvent).navigator.clipboard.readText(),
+							await activeSelf(app.lastEvent).navigator.clipboard.readText(),
 						)
 						return ret ?? {}
 					})
 					settings.write().catch(error => {
-						activeSelf(lastEvent).console.error(error)
+						activeSelf(app.lastEvent).console.error(error)
 					})
 				} catch (error) {
 					printError(anyToError(error), () =>
@@ -227,7 +227,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 								metadataCache.getFileCache(file)?.frontmatter,
 							))
 						settings.write().catch(error => {
-							activeSelf(lastEvent).console.error(error)
+							activeSelf(app.lastEvent).console.error(error)
 						})
 					} catch (error) {
 						printError(anyToError(error), () =>
