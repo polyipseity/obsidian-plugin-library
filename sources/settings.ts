@@ -128,9 +128,9 @@ export function registerSettingsCommands(context: PluginContext): void {
 	} = context
 	addCommand(context, () => i18n.t("commands.export-settings-clipboard"), {
 		callback() {
+			const { lastEvent } = app;
 			(async (): Promise<void> => {
 				try {
-					const { lastEvent } = app
 					await activeSelf(lastEvent).navigator.clipboard
 						.writeText(JSON.stringify(
 							settings.value,
@@ -195,9 +195,9 @@ export function registerSettingsCommands(context: PluginContext): void {
 	})
 	addCommand(context, () => i18n.t("commands.import-settings-clipboard"), {
 		callback() {
+			const { lastEvent } = app;
 			(async (): Promise<void> => {
 				try {
-					const { lastEvent } = app
 					await settings.read(async () => {
 						const ret: unknown = JSON.parse(
 							await activeSelf(lastEvent).navigator.clipboard.readText(),
@@ -222,9 +222,9 @@ export function registerSettingsCommands(context: PluginContext): void {
 			const file = workspace.getActiveFile()
 			if (file?.extension !== FileExtensions.MARKDOWN) { return false }
 			if (!checking) {
+				const { lastEvent } = app;
 				(async (): Promise<void> => {
 					try {
-						const { lastEvent } = app
 						await settings.read(() =>
 							cleanFrontmatterCache(
 								metadataCache.getFileCache(file)?.frontmatter,
