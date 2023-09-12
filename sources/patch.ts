@@ -1,6 +1,7 @@
+import { Functions, remove } from "./util.js"
 import type { Plugins, Workspace } from "obsidian"
 import { constant, noop } from "lodash-es"
-import { Functions } from "./util.js"
+import type { AsyncOrSync } from "ts-essentials"
 import type { PluginContext } from "./plugin.js"
 import { around } from "monkey-around"
 import { correctType } from "./types.js"
@@ -9,11 +10,13 @@ import { revealPrivateAsync } from "./private.js"
 export async function patchPlugin<const I extends string>(
 	context: PluginContext,
 	id: I,
-	patcher: (plugin: Plugins.Map<I>) => unknown,
+	patcher: (plugin: Plugins.Map<I>) => AsyncOrSync<() => void>,
 ): Promise<() => void> {
 	return revealPrivateAsync(context, [context.app], async app2 => {
-		const { plugins } = app2,
-			unpatch = around(plugins, {
+		const unpatch = new Functions({ async: false, settled: true })
+		try {
+			const { plugins } = app2
+			unpatch.push(around(plugins, {
 				loadPlugin(next) {
 					return function fn<const I2 extends string>(
 						this: typeof plugins,
@@ -25,8 +28,12 @@ export async function patchPlugin<const I extends string>(
 								const [id2] = args
 								if (ret && id2 as unknown === id) {
 									type Proto = typeof next<typeof id>
-									const ret2 = ret as Awaited<ReturnType<Proto>> & typeof ret
-									await patcher(ret2)
+									const ret2 = ret as Awaited<ReturnType<Proto>> & typeof ret,
+										unpatcher = await patcher(ret2)
+									unpatch.push(unpatcher)
+									ret2.register(() => {
+										try { unpatcher() } finally { remove(unpatch, unpatcher) }
+									})
 								}
 							} catch (error) {
 								self.console.error(error)
@@ -35,13 +42,18 @@ export async function patchPlugin<const I extends string>(
 						})()
 					}
 				},
-			})
-		try {
+			}))
 			const plugin = plugins.getPlugin(id)
-			if (plugin) { await patcher(plugin) }
-			return unpatch
+			if (plugin) {
+				const unpatcher = await patcher(plugin)
+				unpatch.push(unpatcher)
+				plugin.register(() => {
+					try { unpatcher() } finally { remove(unpatch, unpatcher) }
+				})
+			}
+			return () => { unpatch.call() }
 		} catch (error) {
-			unpatch()
+			unpatch.call()
 			throw error
 		}
 	}, constant(noop))
