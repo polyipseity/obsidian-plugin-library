@@ -81,9 +81,6 @@ importers:
       '@polyipseity/obsidian':
         specifier: ^1.2.8
         version: 1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
-      '@tsconfig/esm':
-        specifier: ^1.0.4
-        version: 1.0.4
       '@tsconfig/node16':
         specifier: ^16.1.1
         version: 16.1.1
@@ -735,10 +732,6 @@ packages:
       '@codemirror/view': 6.0.0
       '@types/codemirror': 0.0.108
       moment: 2.29.4
-    dev: true
-
-  /@tsconfig/esm@1.0.4:
-    resolution: {integrity: sha512-bix9CWljCxyD06nGQRDYdmTw0wevvEDyrLKjbDocGV31JQYbfqqgMV1yFeJ9aDgorKQ9yDLrak8poiggsB5Liw==}
     dev: true
 
   /@tsconfig/node16@16.1.1:
