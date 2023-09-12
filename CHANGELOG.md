@@ -1,5 +1,12 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.18.1
+
+### Patch Changes
+
+- 86683c9: Change `MAX_LOCK_PENDING` to `Infinity`.
+- 6621cd6: Fix active `Window` detection in `registerSettingsCommands`.
+
 ## 1.18.0
 
 ### Minor Changes
