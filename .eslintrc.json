@@ -417,7 +417,10 @@
       "files": [
         "*.svelte"
       ],
-      "processor": "svelte3/svelte3",
+      "parser": "svelte-eslint-parser",
+      "parserOptions": {
+        "parser": "@typescript-eslint/parser"
+      },
       "rules": {
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/semi": [
@@ -448,7 +451,7 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "svelte3"
+    "svelte"
   ],
   "reportUnusedDisableDirectives": true,
   "root": true,
@@ -795,7 +798,6 @@
     "import/resolver": {
       "node": false,
       "typescript": true
-    },
-    "svelte3/typescript": true
+    }
   }
 }

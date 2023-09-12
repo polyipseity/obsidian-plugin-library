@@ -24,10 +24,10 @@
 	export let results = "";
 
 	let inputElement: HTMLElement | null = null;
-	export function focus() {
+	export function focus(): void {
 		inputElement?.focus();
 	}
-	export function blur() {
+	export function blur(): void {
 		inputElement?.blur();
 	}
 

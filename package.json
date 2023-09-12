@@ -52,7 +52,7 @@
 		"eslint": "^8.48.0",
 		"eslint-import-resolver-typescript": "^3.6.0",
 		"eslint-plugin-import": "^2.28.1",
-		"eslint-plugin-svelte3": "^4.0.0",
+		"eslint-plugin-svelte": "^2.33.1",
 		"moment": "^2.29.4",
 		"svelte-preprocess": "^5.0.4",
 		"tslib": "^2.6.2",
@@ -134,9 +134,9 @@
 	"scripts": {
 		"build": "npm run check && npm run build:force",
 		"build:force": "node build/build.mjs",
-		"check": "tsc --noEmit && eslint --cache --ignore-pattern \"*.svelte\" .",
+		"check": "tsc --noEmit && eslint --cache .",
 		"dev": "npm run build:force -- dev",
-		"fix": "eslint --fix --cache --ignore-pattern \"*.svelte\" .",
+		"fix": "eslint --cache --fix .",
 		"postversion": "node build/version-post.mjs"
 	},
 	"sideEffects": false,
