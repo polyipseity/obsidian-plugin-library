@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.20.0
+
+### Minor Changes
+
+- e164adb: Modify function `patchPlugin` to handle cleanup properly.
+
 ## 1.19.0
 
 ### Minor Changes
