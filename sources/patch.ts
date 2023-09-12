@@ -1,6 +1,51 @@
+import type { Plugins, Workspace } from "obsidian"
+import { constant, noop } from "lodash-es"
 import { Functions } from "./util.js"
-import type { Workspace } from "obsidian"
+import type { PluginContext } from "./plugin.js"
+import { around } from "monkey-around"
 import { correctType } from "./types.js"
+import { revealPrivateAsync } from "./private.js"
+
+export async function patchPlugin<const I extends string>(
+	context: PluginContext,
+	id: I,
+	patcher: (plugin: Plugins.Map<I>) => unknown,
+): Promise<() => void> {
+	return revealPrivateAsync(context, [context.app], async app2 => {
+		const { plugins } = app2,
+			unpatch = around(plugins, {
+				loadPlugin(next) {
+					return function fn<const I2 extends string>(
+						this: typeof plugins,
+						...args: Parameters<typeof next<I2>>
+					): ReturnType<typeof next<I2>> {
+						return (async (): Promise<typeof ret> => {
+							const ret = await next.bind(this)(...args)
+							try {
+								const [id2] = args
+								if (ret && id2 as unknown === id) {
+									type Proto = typeof next<typeof id>
+									const ret2 = ret as Awaited<ReturnType<Proto>> & typeof ret
+									await patcher(ret2)
+								}
+							} catch (error) {
+								self.console.error(error)
+							}
+							return ret
+						})()
+					}
+				},
+			})
+		try {
+			const plugin = plugins.getPlugin(id)
+			if (plugin) { await patcher(plugin) }
+			return unpatch
+		} catch (error) {
+			unpatch()
+			throw error
+		}
+	}, constant(noop))
+}
 
 export function patchWindows(
 	workspace: Workspace,

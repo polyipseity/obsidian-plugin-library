@@ -5,6 +5,11 @@ declare module "obsidian" {
 		extends Private<$CommunityPluginsSettingTab, PrivateKey> { }
 	interface DataAdapter extends Private<$DataAdapter, PrivateKey> { }
 	interface FileSystem extends Private<$FileSystem, PrivateKey> { }
+	interface Plugins extends Private<$Plugins, PrivateKey> { }
+	namespace Plugins {
+		type Map<I extends string> = I extends keyof Mapping ? Mapping[I] : Plugin
+		interface Mapping { }
+	}
 	interface Scope {
 		// eslint-disable-next-line @typescript-eslint/method-signature-style
 		register(
@@ -24,6 +29,7 @@ import type {
 	CommunityPluginsSettingTab,
 	FileSystem,
 	PluginManifest,
+	Plugins,
 	SettingTab,
 	UnknownSettingTab,
 } from "obsidian"
@@ -40,6 +46,7 @@ declare module "../private.js" {
 }
 
 interface $App {
+	readonly plugins: Plugins
 	readonly setting: {
 		readonly settingTabs:
 		readonly (CommunityPluginsSettingTab | UnknownSettingTab)[]
@@ -62,6 +69,15 @@ interface $FileSystem {
 	readonly open: <T extends Platform.Current>(
 		path: Deopaque<T> extends Platform.Mobile ? string : never,
 	) => Deopaque<T> extends Platform.Mobile ? PromiseLike<void> : never
+}
+
+interface $Plugins {
+	readonly getPlugin: <const I extends string>(
+		id: I,
+	) => Plugins.Map<I> | null
+	readonly loadPlugin: <const I extends string>(
+		id: I,
+	) => PromiseLike<Plugins.Map<I> | null>
 }
 
 interface $UnknownSettingTab extends SettingTab {
