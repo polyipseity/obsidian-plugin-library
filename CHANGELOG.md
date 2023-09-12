@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.19.0
+
+### Minor Changes
+
+- 1d421bd: Create function `patchPlugin`.
+
 ## 1.18.1
 
 ### Patch Changes
