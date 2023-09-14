@@ -13,7 +13,9 @@ import {
 	clearProperties,
 	copyOnWriteAsync,
 	deepFreeze,
+	lazyInit,
 } from "./util.js"
+import { type Fixed, type Fixer, markFixed } from "./fixers.js"
 import {
 	ResourceComponent,
 	addCommand,
@@ -21,26 +23,20 @@ import {
 	printError,
 	printMalformedData,
 } from "./obsidian.js"
-import { isEmpty, isNil, throttle } from "lodash-es"
+import { constant, isEmpty, isNil, throttle } from "lodash-es"
+import { launderUnchecked, simplifyType } from "./types.js"
 import { DialogModal } from "./modals.js"
-import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
 import { SAVE_SETTINGS_WAIT } from "./internals/magic.js"
 import deepEqual from "deep-equal"
-import { simplifyType } from "./types.js"
+import { revealPrivate } from "./private.js"
 
-export class SettingsManager<T extends SettingsManager.Type>
+export abstract class AbstractSettingsManager<T extends AbstractSettingsManager
+	.Type>
 	extends ResourceComponent<DeepReadonly<T>> {
 	readonly #onMutate = new EventEmitterLite<readonly []>()
 
-	readonly #write = asyncDebounce(throttle((
-		resolve: (value: AsyncOrSync<void>) => void,
-	) => {
-		resolve(this.context.saveData(this.value))
-	}, SAVE_SETTINGS_WAIT * SI_PREFIX_SCALE))
-
 	public constructor(
-		protected readonly context: PluginContext,
 		protected readonly fixer: Fixer<T>,
 	) {
 		super()
@@ -52,12 +48,10 @@ export class SettingsManager<T extends SettingsManager.Type>
 		await this.#onMutate.emit()
 	}
 
-	public async write(): Promise<void> {
-		await this.#write()
-	}
-
-	public async read(reader: () => unknown = async (): Promise<unknown> =>
-		this.context.loadData()): Promise<void> {
+	public async read(
+		reader: () => unknown = (): ReturnType<typeof this.read0> =>
+			this.read0(),
+	): Promise<void> {
 		await this.mutate(async settings => {
 			Object.assign(settings, await this.#read(reader))
 		})
@@ -97,25 +91,138 @@ export class SettingsManager<T extends SettingsManager.Type>
 	}
 
 	protected override async load0(): Promise<DeepReadonly<T>> {
-		await this.context.language.onLoaded
 		return simplifyType(deepFreeze(await this.#read()))
 	}
 
-	async #read(reader: () => unknown = async (): Promise<unknown> =>
-		this.context.loadData()): Promise<DeepWritable<T>> {
-		const read = await reader(),
-			{ value, valid } = this.fixer(read)
-		if (!isNil(read) && !valid) {
-			printMalformedData(this.context, read, value)
-			value.recovery[new Date().toISOString()] =
-				JSON.stringify(read, null, JSON_STRINGIFY_SPACE)
-		}
+	async #read(reader: () => unknown = (): ReturnType<typeof this.read0> =>
+		this.read0()): Promise<DeepWritable<T>> {
+		const { fixer } = this,
+			read = await reader(),
+			{ value, valid } = fixer(read)
+		if (!isNil(read) && !valid) { await this.onInvalidData(read, value) }
 		return value
+	}
+
+	public abstract onInvalidData(
+		actual: unknown,
+		fixed: DeepWritable<T>,
+	): unknown
+	public abstract read0(): unknown
+	public abstract write(): unknown
+}
+export namespace AbstractSettingsManager {
+	export interface Type {
+		readonly [Type]?: never
+	}
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	declare const Type: unique symbol
+}
+
+export class LocalSettingsManager<T extends LocalSettingsManager.Type>
+	extends AbstractSettingsManager<T> {
+	readonly #key = lazyInit(async () => {
+		const { context, context: { app, manifest: { id } } } = this
+		await context.language.onLoaded
+		return revealPrivate(
+			context,
+			[app],
+			app2 => `${app2.appId}.${id}.${LocalSettingsManager.KEY}`,
+			constant(null),
+		)
+	})
+
+	public constructor(
+		protected readonly context: PluginContext,
+		fixer: Fixer<T>,
+	) {
+		super(fixer)
+	}
+
+	protected get key(): PromiseLike<string | null> {
+		return this.#key()
+	}
+
+	public override async onInvalidData(
+		actual: unknown,
+		fixed: DeepWritable<T>,
+	): Promise<void> {
+		const { context } = this
+		await context.language.onLoaded
+		printMalformedData(context, actual, fixed)
+		fixed.recovery[`${LocalSettingsManager
+			.RECOVERY_KEY_PREFIX}${new Date().toISOString()}`] =
+			JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
+	}
+
+	public override async read0(): Promise<unknown> {
+		const key = await this.key
+		if (key === null) { return { [LocalSettingsManager.FAILED]: true } }
+		return self.localStorage.getItem(key)
+	}
+
+	public override async write(): Promise<void> {
+		const key = await this.key
+		if (key === null) { return }
+		self.localStorage.setItem(key, JSON.stringify(this.value))
+	}
+}
+export namespace LocalSettingsManager {
+	export const FAILED = Symbol("LocalSettingsManager.FAILED"),
+		KEY = "settings",
+		RECOVERY_KEY_PREFIX = "localStorage."
+	export type Recovery = Readonly<Record<string, string>>
+	export interface Type extends AbstractSettingsManager.Type {
+		readonly [FAILED]?: true
+		readonly recovery: Recovery
+	}
+	export function fix(self0: unknown): Fixed<Type> {
+		const unc = launderUnchecked<Type>(self0)
+		return markFixed(self0, {
+			recovery: Object.fromEntries(Object
+				.entries(launderUnchecked(unc.recovery))
+				.map(([key, value]) => [key, String(value)])),
+		})
+	}
+	export function hasFailed(value: Type): boolean { return FAILED in value }
+}
+
+export class SettingsManager<T extends SettingsManager.Type>
+	extends AbstractSettingsManager<T> {
+	readonly #write = asyncDebounce(throttle((
+		resolve: (value: AsyncOrSync<void>) => void,
+	) => {
+		resolve(this.context.saveData(this.value))
+	}, SAVE_SETTINGS_WAIT * SI_PREFIX_SCALE))
+
+	public constructor(
+		protected readonly context: PluginContext,
+		fixer: Fixer<T>,
+	) {
+		super(fixer)
+	}
+
+	public override async onInvalidData(
+		actual: unknown,
+		fixed: DeepWritable<T>,
+	): Promise<void> {
+		const { context } = this
+		await context.language.onLoaded
+		printMalformedData(context, actual, fixed)
+		fixed.recovery[new Date().toISOString()] =
+			JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
+	}
+
+	public override async read0(): Promise<unknown> {
+		return this.context.loadData()
+	}
+
+	public override async write(): Promise<void> {
+		await this.#write()
 	}
 }
 export namespace SettingsManager {
 	export type Recovery = Readonly<Record<string, string>>
-	export interface Type {
+	export interface Type extends AbstractSettingsManager.Type {
 		readonly recovery: Recovery
 	}
 }

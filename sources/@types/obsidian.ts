@@ -46,6 +46,7 @@ declare module "../private.js" {
 }
 
 interface $App {
+	readonly appId: string
 	readonly plugins: Plugins
 	readonly setting: {
 		readonly settingTabs:
