@@ -116,6 +116,9 @@ export namespace AbstractSettingsManager {
 	}
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	declare const Type: unique symbol
+	export function fix(self0: unknown): Fixed<Type> {
+		return markFixed(self0, {})
+	}
 }
 
 export class LocalSettingsManager<T extends LocalSettingsManager.Type>
@@ -178,6 +181,7 @@ export namespace LocalSettingsManager {
 	export function fix(self0: unknown): Fixed<Type> {
 		const unc = launderUnchecked<Type>(self0)
 		return markFixed(self0, {
+			...AbstractSettingsManager.fix(self0).value,
 			recovery: Object.fromEntries(Object
 				.entries(launderUnchecked(unc.recovery))
 				.map(([key, value]) => [key, String(value)])),
@@ -224,6 +228,15 @@ export namespace SettingsManager {
 	export type Recovery = Readonly<Record<string, string>>
 	export interface Type extends AbstractSettingsManager.Type {
 		readonly recovery: Recovery
+	}
+	export function fix(self0: unknown): Fixed<Type> {
+		const unc = launderUnchecked<Type>(self0)
+		return markFixed(self0, {
+			...AbstractSettingsManager.fix(self0).value,
+			recovery: Object.fromEntries(Object
+				.entries(launderUnchecked(unc.recovery))
+				.map(([key, value]) => [key, String(value)])),
+		})
 	}
 }
 
