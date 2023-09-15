@@ -103,12 +103,12 @@ export abstract class AbstractSettingsManager<T extends AbstractSettingsManager
 		return value
 	}
 
-	public abstract onInvalidData(
+	public abstract write(): unknown
+	protected abstract onInvalidData(
 		actual: unknown,
 		fixed: DeepWritable<T>,
 	): unknown
-	public abstract read0(): unknown
-	public abstract write(): unknown
+	protected abstract read0(): unknown
 }
 export namespace AbstractSettingsManager {
 	export interface Type {
@@ -137,30 +137,10 @@ export class LocalSettingsManager<T extends LocalSettingsManager.Type>
 	public constructor(
 		protected readonly context: PluginContext,
 		fixer: Fixer<T>,
-	) {
-		super(fixer)
-	}
+	) { super(fixer) }
 
 	protected get key(): PromiseLike<string | null> {
 		return this.#key()
-	}
-
-	public override async onInvalidData(
-		actual: unknown,
-		fixed: DeepWritable<T>,
-	): Promise<void> {
-		const { context } = this
-		await context.language.onLoaded
-		printMalformedData(context, actual, fixed)
-		fixed.recovery[`${LocalSettingsManager
-			.RECOVERY_KEY_PREFIX}${new Date().toISOString()}`] =
-			JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
-	}
-
-	public override async read0(): Promise<unknown> {
-		const key = await this.key
-		if (key === null) { return { [LocalSettingsManager.FAILED]: true } }
-		return self.localStorage.getItem(key)
 	}
 
 	public override async write(): Promise<void> {
@@ -168,11 +148,29 @@ export class LocalSettingsManager<T extends LocalSettingsManager.Type>
 		if (key === null) { return }
 		self.localStorage.setItem(key, JSON.stringify(this.value))
 	}
+
+	protected override async onInvalidData(
+		actual: unknown,
+		fixed: DeepWritable<T>,
+	): Promise<void> {
+		const { context, context: { language } } = this
+		await language.onLoaded
+		printMalformedData(context, actual, fixed)
+		fixed.recovery[`${LocalSettingsManager
+			.RECOVERY_PREFIX}${new Date().toISOString()}`] =
+			JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
+	}
+
+	protected override async read0(): Promise<unknown> {
+		const key = await this.key
+		if (key === null) { return { [LocalSettingsManager.FAILED]: true } }
+		return self.localStorage.getItem(key)
+	}
 }
 export namespace LocalSettingsManager {
 	export const FAILED = Symbol("LocalSettingsManager.FAILED"),
 		KEY = "settings",
-		RECOVERY_KEY_PREFIX = "localStorage."
+		RECOVERY_PREFIX = "local-settings."
 	export type Recovery = Readonly<Record<string, string>>
 	export interface Type extends AbstractSettingsManager.Type {
 		readonly [FAILED]?: true
@@ -186,6 +184,25 @@ export namespace LocalSettingsManager {
 				.entries(launderUnchecked(unc.recovery))
 				.map(([key, value]) => [key, String(value)])),
 		})
+	}
+	export function getRecovery(
+		recovery: Recovery,
+		prefix: string,
+	): Map<string, string> {
+		return new Map(Object.entries(recovery)
+			.filter(([key]) => key.startsWith(prefix)))
+	}
+	export function setRecovery(
+		recovery: DeepWritable<Recovery>,
+		prefix: string,
+		map: Map<string, string>,
+	): void {
+		for (const key of Object.keys(recovery)) {
+			if (!key.startsWith(prefix)) { continue }
+			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+			delete recovery[key]
+		}
+		Object.assign(recovery, Object.fromEntries(map))
 	}
 	export function hasFailed(value: Type): boolean { return FAILED in value }
 }
@@ -201,43 +218,41 @@ export class SettingsManager<T extends SettingsManager.Type>
 	public constructor(
 		protected readonly context: PluginContext,
 		fixer: Fixer<T>,
-	) {
-		super(fixer)
-	}
-
-	public override async onInvalidData(
-		actual: unknown,
-		fixed: DeepWritable<T>,
-	): Promise<void> {
-		const { context } = this
-		await context.language.onLoaded
-		printMalformedData(context, actual, fixed)
-		fixed.recovery[new Date().toISOString()] =
-			JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
-	}
-
-	public override async read0(): Promise<unknown> {
-		return this.context.loadData()
-	}
+	) { super(fixer) }
 
 	public override async write(): Promise<void> {
 		await this.#write()
 	}
+
+	protected override async onInvalidData(
+		actual: unknown,
+		fixed: DeepWritable<T>,
+	): Promise<void> {
+		const { context, context: { language, localSettings } } = this
+		await Promise.all([
+			(async (): Promise<void> => {
+				await language.onLoaded
+				printMalformedData(context, actual, fixed)
+			})(),
+			(async (): Promise<void> => {
+				await localSettings.onLoaded
+				await localSettings.mutate(lsm => {
+					lsm.recovery[`${SettingsManager
+						.RECOVERY_PREFIX}${new Date().toISOString()}`] =
+						JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
+				})
+			})(),
+		])
+	}
+
+	protected override async read0(): Promise<unknown> {
+		return this.context.loadData()
+	}
 }
 export namespace SettingsManager {
-	export type Recovery = Readonly<Record<string, string>>
-	export interface Type extends AbstractSettingsManager.Type {
-		readonly recovery: Recovery
-	}
-	export function fix(self0: unknown): Fixed<Type> {
-		const unc = launderUnchecked<Type>(self0)
-		return markFixed(self0, {
-			...AbstractSettingsManager.fix(self0).value,
-			recovery: Object.fromEntries(Object
-				.entries(launderUnchecked(unc.recovery))
-				.map(([key, value]) => [key, String(value)])),
-		})
-	}
+	export type Type = AbstractSettingsManager.Type
+	export const RECOVERY_PREFIX = "settings.",
+		{ fix } = AbstractSettingsManager
 }
 
 export function registerSettingsCommands(context: PluginContext): void {

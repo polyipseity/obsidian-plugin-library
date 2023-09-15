@@ -1,5 +1,6 @@
 import { EditDataModal, ListModal } from "./modals.js"
 import { LambdaComponent, UpdatableUI } from "./obsidian.js"
+import { LocalSettingsManager, SettingsManager } from "./settings.js"
 import {
 	activeSelf,
 	cloneAsWritable,
@@ -135,7 +136,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		const {
 			containerEl,
 			context,
-			context: { settings, language: { value: i18n } },
+			context: { localSettings, settings, language: { value: i18n } },
 			ui,
 		} = this
 		ui.newSetting(containerEl, setting => {
@@ -179,11 +180,20 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 									forth: value => value[1],
 								}),
 								unexpected,
-								Object.entries(settings.value.recovery),
+								[
+									...LocalSettingsManager.getRecovery(
+										localSettings.value.recovery,
+										SettingsManager.RECOVERY_PREFIX,
+									).entries(),
+								],
 								{
 									callback: async (recovery0): Promise<void> => {
-										await settings.mutate(settingsM => {
-											settingsM.recovery = Object.fromEntries(recovery0)
+										await localSettings.mutate(lsm => {
+											LocalSettingsManager.setRecovery(
+												lsm.recovery,
+												SettingsManager.RECOVERY_PREFIX,
+												new Map(recovery0),
+											)
 										})
 										this.postMutate()
 									},
@@ -195,9 +205,10 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 								},
 							).open()
 						})
-					if (!isEmpty(settings.value.recovery)) {
-						button.setCta()
-					}
+					if (!isEmpty(LocalSettingsManager.getRecovery(
+						localSettings.value.recovery,
+						SettingsManager.RECOVERY_PREFIX,
+					))) { button.setCta() }
 				})
 				.addButton(resetButton(
 					i18n.t("asset:settings.all-settings-actions.undo-icon"),
