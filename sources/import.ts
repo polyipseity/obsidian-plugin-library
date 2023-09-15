@@ -1,8 +1,8 @@
-import { bracket, lazyProxy } from "./util.js"
 import PLazy from "p-lazy"
 import { isNil } from "lodash-es"
+import { lazyProxy } from "./util.js"
 
-export type Bundle = Readonly<Record<string, () => unknown>>
+export type Bundle = Map<string, () => unknown>
 
 export async function dynamicRequire<T>(
 	...args: Parameters<typeof dynamicRequireSync>
@@ -21,8 +21,7 @@ export function dynamicRequireSync<T>(
 	module: string,
 	require0 = require,
 ): T {
-	const { valid, value } = bracket(bundle, module),
-		ret: unknown = valid ? value() : require0(module)
+	const ret = (bundle.get(module) ?? ((): unknown => require0(module)))()
 	if (isNil(ret)) { throw new Error(module) }
 	return ret as T
 }

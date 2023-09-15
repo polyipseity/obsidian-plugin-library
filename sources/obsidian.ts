@@ -385,10 +385,10 @@ export function commandNamer(
 	format: string,
 ): () => string {
 	const cmd = cmdNamer()
-	return () => multireplace(format, {
-		[cmd]: cmdNamer(),
-		[defaultPluginName]: pluginNamer(),
-	})
+	return () => multireplace(format, new Map([
+		[cmd, cmdNamer()],
+		[defaultPluginName, pluginNamer()],
+	]))
 }
 
 export function printMalformedData(

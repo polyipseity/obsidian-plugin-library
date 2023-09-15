@@ -385,12 +385,10 @@ export function escapeJavaScriptString(value: string): string {
 }
 
 export function escapeQuerySelectorAttribute(value: string): string {
-	return multireplace(value, {
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		"\"": "\\\"",
-		// eslint-disable-next-line @typescript-eslint/naming-convention
-		"\\": "\\\\",
-	})
+	return multireplace(value, new Map([
+		["\"", "\\\""],
+		["\\", "\\\\"],
+	]))
 }
 
 export function extname(path: string): string {
@@ -735,11 +733,11 @@ export function mapFirstCodePoint(
 
 export function multireplace(
 	self0: string,
-	replacements: Readonly<Record<string, string>>,
+	replacements: Map<string, string>,
 ): string {
 	return self0.replace(
 		alternativeRegExp(Object.keys(replacements)),
-		match => replacements[match] ?? match,
+		match => replacements.get(match) ?? match,
 	)
 }
 
