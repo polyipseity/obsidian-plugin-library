@@ -121,7 +121,7 @@ export namespace AbstractSettingsManager {
 	}
 }
 
-export class LocalSettingsManager<T extends LocalSettingsManager.Type>
+export class StorageSettingsManager<T extends StorageSettingsManager.Type>
 	extends AbstractSettingsManager<T> {
 	readonly #key = lazyInit(async () => {
 		const { context, context: { app, manifest: { id } } } = this
@@ -129,7 +129,7 @@ export class LocalSettingsManager<T extends LocalSettingsManager.Type>
 		return revealPrivate(
 			context,
 			[app],
-			app2 => `${app2.appId}.${id}.${LocalSettingsManager.KEY}`,
+			app2 => `${app2.appId}.${id}.${StorageSettingsManager.KEY}`,
 			constant(null),
 		)
 	})
@@ -137,6 +137,7 @@ export class LocalSettingsManager<T extends LocalSettingsManager.Type>
 	public constructor(
 		protected readonly context: PluginContext,
 		fixer: Fixer<T>,
+		protected readonly storage = self.localStorage,
 	) { super(fixer) }
 
 	protected get key(): PromiseLike<string | null> {
@@ -146,7 +147,7 @@ export class LocalSettingsManager<T extends LocalSettingsManager.Type>
 	public override async write(): Promise<void> {
 		const key = await this.key
 		if (key === null) { return }
-		self.localStorage.setItem(key, JSON.stringify(this.value))
+		this.storage.setItem(key, JSON.stringify(this.value))
 	}
 
 	protected override async onInvalidData(
@@ -156,18 +157,18 @@ export class LocalSettingsManager<T extends LocalSettingsManager.Type>
 		const { context, context: { language } } = this
 		await language.onLoaded
 		printMalformedData(context, actual, fixed)
-		fixed.recovery[`${LocalSettingsManager
+		fixed.recovery[`${StorageSettingsManager
 			.RECOVERY_PREFIX}${new Date().toISOString()}`] =
 			JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
 	}
 
 	protected override async read0(): Promise<unknown> {
 		const key = await this.key
-		if (key === null) { return { [LocalSettingsManager.FAILED]: true } }
-		return self.localStorage.getItem(key)
+		if (key === null) { return { [StorageSettingsManager.FAILED]: true } }
+		return this.storage.getItem(key)
 	}
 }
-export namespace LocalSettingsManager {
+export namespace StorageSettingsManager {
 	export const FAILED = Symbol("LocalSettingsManager.FAILED"),
 		KEY = "settings",
 		RECOVERY_PREFIX = "local-settings."

@@ -1,6 +1,6 @@
 import { EditDataModal, ListModal } from "./modals.js"
 import { LambdaComponent, UpdatableUI } from "./obsidian.js"
-import { LocalSettingsManager, SettingsManager } from "./settings.js"
+import { SettingsManager, StorageSettingsManager } from "./settings.js"
 import {
 	activeSelf,
 	cloneAsWritable,
@@ -181,7 +181,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 								}),
 								unexpected,
 								[
-									...LocalSettingsManager.getRecovery(
+									...StorageSettingsManager.getRecovery(
 										localSettings.value.recovery,
 										SettingsManager.RECOVERY_PREFIX,
 									).entries(),
@@ -189,7 +189,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 								{
 									callback: async (recovery0): Promise<void> => {
 										await localSettings.mutate(lsm => {
-											LocalSettingsManager.setRecovery(
+											StorageSettingsManager.setRecovery(
 												lsm.recovery,
 												SettingsManager.RECOVERY_PREFIX,
 												new Map(recovery0),
@@ -205,7 +205,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 								},
 							).open()
 						})
-					if (!isEmpty(LocalSettingsManager.getRecovery(
+					if (!isEmpty(StorageSettingsManager.getRecovery(
 						localSettings.value.recovery,
 						SettingsManager.RECOVERY_PREFIX,
 					))) { button.setCta() }
