@@ -164,8 +164,18 @@ export class StorageSettingsManager<T extends StorageSettingsManager.Type>
 
 	protected override async read0(): Promise<unknown> {
 		const key = await this.key
-		if (key === null) { return { [StorageSettingsManager.FAILED]: true } }
-		return this.storage.getItem(key)
+		if (key === null) {
+			return { [StorageSettingsManager.FAILED]: true }
+		}
+		const text = this.storage.getItem(key)
+		if (text === null) { return null }
+		try {
+			const ret: unknown = JSON.parse(text)
+			return ret
+		} catch (error) {
+			self.console.debug(error)
+			return null
+		}
 	}
 }
 export namespace StorageSettingsManager {
