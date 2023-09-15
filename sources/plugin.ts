@@ -1,4 +1,4 @@
-import type { SettingsManager, StorageSettingsManager } from "./settings.js"
+import { SettingsManager, StorageSettingsManager } from "./settings.js"
 import type { LanguageManager } from "./i18n.js"
 import type { Plugin } from "obsidian"
 
@@ -13,10 +13,16 @@ export interface PluginContext<
 }
 export namespace PluginContext {
 	export type LocalSettings = StorageSettingsManager.Type
+	export namespace LocalSettings {
+		export const { fix } = StorageSettingsManager
+	}
 	export interface Settings extends SettingsManager.Type {
 		readonly errorNoticeTimeout: number
 		readonly noticeTimeout: number
 
 		readonly language: string
+	}
+	export namespace Settings {
+		export const { fix } = SettingsManager
 	}
 }
