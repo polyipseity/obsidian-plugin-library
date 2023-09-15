@@ -195,7 +195,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 												new Map(recovery0),
 											)
 										})
-										this.postMutate()
+										this.postMutate(true)
 									},
 									dynamicWidth: true,
 									editables: ["remove"],
@@ -326,9 +326,9 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 		})
 	}
 
-	protected postMutate(): void {
-		const { containerEl, context: { settings }, ui } = this
-		settings.write().catch(error => {
+	protected postMutate(local = false): void {
+		const { containerEl, context: { localSettings, settings }, ui } = this;
+		(local ? localSettings : settings).write().catch(error => {
 			activeSelf(containerEl).console.error(error)
 		})
 		ui.update()

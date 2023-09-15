@@ -246,12 +246,17 @@ export class SettingsManager<T extends SettingsManager.Type>
 				printMalformedData(context, actual, fixed)
 			})(),
 			(async (): Promise<void> => {
-				await localSettings.onLoaded
-				await localSettings.mutate(lsm => {
-					lsm.recovery[`${SettingsManager
-						.RECOVERY_PREFIX}${new Date().toISOString()}`] =
-						JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
-				})
+				try {
+					await localSettings.onLoaded
+					await localSettings.mutate(lsm => {
+						lsm.recovery[`${SettingsManager
+							.RECOVERY_PREFIX}${new Date().toISOString()}`] =
+							JSON.stringify(actual, null, JSON_STRINGIFY_SPACE)
+					})
+					await localSettings.write()
+				} catch (error) {
+					self.console.error(error)
+				}
 			})(),
 		])
 	}
