@@ -1,5 +1,17 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.21.0
+
+### Minor Changes
+
+- ab5a83c: Replace some `Record`s with `Map`s. (https://2ality.com/2012/01/objects-as-maps.html)
+- 19084bc: Create `AbstractSettingsManager` and `LocalSettingsManager` in `settings.ts`.
+- c0a3261: Use `localStorage` when storing temporary settings.
+
+### Patch Changes
+
+- 0f80187: Create `AbstractSettingsManager.fix` and `SettingsManager.fix`.
+
 ## 1.20.0
 
 ### Minor Changes
