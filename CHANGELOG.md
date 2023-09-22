@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.22.0
+
+### Minor Changes
+
+- 98c96c5: Add `@__PURE__` comments and disable minification to preserve them.
+
 ## 1.21.0
 
 ### Minor Changes
