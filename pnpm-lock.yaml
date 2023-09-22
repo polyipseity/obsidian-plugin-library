@@ -102,6 +102,9 @@ importers:
       '@types/convert-source-map':
         specifier: ^2.0.1
         version: 2.0.1
+      '@types/css.escape':
+        specifier: ^1.5.0
+        version: 1.5.0
       '@types/deep-equal':
         specifier: ^1.0.1
         version: 1.0.1
@@ -123,6 +126,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.7.0
         version: 6.7.0(eslint@8.49.0)(typescript@5.2.2)
+      css.escape:
+        specifier: ^1.5.1
+        version: 1.5.1
       esbuild:
         specifier: ^0.19.2
         version: 0.19.2
@@ -765,6 +771,10 @@ packages:
     resolution: {integrity: sha512-tm5Eb3AwhibN6ULRaad5TbNO83WoXVZLh2YRGAFH+qWkUz48l9Hu1jc+wJswB7T+ACWAG0cFnTeeQGpwedvlNw==}
     dev: true
 
+  /@types/css.escape@1.5.0:
+    resolution: {integrity: sha512-671nGwh8AQrhdjS584m9wypN0cJEzy7A97sReLuwypIXPiRqRcjKVnrO7Z72sS0QrwxlU7HraNgNITyr9u9Rpw==}
+    dev: true
+
   /@types/deep-equal@1.0.1:
     resolution: {integrity: sha512-mMUu4nWHLBlHtxXY17Fg6+ucS/MnndyOWyOe7MmwkoMYxvfQU2ajtRaEvqSUv+aVkMqH/C0NCI8UoVfRNQ10yg==}
     dev: true
@@ -1263,6 +1273,10 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+    dev: true
+
+  /css.escape@1.5.1:
+    resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==}
     dev: true
 
   /cssesc@3.0.0:

@@ -3,6 +3,7 @@ import { analyzeMetafile, context, formatMessages } from "esbuild"
 import { constant, isEmpty, kebabCase } from "lodash-es"
 import { argv } from "node:process"
 import { copy } from "esbuild-plugin-copy"
+import cssEscape from "css.escape"
 import esbuildCompress from "esbuild-compress"
 import esbuildSvelte from "esbuild-svelte"
 import { nodeExternalsPlugin } from "esbuild-node-externals"
@@ -63,7 +64,8 @@ const ARGV_PRODUCTION = 2,
 					accessors: false,
 					css: "injected",
 					cssHash({ name }) {
-						return `${PACKAGE_ID0}-svelte-${kebabCase(name)}`
+						return cssEscape(`${PACKAGE_ID0}-svelte-${kebabCase(name)}`)
+							.replace(/\\./gu, "_")
 					},
 					customElement: false,
 					dev: DEV,
