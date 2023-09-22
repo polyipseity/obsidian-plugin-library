@@ -438,7 +438,7 @@ export class EditDataModal<T extends object> extends Modal {
 									await activeSelf(buttonEl).navigator.clipboard
 										.writeText(this.#dataText)
 								} catch (error) {
-									activeSelf(buttonEl).console.debug(error)
+									/* @__PURE__ */ activeSelf(buttonEl).console.debug(error)
 									errorEl.report(error)
 								}
 							})
@@ -465,7 +465,7 @@ export class EditDataModal<T extends object> extends Modal {
 									}
 									this.replaceData(parsed)
 								} catch (error) {
-									activeSelf(buttonEl).console.debug(error)
+									/* @__PURE__ */ activeSelf(buttonEl).console.debug(error)
 									errorEl.report(error)
 									return
 								}
@@ -491,7 +491,7 @@ export class EditDataModal<T extends object> extends Modal {
 								}
 								this.replaceData(parsed)
 							} catch (error) {
-								activeSelf(settingEl).console.debug(error)
+								/* @__PURE__ */ activeSelf(settingEl).console.debug(error)
 								errorEl.report(error)
 								return
 							}

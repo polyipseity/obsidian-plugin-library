@@ -33,7 +33,7 @@ export function importable(
 		dynamicRequireSync(...args)
 		return true
 	} catch (error) {
-		self.console.debug(error)
+		/* @__PURE__ */ self.console.debug(error)
 		return false
 	}
 }

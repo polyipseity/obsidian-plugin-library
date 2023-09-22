@@ -77,7 +77,7 @@ export function generateSourceMap(
 		if (subSourceMap0) {
 			subSourceMap = new TraceMap(subSourceMap0.toJSON())
 		}
-	} catch (error) { self.console.debug(error) }
+	} catch (error) { /* @__PURE__ */ self.console.debug(error) }
 	const generator = new SourceMapGenerator(genOpts),
 		source = options?.source ?? (isEmpty(subSourceMap?.sources) ? "" : "."),
 		content = [],

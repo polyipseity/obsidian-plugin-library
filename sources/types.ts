@@ -70,7 +70,7 @@ export function opaqueOrDefault<T, I extends string, D>(
 	try {
 		return type(value)
 	} catch (error) {
-		self.console.debug(error)
+		/* @__PURE__ */ self.console.debug(error)
 		return defaultValue
 	}
 }

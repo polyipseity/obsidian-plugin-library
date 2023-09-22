@@ -173,7 +173,7 @@ export class StorageSettingsManager<T extends StorageSettingsManager.Type>
 			const ret: unknown = JSON.parse(text)
 			return ret
 		} catch (error) {
-			self.console.debug(error)
+			/* @__PURE__ */ self.console.debug(error)
 			return null
 		}
 	}

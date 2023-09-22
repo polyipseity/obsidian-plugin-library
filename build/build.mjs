@@ -36,7 +36,7 @@ const ARGV_PRODUCTION = 2,
 		logLevel: "info",
 		logLimit: 0,
 		metafile: true,
-		minify: !DEV,
+		minify: false,
 		outdir: PATHS.outDir,
 		platform: "browser",
 		plugins: [
