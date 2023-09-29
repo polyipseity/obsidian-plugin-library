@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.23.0
+
+### Minor Changes
+
+- 8a7c931: Fix Svelte components not applying styles due to unescaped CSS identifiers. The CSS identifiers have been changed slightly.
+
 ## 1.22.0
 
 ### Minor Changes
