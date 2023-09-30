@@ -20,8 +20,13 @@ import type {
 	DeepWritable,
 	Newable,
 } from "ts-essentials"
+import { NEVER_REGEX_G, SI_PREFIX_SCALE } from "./magic.js"
 import {
-	type DebouncedFunc,
+	type PrimitiveTypeE,
+	type TypeofMapE,
+	genericTypeofGuardE,
+} from "./typeof.js"
+import {
 	escapeRegExp,
 	identity,
 	isEmpty,
@@ -30,12 +35,6 @@ import {
 	noop,
 	range,
 } from "lodash-es"
-import { NEVER_REGEX_G, SI_PREFIX_SCALE } from "./magic.js"
-import {
-	type PrimitiveTypeE,
-	type TypeofMapE,
-	genericTypeofGuardE,
-} from "./typeof.js"
 import inspect, { type Options } from "browser-util-inspect"
 import AsyncLock from "async-lock"
 import { MAX_LOCK_PENDING } from "./internals/magic.js"
@@ -190,10 +189,10 @@ export function assignExact<K extends keyof any, T extends {
 
 export function asyncDebounce<
 	A extends readonly unknown[], R,
->(func: DebouncedFunc<(
+>(func: (
 	resolve: (value: AsyncOrSync<R>) => void,
 	reject: (reason?: unknown) => void,
-	...args: A) => void>): (...args: A) => Promise<R> {
+	...args: A) => unknown): (...args: A) => Promise<R> {
 	const promises: {
 		readonly resolve: (value: AsyncOrSync<R>) => void
 		readonly reject: (reason?: unknown) => void
