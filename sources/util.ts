@@ -735,7 +735,7 @@ export function multireplace(
 	replacements: Map<string, string>,
 ): string {
 	return self0.replace(
-		alternativeRegExp(Object.keys(replacements)),
+		alternativeRegExp([...replacements.keys()]),
 		match => replacements.get(match) ?? match,
 	)
 }
