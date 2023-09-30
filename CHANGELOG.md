@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.23.2
+
+### Patch Changes
+
+- 02db249: Rerelease. Might have screwed up the v1.12.1.
+
 ## 1.23.1
 
 ### Patch Changes
