@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.23.1
+
+### Patch Changes
+
+- bdee81a: Make `asyncDebounce` accept any debounced-like functions.
+
 ## 1.23.0
 
 ### Minor Changes
