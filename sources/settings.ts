@@ -71,8 +71,8 @@ export abstract class AbstractSettingsManager<T extends AbstractSettingsManager
 				const settings = this.value,
 					cur = accessor(settings),
 					prev0 = prev
-				if (prev0 !== cur) {
-					prev = cur
+				prev = cur
+				if (!deepEqual(cur, prev0, { strict: true })) {
 					await callback(cur, prev0, settings)
 				}
 			})
