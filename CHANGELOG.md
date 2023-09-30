@@ -1,5 +1,15 @@
 # @polyipseity/obsidian-plugin-library
 
+## 1.24.0
+
+### Minor Changes
+
+- 33bf954: Make `onMutate` compare objects deeply when deciding to trigger the callback.
+
+### Patch Changes
+
+- 88b03ba: Fix `multireplace` not working.
+
 ## 1.23.2
 
 ### Patch Changes
