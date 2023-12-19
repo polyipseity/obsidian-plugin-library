@@ -54,8 +54,8 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       obsidian:
-        specifier: ^1.2.8
-        version: 1.4.11(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
+        specifier: ~1.2.8
+        version: 1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
       p-lazy:
         specifier: ^4.0.0
         version: 4.0.0
@@ -79,8 +79,8 @@ importers:
         specifier: ^2.27.1
         version: 2.27.1
       '@polyipseity/obsidian':
-        specifier: ^1.2.8
-        version: 1.4.11(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
+        specifier: ~1.2.8
+        version: 1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0)
       '@tsconfig/node16':
         specifier: ^16.1.1
         version: 16.1.1
@@ -731,15 +731,15 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@polyipseity/obsidian@1.4.11(@codemirror/state@6.0.0)(@codemirror/view@6.0.0):
-    resolution: {integrity: sha512-PbUxq/odpG2mcYeyL6wg6mRlJ61cqMrZ0niLhTKLH9ARyzJjkz1V1KZ8McqvqNIgSLTgFjtHLHvOYjg+QaG+7w==}
+  /@polyipseity/obsidian@1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0):
+    resolution: {integrity: sha512-rlXPpSAmZwxmcxsa163vl8eQMYq7gQwB+fx76NdvG3TC5ln7AG4uVRMfCyLfoePRYc8JxeJoUNujH0bgnePymA==}
     peerDependencies:
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
     dependencies:
       '@codemirror/state': 6.0.0
       '@codemirror/view': 6.0.0
-      '@types/codemirror': 5.60.8
+      '@types/codemirror': 0.0.108
       moment: 2.29.4
     dev: true
 
@@ -767,8 +767,8 @@ packages:
     resolution: {integrity: sha512-m4JohXh9JmxXT3dn4TAnAVquJqSiQMPahKNTfO++ZpZ75AB3aMOmDOCDnFvAPvkG13TzStqJDQRgao4CQvIIZw==}
     dev: true
 
-  /@types/codemirror@5.60.8:
-    resolution: {integrity: sha512-VjFgDF/eB+Aklcy15TtOTLQeMjTo07k7KAjql8OK5Dirr7a6sJY4T1uVBDuTVG9VEmn1uUsohOpYnVfgC6/jyw==}
+  /@types/codemirror@0.0.108:
+    resolution: {integrity: sha512-3FGFcus0P7C2UOGCNUVENqObEb4SFk+S8Dnxq7K6aIsLVs/vDtlangl3PEO0ykaKXyK56swVF6Nho7VsA44uhw==}
     dependencies:
       '@types/tern': 0.23.4
 
@@ -2760,15 +2760,15 @@ packages:
       es-abstract: 1.22.3
     dev: true
 
-  /obsidian@1.4.11(@codemirror/state@6.0.0)(@codemirror/view@6.0.0):
-    resolution: {integrity: sha512-BCVYTvaXxElJMl6MMbDdY/CGK+aq18SdtDY/7vH8v6BxCBQ6KF4kKxL0vG9UZ0o5qh139KpUoJHNm+6O5dllKA==}
+  /obsidian@1.2.8(@codemirror/state@6.0.0)(@codemirror/view@6.0.0):
+    resolution: {integrity: sha512-HrC+feA8o0tXspj4lEAqxb1btwLwHD2oHXSwbbN+CdRHURqbCkuIDLld+nkuyJ1w1c9uvVDRVk8BoeOnWheOrQ==}
     peerDependencies:
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
     dependencies:
       '@codemirror/state': 6.0.0
       '@codemirror/view': 6.0.0
-      '@types/codemirror': 5.60.8
+      '@types/codemirror': 0.0.108
       moment: 2.29.4
     dev: false
 

@@ -19,7 +19,7 @@
 		"lz-string": "^1.5.0",
 		"moment": "^2.29.4",
 		"monkey-around": "^2.3.0",
-		"obsidian": "^1.2.8",
+		"obsidian": "~1.2.8",
 		"p-lazy": "^4.0.0",
 		"semver": "^7.5.4",
 		"source-map": "^0.7.4",
@@ -30,7 +30,7 @@
 	"description": "Library for Obsidian plugins.",
 	"devDependencies": {
 		"@changesets/cli": "^2.27.1",
-		"@polyipseity/obsidian": "^1.2.8",
+		"@polyipseity/obsidian": "~1.2.8",
 		"@tsconfig/node16": "^16.1.1",
 		"@tsconfig/recommended": "^1.0.3",
 		"@tsconfig/strictest": "^2.0.2",
