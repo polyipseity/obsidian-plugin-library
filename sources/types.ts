@@ -5,6 +5,7 @@ import type {
 	WithOpaque,
 } from "ts-essentials"
 import type { LibraryUUIDs } from "./magic.js"
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import SemVer from "semver/classes/semver.js"
 
 export type AnyObject = Readonly<Record<keyof any, unknown>>

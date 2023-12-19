@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import PLazy from "p-lazy"
 import { isNil } from "lodash-es"
 import { lazyProxy } from "./util.js"

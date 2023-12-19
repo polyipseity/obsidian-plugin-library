@@ -272,6 +272,7 @@
             "exceptAfterSingleLine": true
           }
         ],
+        "@typescript-eslint/max-params": "off",
         "@typescript-eslint/member-delimiter-style": [
           "error",
           {

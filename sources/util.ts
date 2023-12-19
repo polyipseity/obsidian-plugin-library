@@ -36,6 +36,7 @@ import {
 	range,
 } from "lodash-es"
 import inspect, { type Options } from "browser-util-inspect"
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import AsyncLock from "async-lock"
 import { MAX_LOCK_PENDING } from "./internals/magic.js"
 import type { SvelteComponent } from "svelte"
