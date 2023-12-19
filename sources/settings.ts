@@ -91,7 +91,7 @@ export abstract class AbstractSettingsManager<T extends AbstractSettingsManager
 	}
 
 	protected override async load0(): Promise<DeepReadonly<T>> {
-		return simplifyType(deepFreeze(await this.#read()))
+		return simplifyType<T>(deepFreeze(await this.#read()))
 	}
 
 	async #read(reader: () => unknown = (): ReturnType<typeof this.read0> =>

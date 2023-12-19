@@ -291,7 +291,7 @@ export function cloneAsFrozen<T>(
 	obj: T,
 	cloner: <V>(value: V) => V = structuredClone,
 ): DeepReadonly<T> {
-	return simplifyType(deepFreeze(cloneAsWritable(obj, cloner)))
+	return simplifyType<T>(deepFreeze(cloneAsWritable(obj, cloner)))
 }
 
 export function cloneAsWritable<T>(
