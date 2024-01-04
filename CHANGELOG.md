@@ -1,4 +1,4 @@
-# @polyipseity/obsidian-plugin-library
+# @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
 ## 1.24.0
 
@@ -38,7 +38,7 @@
 
 ### Minor Changes
 
-- ab5a83c: Replace some `Record`s with `Map`s. (https://2ality.com/2012/01/objects-as-maps.html)
+- ab5a83c: Replace some `Record`s with `Map`s. (<https://2ality.com/2012/01/objects-as-maps.html>)
 - 19084bc: Create `AbstractSettingsManager` and `LocalSettingsManager` in `settings.ts`.
 - c0a3261: Use `localStorage` when storing temporary settings.
 
