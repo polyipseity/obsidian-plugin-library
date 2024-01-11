@@ -1,7 +1,5 @@
 jobs:
   build:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -13,14 +11,6 @@ jobs:
         node-version: '*'
     - run: npm ci
     - run: npm run build
-    - run: |
-        npm pack --pack-destination=.github
-        for file in .github/*.tgz; do mv "$file" "${file%-*}.tgz"; done
-    - if: ${{github.ref == 'refs/tags/latest'}}
-      env:
-        GH_TOKEN: ${{github.token}}
-      run: |
-        gh release upload latest .github/*.tgz --clobber
   build-pnpm:
     runs-on: ubuntu-latest
     steps:
@@ -37,8 +27,7 @@ jobs:
     - run: pnpm install
     - run: pnpm build
 on:
+  pull_request_target:
   push:
-    tags:
-    - latest
   workflow_dispatch:
 permissions: {}
