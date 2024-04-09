@@ -25,7 +25,7 @@ import {
 } from "../sources/util.js"
 import type { Resource } from "i18next"
 import type en from "./locales/en/translation.json"
-import merge from "ts-deepmerge"
+import { merge } from "ts-deepmerge"
 
 export type NormalizeLocale<T> = T extends Builtin ? T
 	// eslint-disable-next-line @typescript-eslint/ban-types
