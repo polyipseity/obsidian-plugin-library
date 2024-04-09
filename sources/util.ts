@@ -49,7 +49,7 @@ export class EventEmitterLite<A extends readonly unknown[]> {
 	readonly #listeners: ((...args: A) => unknown)[] = []
 
 	public async emit(...args: A): Promise<void> {
-		return new Promise((resolve, reject: (reason?: unknown) => unknown) => {
+		return new Promise((resolve, reject: (reason?: unknown) => void) => {
 			this.lock.acquire(EventEmitterLite.emitLock, async () => {
 				// Copy to prevent concurrent modification
 				const emitted = [...this.#listeners]
