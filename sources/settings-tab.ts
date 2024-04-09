@@ -38,7 +38,9 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 					() => { this.onUnload() },
 				))
 			})
-			.catch(error => { activeSelf(this.containerEl).console.error(error) })
+			.catch((error: unknown) => {
+				activeSelf(this.containerEl).console.error(error)
+			})
 	}
 
 	public display(): void {
@@ -105,6 +107,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 					setTextToEnum(
 						langs,
 						async value => settings.mutate(settingsM => {
+							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 							settingsM.language = value || defaults.language
 						}),
 					),
@@ -228,7 +231,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 							this.#onMutate.then(() => {
 								undoable = true
 								component.setCta()
-							}).catch(error => {
+							}).catch((error: unknown) => {
 								activeSelf(component.buttonEl).console.error(error)
 							})
 						},
@@ -318,6 +321,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 				try {
 					resolve(snapshot)
 				} catch (error) {
+					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 					reject(error)
 				} finally {
 					unregister()
@@ -328,7 +332,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 
 	protected postMutate(local = false): void {
 		const { containerEl, context: { localSettings, settings }, ui } = this;
-		(local ? localSettings : settings).write().catch(error => {
+		(local ? localSettings : settings).write().catch((error: unknown) => {
 			activeSelf(containerEl).console.error(error)
 		})
 		ui.update()

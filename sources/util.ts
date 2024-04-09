@@ -49,7 +49,7 @@ export class EventEmitterLite<A extends readonly unknown[]> {
 	readonly #listeners: ((...args: A) => unknown)[] = []
 
 	public async emit(...args: A): Promise<void> {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, reject: (reason?: unknown) => unknown) => {
 			this.lock.acquire(EventEmitterLite.emitLock, async () => {
 				// Copy to prevent concurrent modification
 				const emitted = [...this.#listeners]
@@ -356,6 +356,7 @@ function deepFreeze0<T>(value: T, freezing: WeakSet<object>): DeepReadonly<T> {
 		for (const subkey of typedOwnKeys(value)) {
 			const subvalue = value[subkey]
 			if (isObject(subvalue) && !freezing.has(subvalue)) {
+				// eslint-disable-next-line @typescript-eslint/no-floating-promises
 				deepFreeze0(subvalue, freezing)
 			}
 		}
@@ -547,7 +548,6 @@ export function lazyProxy<T extends Function | object>(
 			get(target, property, receiver): unknown {
 				const own = Reflect.getOwnPropertyDescriptor(target, property)
 				if (!(own?.configurable ?? true) &&
-					// eslint-disable-next-line @typescript-eslint/no-extra-parens
 					(!(own?.writable ?? true) || (own?.set && !own.get))) {
 					return Reflect.get(target, property, receiver)
 				}
@@ -623,7 +623,6 @@ export function lazyProxy<T extends Function | object>(
 			set(target, property, newValue, receiver): boolean {
 				const own = Reflect.getOwnPropertyDescriptor(target, property)
 				if (!(own?.configurable ?? true) &&
-					// eslint-disable-next-line @typescript-eslint/no-extra-parens
 					(!(own?.writable ?? true) || (own?.get && !own.set)) &&
 					!Reflect.set(target, property, newValue, receiver)) {
 					return false

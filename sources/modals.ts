@@ -522,6 +522,7 @@ export class EditDataModal<T extends object> extends Modal {
 
 	protected replaceData(data: typeof this.data): void {
 		clearProperties(this.data)
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		Object.assign(this.data, data)
 	}
 

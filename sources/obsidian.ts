@@ -102,6 +102,7 @@ export abstract class ResourceComponent<T> extends Component {
 		try {
 			loading = this.load0()
 		} catch (error) {
+			// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 			loading = Promise.reject(error)
 		}
 		(async (): Promise<void> => {
@@ -359,6 +360,7 @@ export async function awaitCSS(
 				classList.remove(awaitCSS.CLASS)
 				resolve()
 			} catch (error) {
+				// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 				reject(error)
 			} finally { obsr.disconnect() }
 		})

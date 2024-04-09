@@ -311,7 +311,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 							}
 							clearProperties(fm)
 							Object.assign(fm, context.settings)
-						}).catch(error => {
+						}).catch((error: unknown) => {
 							printError(anyToError(error), () => i18n.t(
 								"errors.error-processing-frontmatter",
 								{
@@ -355,7 +355,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 						)
 						return ret ?? {}
 					})
-					settings.write().catch(error => {
+					settings.write().catch((error: unknown) => {
 						activeSelf(lastEvent).console.error(error)
 					})
 				} catch (error) {
@@ -380,7 +380,7 @@ export function registerSettingsCommands(context: PluginContext): void {
 							cleanFrontmatterCache(
 								metadataCache.getFileCache(file)?.frontmatter,
 							))
-						settings.write().catch(error => {
+						settings.write().catch((error: unknown) => {
 							activeSelf(lastEvent).console.error(error)
 						})
 					} catch (error) {

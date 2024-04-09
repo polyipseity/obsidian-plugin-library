@@ -65,10 +65,9 @@ export function mergeResources<const Ts extends readonly I18nResources[]>(
 	}>> = {}
 	for (const res of resources) {
 		for (const [lang, locale] of Object.entries(res)) {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-multi-assign
+			// eslint-disable-next-line no-multi-assign
 			const ret0 = ret[lang] ??= {}
 			for (const [ns, resource] of Object.entries(locale)) {
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				(ret0[ns] ??=
 					((data: (() => AsyncOrSync<Resource>)[] = []): {
 						(): AsyncOrSync<Resource>
