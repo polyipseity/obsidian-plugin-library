@@ -1,4 +1,4 @@
-import type { Builtin, UnionToIntersection } from "ts-essentials"
+import type { AsyncOrSync, Builtin, UnionToIntersection } from "ts-essentials"
 import type { DistributeValues } from "./types.js"
 import type { PluginContext } from "./plugin.js"
 
@@ -39,13 +39,15 @@ export function revealPrivate<const As extends readonly HasPrivate[], R>(
 }
 export async function revealPrivateAsync<
 	const As extends readonly HasPrivate[],
-	R extends PromiseLike<unknown>,
+	R,
 >(
 	context: PluginContext,
 	args: As,
-	func: (...args: { readonly [A in keyof As]: RevealPrivate<As[A]> }) => R,
-	fallback: (error: unknown) => Awaited<R> | R,
-): Promise<Awaited<R>> {
+	func: (...args: {
+		readonly [A in keyof As]: RevealPrivate<As[A]>
+	}) => PromiseLike<R>,
+	fallback: (error: unknown) => AsyncOrSync<R>,
+): Promise<R> {
 	try {
 		return await func(...args as
 			{ readonly [A in keyof As]: RevealPrivate<As[A]> })
@@ -54,6 +56,6 @@ export async function revealPrivateAsync<
 			context.language.value.t("errors.private-API-changed"),
 			error,
 		)
-		return await fallback(error)
+		return fallback(error)
 	}
 }
