@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.25.1
+
+### Patch Changes
+
+- f25927f: Add `@capacitor/core` to fix bundling issues.
+
 ## 1.25.0
 
 ### Minor Changes
