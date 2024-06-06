@@ -22,6 +22,7 @@
 		"obsidian": "~1.2.8",
 		"p-lazy": "^4.0.0",
 		"semver": "^7.6.2",
+		"shq": "^1.0.3",
 		"source-map": "^0.7.4",
 		"svelte": "^3.59.2",
 		"ts-deepmerge": "^7.0.0",

@@ -1,12 +1,13 @@
 import { PACKAGE_ID, PATHS } from "./util.mjs"
 import { analyzeMetafile, context, formatMessages } from "esbuild"
+import { argv, platform } from "node:process"
 import { constant, isEmpty, kebabCase } from "lodash-es"
-import { argv } from "node:process"
 import { copy } from "esbuild-plugin-copy"
 import cssEscape from "css.escape"
 import esbuildCompress from "esbuild-compress"
 import esbuildSvelte from "esbuild-svelte"
 import { nodeExternalsPlugin } from "esbuild-node-externals"
+import shq from "shq"
 import { spawn } from "node:child_process"
 import sveltePreprocess from "svelte-preprocess"
 import which from "which"
@@ -120,7 +121,7 @@ async function tsc() {
 	const npx = await which("npx", {})
 	return new Promise((resolve, reject) => {
 		spawn(
-			npx,
+			platform === "win32" ? `"${npx}"` : shq(npx),
 			[
 				"--package",
 				"typescript",
@@ -129,7 +130,11 @@ async function tsc() {
 				"--emitDeclarationOnly",
 				...DEV ? ["--watch"] : [],
 			],
-			{ stdio: "inherit" },
+			{
+				// https://github.com/nodejs/node/issues/52554
+				shell: true,
+				stdio: "inherit",
+			},
 		)
 			.once("error", reject)
 			.once("exit", (code, signal) => {
