@@ -1,5 +1,16 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.25.0
+
+### Minor Changes
+
+- 6a6b55b: Change `$FileSystem.open` to use feature detection instead.
+
+### Patch Changes
+
+- 8a725f7: Fix `build.mjs`. See <https://github.com/nodejs/node/issues/52554>.
+- efc2ffc: Fix misdetecting iPadOS as Mac.
+
 ## 1.24.0
 
 ### Minor Changes
