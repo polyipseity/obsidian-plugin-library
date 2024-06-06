@@ -30,7 +30,6 @@ import {
 	cloneAsWritable,
 	createChildElement,
 	deepFreeze,
-	inSet,
 	instanceOf,
 	multireplace,
 	onVisible,
@@ -40,7 +39,6 @@ import { cloneDeep, constant, noop } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
 import type { AsyncOrSync } from "ts-essentials"
 import { InternalDOMClasses } from "./internals/magic.js"
-import { Platform } from "./platform.js"
 import type { PluginContext } from "./plugin.js"
 import { around } from "monkey-around"
 import { saveAs } from "file-saver"
@@ -486,10 +484,10 @@ export async function saveFileAs(
 	adapter: DataAdapter,
 	data: File,
 ): Promise<void> {
-	const { CURRENT, MOBILE } = Platform
-	if (inSet(MOBILE, CURRENT)) {
-		await revealPrivateAsync(context, [adapter], async ({ fs }) => {
-			await fs.open<typeof CURRENT>(
+	if (await revealPrivateAsync(context, [adapter], async ({ fs }) => {
+		if ("open" in fs && fs.open.length === 1) {
+			const { length } = fs.open
+			await fs.open<typeof length>(
 				(await Filesystem.writeFile({
 					data: await data.text(),
 					directory: Directory.Cache,
@@ -497,9 +495,10 @@ export async function saveFileAs(
 					path: data.name,
 				})).uri,
 			)
-		}, noop)
-		return
-	}
+			return true
+		}
+		return false
+	}, constant(false))) { return }
 	saveAs(data)
 }
 

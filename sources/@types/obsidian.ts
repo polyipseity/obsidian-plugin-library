@@ -33,8 +33,6 @@ import type {
 	SettingTab,
 	UnknownSettingTab,
 } from "obsidian"
-import type { Deopaque } from "../types.js"
-import type { Platform } from "../platform.js"
 import type { Private } from "../private.js"
 
 declare const PRIVATE_KEY: unique symbol
@@ -67,9 +65,9 @@ interface $DataAdapter {
 }
 
 interface $FileSystem {
-	readonly open: <T extends Platform.Current>(
-		path: Deopaque<T> extends Platform.Mobile ? string : never,
-	) => Deopaque<T> extends Platform.Mobile ? PromiseLike<void> : never
+	readonly open?: <Length extends number>(
+		path: Length extends 1 ? string : never,
+	) => Length extends 1 ? PromiseLike<void> : never
 }
 
 interface $Plugins {
