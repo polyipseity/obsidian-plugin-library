@@ -218,6 +218,7 @@ export class UpdatableUI {
 				addDropdown: patch,
 				addExtraButton: patch,
 				addMomentFormat: patch,
+				addProgressBar: patch,
 				addSearch: patch,
 				addSlider: patch,
 				addText: patch,
@@ -374,7 +375,7 @@ export function cleanFrontmatterCache(
 ): Readonly<Record<string, unknown>> {
 	if (!cache) { return deepFreeze({}) }
 	const ret = cloneAsWritable<Partial<typeof cache>>(cache)
-	delete ret.position
+	delete ret["position"]
 	return deepFreeze(ret)
 }
 
