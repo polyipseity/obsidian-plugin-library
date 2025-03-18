@@ -1,9 +1,4 @@
 import {
-	check_outros as $checkOutros,
-	group_outros as $groupOutros,
-	transition_out as $transitionOut,
-} from "svelte/internal"
-import {
 	type AnyObject,
 	type AsyncFunctionConstructor,
 	type Base64String,
@@ -39,7 +34,6 @@ import inspect, { type Options } from "browser-util-inspect"
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import AsyncLock from "async-lock"
 import { MAX_LOCK_PENDING } from "./internals/magic.js"
-import type { SvelteComponent } from "svelte"
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift"
 
@@ -362,23 +356,6 @@ function deepFreeze0<T>(value: T, freezing: WeakSet<object>): DeepReadonly<T> {
 		}
 	}
 	return Object.freeze(value) as DeepReadonly<T>
-}
-
-// Feature request: https://github.com/sveltejs/svelte/issues/4056
-export function destroyWithOutro(self0: SvelteComponent): void {
-	const { $$: { fragment } } = self0
-	if (fragment !== false && fragment) {
-		try {
-			$groupOutros()
-			$transitionOut(fragment, 0, 0, () => { self0.$destroy() })
-			$checkOutros()
-		} catch (error) {
-			self.console.error(error)
-			self0.$destroy()
-		}
-	} else {
-		self0.$destroy()
-	}
 }
 
 export function escapeJavaScriptString(value: string): string {
