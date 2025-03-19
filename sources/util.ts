@@ -812,6 +812,19 @@ export function stringToBase64(string: string): Base64String {
 	return bytesToBase64(new TextEncoder().encode(string))
 }
 
+export function toJSONOrString(
+	value: unknown,
+	replacer?: (this: unknown, key: string, value: unknown) => unknown,
+	space: string | number = JSON_STRINGIFY_SPACE,
+): string {
+	try {
+		return JSON.stringify(value, replacer, space);
+	} catch (error) {
+		self.console.debug(error)
+	}
+	return String(value);
+}
+
 export function activeSelf(
 	reference?: Element | UIEvent | null,
 ): Window & typeof globalThis {
