@@ -1,5 +1,19 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.26.0
+
+### Minor Changes
+
+- e34687b: Update Obsidian API to 1.4.11
+- 8979742: Migrate to Svelte 5
+- e4c0bfa: Remove `esbuild-compress` (available as an separate package)
+- c66189d: Remove `destroyWithOutro`
+- 26d57a2: Add `toJSONOrString`
+
+### Patch Changes
+
+- 01de23e: Update dependencies
+
 ## 1.25.1
 
 ### Patch Changes
