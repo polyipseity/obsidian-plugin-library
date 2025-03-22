@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.27.0
+
+### Minor Changes
+
+- d10b20a: Migrate `FindComponent` to Svelte 5.
+
 ## 1.26.0
 
 ### Minor Changes
