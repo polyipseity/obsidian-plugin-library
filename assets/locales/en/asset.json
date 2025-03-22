@@ -17,6 +17,7 @@
 		},
 		"find": {
 			"case-sensitive-icon": "case-sensitive",
+			"close-icon": "$t(asset:generic.cancel-icon)",
 			"next-icon": "$t(asset:generic.next-icon)",
 			"previous-icon": "$t(asset:generic.previous-icon)",
 			"regex-icon": "regex",

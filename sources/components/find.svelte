@@ -135,6 +135,7 @@
 					onClose()
 					consumeEvent(event)
 				}}
+        use:setIcon={stateI18n("asset:components.find.close-icon")}
 			></button>
 		</div>
 	</div>
