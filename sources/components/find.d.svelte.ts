@@ -11,6 +11,7 @@ declare const FindComponent: Component<{
   readonly onFind?: (direction: Direction, params: Params) => unknown
   readonly onParamsChanged?: (params: Params) => unknown
   readonly results?: string
+  readonly focused?: boolean
 }, {
   readonly setI18n: (i18n: typeof i18nt) => void
   readonly getParamsRef: () => DeepWritable<Params>

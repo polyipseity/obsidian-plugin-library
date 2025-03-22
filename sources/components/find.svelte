@@ -7,6 +7,7 @@
 	import { t as i18nt } from "i18next"
 	import { isEmpty } from "lodash-es"
 	import { setIcon } from "obsidian"
+	import { onMount } from "svelte"
 	import { slide } from "svelte/transition"
 </script>
 
@@ -23,6 +24,7 @@
 		onFind = (_direction, _params) => {},
 		onParamsChanged = (_params) => {},
 		results = "",
+		focused = false,
 	}: {
 		readonly i18n?: typeof i18nt;
 		readonly params?: Params;
@@ -30,6 +32,7 @@
 		readonly onFind?: (direction: Direction, params: Params) => unknown;
 		readonly onParamsChanged?: (params: Params) => unknown;
 		readonly results?: string;
+		readonly focused?: boolean;
 	} = $props()
 
 	let stateI18n = $state.raw(i18n)
@@ -57,6 +60,10 @@
 	export function blur(): void {
 		inputElement?.blur()
 	}
+
+	if (focused) {
+		onMount(focus)
+	}
 </script>
 
 <div class="document-search-container" transition:slide role="search">
@@ -74,9 +81,9 @@
 				use:setIcon={stateI18n("asset:components.find.case-sensitive-icon")}
 			></button>
 			<button
-				class={`document-search-button${stateParams.wholeWord
-					? " mod-cta"
-					: ""}`}
+				class={`document-search-button${
+					stateParams.wholeWord ? " mod-cta" : ""
+				}`}
 				aria-label={stateI18n("components.find.whole-word")}
 				onclick={(event) => {
 					stateParams.wholeWord = !stateParams.wholeWord
@@ -135,7 +142,7 @@
 					onClose()
 					consumeEvent(event)
 				}}
-        use:setIcon={stateI18n("asset:components.find.close-icon")}
+				use:setIcon={stateI18n("asset:components.find.close-icon")}
 			></button>
 		</div>
 	</div>
