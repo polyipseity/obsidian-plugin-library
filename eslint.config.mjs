@@ -22,7 +22,7 @@ const __filename = fileURLToPath(import.meta.url),
 		recommendedConfig: js.configs.recommended,
 	})
 export default defineConfig([
-	globalIgnores(["build/*/", "**/main.js", "**/node_modules/", "**/dist/"]),
+	globalIgnores(["build/*/", "main.js", "node_modules/", "dist/"]),
 	{
 		"extends": fixupConfigRules(compat.extends(
 			"eslint:all",
