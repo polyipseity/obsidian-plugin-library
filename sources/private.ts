@@ -2,10 +2,12 @@ import type { AsyncOrSync, Builtin, UnionToIntersection } from "ts-essentials"
 import type { DistributeValues } from "./types.js"
 import type { PluginContext } from "./plugin.js"
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface PrivateKeys { }
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface PrivateKeys {
+	// Empty for interface extension.
+}
 export type PrivateKeys$ = keyof PrivateKeys
-export type Private<T, P extends keyof PrivateKeys> = { readonly [_ in P]: T }
+export type Private<T, P extends keyof PrivateKeys> = Readonly<Record<P, T>>
 export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = {
 	readonly [K in P]: Private<unknown, K>
 }[P]
@@ -28,6 +30,7 @@ export function revealPrivate<const As extends readonly HasPrivate[], R>(
 	fallback: (error: unknown) => R extends PromiseLike<unknown> ? never : R,
 ): R extends PromiseLike<unknown> ? never : R {
 	try {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 		return func(...args as { readonly [A in keyof As]: RevealPrivate<As[A]> })
 	} catch (error) {
 		self.console.warn(
@@ -49,6 +52,7 @@ export async function revealPrivateAsync<
 	fallback: (error: unknown) => AsyncOrSync<R>,
 ): Promise<R> {
 	try {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 		return await func(...args as
 			{ readonly [A in keyof As]: RevealPrivate<As[A]> })
 	} catch (error) {

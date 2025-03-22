@@ -108,6 +108,7 @@ export abstract class AbstractSettingsManager<T extends AbstractSettingsManager
 		actual: unknown,
 		fixed: DeepWritable<T>,
 	): unknown
+
 	protected abstract read0(): unknown
 }
 export namespace AbstractSettingsManager {

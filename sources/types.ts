@@ -35,7 +35,9 @@ export type Evaluate<T> = T extends (...args: infer A) => infer R ? (
 ) => R : T extends object
 	? T extends infer O ? { [K in keyof O]: O[K] } : never : T
 export type IsExact<T, U> =
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 	(<G>() => G extends T ? 1 : -1) extends
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 	(<G>() => G extends U ? 1 : -1) ? true : false
 export type ReadonlyTuple<Type = unknown> =
 	readonly [] | readonly [Type, ...Type[]]
@@ -49,10 +51,12 @@ export function contravariant<T>(value: readonly T[]): readonly T[] {
 }
 
 export function correctType(value: Window): Window & typeof globalThis {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return value as Window & typeof globalThis
 }
 
 export function deopaque<T>(value: T): Deopaque<T> {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return value as Deopaque<T>
 }
 
@@ -80,9 +84,11 @@ export function codePoint(value: string): CodePoint {
 	if (cp === void 0 || String.fromCharCode(cp) !== value) {
 		throw new TypeError(value)
 	}
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return value as CodePoint
 }
 export function semVerString(value: string): SemVerString {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return new SemVer(value).version as SemVerString
 }
 

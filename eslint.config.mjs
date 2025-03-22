@@ -1,25 +1,26 @@
-import { defineConfig, globalIgnores } from "eslint/config"
-import { fixupConfigRules } from "@eslint/compat"
-import typescriptEslint from "@typescript-eslint/eslint-plugin"
-import svelte from "eslint-plugin-svelte"
-import globals from "globals"
 import * as espree from "espree"
-import tsParser from "@typescript-eslint/parser"
-import svelteParser from "svelte-eslint-parser"
+import { defineConfig, globalIgnores } from "eslint/config"
+import { FlatCompat } from "@eslint/eslintrc"
+import { fileURLToPath } from "node:url"
+import { fixupConfigRules } from "@eslint/compat"
+import globals from "globals"
+import js from "@eslint/js"
 import markdownlintParser from "eslint-plugin-markdownlint/parser.js"
 import path from "node:path"
-import { fileURLToPath } from "node:url"
-import js from "@eslint/js"
-import { FlatCompat } from "@eslint/eslintrc"
+import svelte from "eslint-plugin-svelte"
+import svelteParser from "svelte-eslint-parser"
+import tsParser from "@typescript-eslint/parser"
+import typescriptEslint from "@typescript-eslint/eslint-plugin"
 
+// eslint-disable-next-line no-underscore-dangle
 const __filename = fileURLToPath(import.meta.url),
+	// eslint-disable-next-line no-underscore-dangle
 	__dirname = path.dirname(__filename),
 	compat = new FlatCompat({
+		allConfig: js.configs.all,
 		baseDirectory: __dirname,
 		recommendedConfig: js.configs.recommended,
-		allConfig: js.configs.all,
 	})
-
 export default defineConfig([
 	globalIgnores(["build/*/", "**/main.js", "**/node_modules/", "**/dist/"]),
 	{
@@ -29,82 +30,60 @@ export default defineConfig([
 			"plugin:import/recommended",
 			"plugin:import/typescript",
 		)),
-
-		plugins: {
-			"@typescript-eslint": typescriptEslint,
-			svelte,
-		},
-
-		linterOptions: {
-			reportUnusedDisableDirectives: true,
-		},
-
 		languageOptions: {
+			ecmaVersion: "latest",
 			globals: {
 				...globals.browser,
-				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, "off"])),
+				...Object.fromEntries(Object.entries(globals.node)
+					.map(([key]) => [key, "off"])),
 			},
-
 			parser: espree,
-			ecmaVersion: "latest",
-			sourceType: "module",
-
 			parserOptions: {
 				allowReserved: false,
 				ecmaFeatures: {},
 				extraFileExtensions: [".svelte"],
 				project: true,
 			},
+			sourceType: "module",
 		},
-
-		settings: {
-			"import/resolver": {
-				node: false,
-				typescript: true,
-			},
+		linterOptions: {
+			reportUnusedDisableDirectives: true,
 		},
-
+		plugins: {
+			"@typescript-eslint": typescriptEslint,
+			svelte,
+		},
 		rules: {
 			"array-element-newline": ["error", "consistent"],
 			"arrow-parens": ["error", "as-needed"],
-
 			"brace-style": ["error", "1tbs", {
 				allowSingleLine: true,
 			}],
-
 			"class-methods-use-this": "off",
 			"comma-dangle": ["error", "always-multiline"],
 			"dot-location": ["error", "property"],
-
 			"func-style": ["error", "declaration", {
 				allowArrowFunctions: true,
 			}],
-
 			"function-call-argument-newline": ["error", "consistent"],
 			"function-paren-newline": ["error", "multiline-arguments"],
 			"generator-star-spacing": ["error", "after"],
 			"grouped-accessor-pairs": "off",
 			"implicit-arrow-linebreak": "off",
 			"import/no-cycle": "error",
-
 			"import/no-unresolved": ["error", {
 				amd: true,
 				commonjs: true,
 			}],
-
 			indent: ["error", "tab", {
 				SwitchCase: 1,
 			}],
-
 			"linebreak-style": "off",
-
 			"lines-between-class-members": ["error", "always", {
 				exceptAfterSingleLine: true,
 			}],
-
 			"max-classes-per-file": "off",
 			"max-depth": "off",
-
 			"max-len": ["error", {
 				code: 80,
 				ignorePattern: "eslint-disable",
@@ -114,33 +93,26 @@ export default defineConfig([
 				ignoreUrls: true,
 				tabWidth: 2,
 			}],
-
 			"max-lines": "off",
 			"max-lines-per-function": "off",
 			"max-params": "off",
 			"max-statements": "off",
 			"max-statements-per-line": "off",
 			"multiline-ternary": ["error", "always-multiline"],
-
 			"new-cap": ["error", {
 				properties: false,
 			}],
-
 			"no-confusing-arrow": "off",
 			"no-console": "off",
 			"no-continue": "off",
-
 			"no-inline-comments": ["error", {
 				ignorePattern: "^ @__PURE__ $",
 			}],
-
 			"no-magic-numbers": ["error", {
 				ignore: [-1, 0, 1, 10],
 			}],
-
 			"no-nested-ternary": "off",
 			"no-plusplus": "off",
-
 			"no-restricted-globals": [
 				"error",
 				"addEventListener",
@@ -321,37 +293,28 @@ export default defineConfig([
 				"webkitStorageInfo",
 				"window",
 			],
-
 			"no-tabs": ["error", {
 				allowIndentationTabs: true,
 			}],
-
 			"no-ternary": "off",
-
 			"no-underscore-dangle": ["error", {
 				allowAfterThis: true,
 			}],
-
 			"no-void": ["off"],
 			"object-curly-spacing": ["error", "always"],
-
 			"object-property-newline": ["error", {
 				allowAllPropertiesOnSameLine: true,
 			}],
-
 			"one-var": ["error", "consecutive"],
 			"padded-blocks": ["error", "never"],
-
 			"quote-props": ["error", "as-needed", {
 				keywords: true,
 				numbers: true,
 				unnecessary: true,
 			}],
-
 			semi: ["error", "never", {
 				beforeStatementContinuationChars: "always",
 			}],
-
 			"sort-vars": "off",
 			"space-before-function-paren": ["error", {
 				anonymous: "never",
@@ -359,27 +322,25 @@ export default defineConfig([
 				named: "never",
 			}],
 		},
+		settings: {
+			"import/resolver": {
+				node: false,
+				typescript: true,
+			},
+		},
 	},
 	{
 		files: ["**/*.js", "**/*.mjs", "**/*.cjs", "**/*.jsx"],
 	},
 	{
 		files: ["build/**"],
-
 		languageOptions: {
 			globals: {
-				...Object.fromEntries(Object.entries(globals.browser).map(([key]) => [key, "off"])),
+				...Object.fromEntries(Object.entries(globals.browser)
+					.map(([key]) => [key, "off"])),
 				...globals.node,
 			},
 		},
-
-		settings: {
-			"import/resolver": {
-				node: true,
-				typescript: true,
-			},
-		},
-
 		rules: {
 			"no-restricted-globals": [
 				"error",
@@ -562,125 +523,126 @@ export default defineConfig([
 				"window",
 			],
 		},
+		settings: {
+			"import/resolver": {
+				node: true,
+				typescript: true,
+			},
+		},
 	},
 	{
-		files: ["**/*.ts", "**/*.mts", "**/*.cts", "**/*.tsx", "**/*.svelte"],
-
 		"extends": compat.extends(
 			"plugin:@typescript-eslint/eslint-recommended",
 			"plugin:@typescript-eslint/all",
 		),
-
+		files: ["**/*.ts", "**/*.mts", "**/*.cts", "**/*.tsx", "**/*.svelte"],
 		languageOptions: {
 			parser: tsParser,
 		},
-
 		rules: {
 			"@typescript-eslint/adjacent-overload-signatures": "off",
-
 			"@typescript-eslint/consistent-type-imports": ["error", {
 				disallowTypeAnnotations: false,
 				prefer: "type-imports",
 			}],
-
 			"@typescript-eslint/explicit-module-boundary-types": ["error", {
 				allowArgumentsExplicitlyTypedAsAny: true,
 			}],
-
 			"@typescript-eslint/max-params": "off",
-
-			"@typescript-eslint/naming-convention": ["error", {
-				format: ["camelCase"],
-				selector: "default",
-			}, {
-				format: ["camelCase", "UPPER_CASE"],
-				selector: "variable",
-			}, {
-				format: ["camelCase"],
-				leadingUnderscore: "allow",
-				selector: "parameter",
-			}, {
-				format: ["camelCase"],
-				leadingUnderscore: "allowDouble",
-				selector: "memberLike",
-			}, {
-				format: ["camelCase"],
-				modifiers: ["private"],
-				prefix: ["#"],
-				selector: "memberLike",
-			}, {
-				format: ["PascalCase"],
-				selector: "typeLike",
-			}],
-
+			"@typescript-eslint/naming-convention": ["error",
+				{
+					format: ["camelCase"],
+					selector: "default",
+				},
+				{
+					format: ["camelCase", "UPPER_CASE"],
+					selector: "variable",
+				},
+				{
+					format: ["camelCase"],
+					leadingUnderscore: "allow",
+					selector: "parameter",
+				},
+				{
+					format: ["camelCase"],
+					leadingUnderscore: "allowDouble",
+					selector: "memberLike",
+				},
+				{
+					format: ["camelCase"],
+					modifiers: ["private"],
+					prefix: ["#"],
+					selector: "memberLike",
+				},
+				{
+					format: ["PascalCase"],
+					selector: "typeLike",
+				}],
 			"@typescript-eslint/no-empty-function": ["error", {
 				allow: ["arrowFunctions", "overrideMethods"],
 			}],
-
 			"@typescript-eslint/no-explicit-any": "off",
-
 			"@typescript-eslint/no-floating-promises": ["error", {
 				ignoreIIFE: true,
 			}],
-
 			"@typescript-eslint/no-magic-numbers": ["error", {
 				ignore: [-1, 0, 1, 10],
 				ignoreEnums: true,
 				ignoreReadonlyClassProperties: true,
 			}],
-
 			"@typescript-eslint/no-namespace": "off",
 			"@typescript-eslint/no-type-alias": "off",
-
 			"@typescript-eslint/no-unnecessary-condition": ["error", {
 				allowConstantLoopConditions: true,
 			}],
-
 			"@typescript-eslint/no-unused-vars": ["error", {
 				argsIgnorePattern: "^_",
 			}],
-
 			"@typescript-eslint/no-use-before-define": ["error", {
 				functions: false,
 			}],
-
 			"@typescript-eslint/parameter-properties": ["error", {
 				prefer: "parameter-property",
 			}],
-
 			"@typescript-eslint/prefer-readonly-parameter-types": ["off"],
 		},
 	},
 	{
 		files: ["**/*.svelte"],
-
 		languageOptions: {
-			parser: svelteParser,
 			ecmaVersion: 5,
-			sourceType: "script",
-
+			parser: svelteParser,
 			parserOptions: {
 				parser: "@typescript-eslint/parser",
 			},
+			sourceType: "script",
 		},
-
 		rules: {
 			"@typescript-eslint/explicit-function-return-type": "off",
-
 			"arrow-parens": ["error", "always"],
 		},
 	},
 	{
-		files: ["**/*.md"],
 		"extends": compat.extends("plugin:markdownlint/recommended"),
-
+		files: ["**/*.md"],
 		languageOptions: {
 			parser: markdownlintParser,
 		},
-
 		rules: {
-			"max-len": "off",
 			"markdownlint/md013": "off",
+			"max-len": "off",
+		},
+	},
+	{
+		"extends": compat.extends("plugin:markdownlint/recommended"),
+		files: [".changeset/**/*.md"],
+		languageOptions: {
+			parser: markdownlintParser,
+		},
+		rules: {
+			"markdownlint/md013": "off",
+			"markdownlint/md041": "off",
+			"max-len": "off",
 		},
 	},
 ])

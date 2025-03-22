@@ -173,12 +173,14 @@ export namespace DocumentationMarkdownView {
 			const unc = launderUnchecked<State>(self0)
 			return markFixed(self0, {
 				data: fixTyped(DEFAULT, unc, "data", ["string"]),
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 				displayTextI18nKey: fixTyped(
 					DEFAULT,
 					unc,
 					"displayTextI18nKey",
 					["string", "null"],
 				) as TranslationKey | null,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 				iconI18nKey: fixTyped(
 					DEFAULT,
 					unc,

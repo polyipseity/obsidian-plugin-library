@@ -39,7 +39,7 @@ export function fixTyped<S, K extends keyof S>(
 
 export function fixArray<S,
 	K extends keyof S,
-	V extends S[K] extends readonly (
+	V extends S[K] extends readonly(
 		infer V0)[] ? V0 : never,
 >(
 	defaults: S,
@@ -55,6 +55,7 @@ export function fixArray<S,
 	return default1.map(primitiveOfE)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export function fixInSet<S, K extends keyof S, const Vs extends ReadonlyTuple>(
 	defaults: S,
 	from: Unchecked<S>,

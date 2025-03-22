@@ -28,7 +28,7 @@ import type en from "./locales/en/translation.json"
 import { merge } from "ts-deepmerge"
 
 export type NormalizeLocale<T> = T extends Builtin ? T
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	: T extends {} ? {
 		[K in keyof T as K extends `${infer K0}_${string}` ? K0 : K]:
 		NormalizeLocale<T[K]>
@@ -68,19 +68,17 @@ export function mergeResources<const Ts extends readonly I18nResources[]>(
 			// eslint-disable-next-line no-multi-assign
 			const ret0 = ret[lang] ??= {}
 			for (const [ns, resource] of Object.entries(locale)) {
-				(ret0[ns] ??=
-					((data: (() => AsyncOrSync<Resource>)[] = []): {
-						(): AsyncOrSync<Resource>
-						readonly data: (() => AsyncOrSync<Resource>)[]
-					} => Object.assign(
-						async () =>
-							merge(...await Promise.all(data.map(datum => datum()))),
-						{ data },
-					))()).data.push(resource)
+				const data: (() => AsyncOrSync<Resource>)[] = [];
+				(ret0[ns] ??= Object.assign(
+					async () =>
+						merge(...await Promise.all(data.map(datum => datum()))),
+					{ data },
+				)).data.push(resource)
 			}
 		}
 	}
-	// No way we are proving that to the type system
+	// No way we are proving that to the type systemF
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return deepFreeze(ret as MergeResources<Ts>)
 }
 

@@ -28,7 +28,7 @@ export interface ComponentAction<C, V> {
 export function linkSetting<
 	V,
 	C extends ValueComponent<V> & {
-		readonly onChange: (
+		readonly onChange:(
 			callback: (value: V) => unknown) => C
 	},
 >(

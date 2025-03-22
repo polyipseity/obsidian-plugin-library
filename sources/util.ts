@@ -15,7 +15,11 @@ import type {
 	DeepWritable,
 	Newable,
 } from "ts-essentials"
-import { NEVER_REGEX_G, SI_PREFIX_SCALE } from "./magic.js"
+import {
+	JSON_STRINGIFY_SPACE,
+	NEVER_REGEX_G,
+	SI_PREFIX_SCALE,
+} from "./magic.js"
 import {
 	type PrimitiveTypeE,
 	type TypeofMapE,
@@ -107,6 +111,7 @@ export class Functions<
 	): Async extends true
 		// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 		? Promise<void> : Async extends false ? void : never
+
 	public call0(thisArg: unknown, ...args: Args): AsyncOrSync<void> {
 		const { async, settled } = this.options
 		if (async) {
@@ -159,20 +164,22 @@ export function anyToError(obj: unknown): Error {
 	return obj instanceof Error ? obj : new Error(String(obj))
 }
 
-export function aroundIdentityFactory<T extends (this: unknown,
-	...args: readonly unknown[]
-) => unknown>() {
+export function aroundIdentityFactory<
+	T extends(this: unknown, ...args: readonly unknown[]) => unknown
+>() {
 	return (proto: T) => function fn(
 		this: ThisParameterType<T>,
 		...args: Parameters<T>
 	): ReturnType<T> {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 		return proto.apply(this, args) as ReturnType<T>
 	}
 }
 
-export function assignExact<K extends keyof any, T extends {
-	[_ in K]?: unknown
-}>(self0: T, key: K & keyof T, value?: T[K]): typeof value {
+export function assignExact<
+	K extends keyof any,
+	T extends Partial<Record<K, unknown>>,
+>(self0: T, key: K & keyof T, value?: T[K]): typeof value {
 	if (value === void 0) {
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		delete self0[key]
@@ -210,6 +217,7 @@ export function asyncDebounce<
 export function asyncFunction(
 	self0: typeof globalThis,
 ): AsyncFunctionConstructor {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return self0.eval("(async()=>{}).constructor") as AsyncFunctionConstructor
 }
 
@@ -250,6 +258,7 @@ export function bracket<T extends object, K extends keyof any>(
 }
 
 export function bytesToBase64(bytes: Uint8Array): Base64String {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return self.btoa(Array
 		.from(bytes, byte => String.fromCodePoint(byte))
 		.join("")) as Base64String
@@ -263,8 +272,9 @@ export function capitalize(
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types
-export function cartesianProduct<T extends readonly (readonly unknown[])[],
+export function cartesianProduct<T extends readonly(readonly unknown[])[],
 >(...arrays: T) {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return deepFreeze(arrays.reduce((acc, arr) => acc
 		.flatMap(comb => arr.map(ele => [comb, ele].flat())), [[]])) as
 		readonly ({ readonly [I in keyof T]: T[I][number] } &
@@ -294,6 +304,7 @@ export function cloneAsWritable<T>(
 	cloner: <V>(value: V) => V = structuredClone,
 ): DeepWritable<T> {
 	// `readonly` is fake at runtime
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return cloner(obj) as DeepWritable<T>
 }
 
@@ -355,6 +366,7 @@ function deepFreeze0<T>(value: T, freezing: WeakSet<object>): DeepReadonly<T> {
 			}
 		}
 	}
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return Object.freeze(value) as DeepReadonly<T>
 }
 
@@ -391,6 +403,7 @@ export function typedIn<T extends object, K extends keyof any>(
 	key: K,
 ): (() => T[K & keyof T]) | null {
 	if (key in self0) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 		return () => self0[key as K & keyof T]
 	}
 	return null
@@ -399,13 +412,15 @@ export function typedIn<T extends object, K extends keyof any>(
 export function typedOwnKeys<T extends object>(
 	self0: T,
 ): (keyof T & (string | symbol))[] {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return Reflect.ownKeys(self0) as (keyof T & (string | symbol))[]
 }
 
-export function typedKeys<T extends readonly (keyof any)[]>() {
-	return <O extends (keyof O extends T[number] ? {
-		readonly [_ in T[number]]: unknown
-	} : never)>(obj: O): Readonly<T> =>
+export function typedKeys<T extends readonly(keyof any)[]>() {
+	return <O extends (keyof O extends T[number]
+		? Readonly<Record<T[number], unknown>>
+		: never)>(obj: O): Readonly<T> =>
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 		deepFreeze(Object.keys(obj)) as T
 }
 
@@ -476,17 +491,14 @@ export function lazyInit<T>(initializer: () => T): () => T {
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function lazyProxy<T extends Function | object>(
-	initializer: () => T,
-): T {
+export function lazyProxy<T extends object>(initializer: () => T): T {
 	const lazy = lazyInit(initializer),
 		functions = new Map(),
 		proxy = new Proxy(lazy, {
 			apply(target, thisArg, argArray): unknown {
 				const target0 = target()
 				if (typeof target0 !== "function") {
-					throw new TypeError(String(target0))
+					throw new TypeError(toJSONOrString(target0))
 				}
 				return Reflect.apply(
 					target0,
@@ -497,7 +509,7 @@ export function lazyProxy<T extends Function | object>(
 			construct(target, argArray, newTarget): object {
 				const target0 = target()
 				if (typeof target0 !== "function") {
-					throw new TypeError(String(target0))
+					throw new TypeError(toJSONOrString(target0))
 				}
 				const ret: unknown = Reflect.construct(
 					target0,
@@ -615,6 +627,7 @@ export function lazyProxy<T extends Function | object>(
 				return Reflect.setPrototypeOf(target(), proto)
 			},
 		} satisfies Required<ProxyHandler<typeof lazy>>)
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return proxy as T
 }
 
@@ -818,11 +831,11 @@ export function toJSONOrString(
 	space: string | number = JSON_STRINGIFY_SPACE,
 ): string {
 	try {
-		return JSON.stringify(value, replacer, space);
+		return JSON.stringify(value, replacer, space)
 	} catch (error) {
-		self.console.debug(error)
+		/* @__PURE__ */ self.console.debug(error)
 	}
-	return String(value);
+	return String(value)
 }
 
 export function activeSelf(

@@ -28,6 +28,7 @@ export async function patchPlugin<const I extends string>(
 								const [id2] = args
 								if (ret && id2 as unknown === id) {
 									type Proto = typeof next<typeof id>
+									// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 									const ret2 = ret as Awaited<ReturnType<Proto>> & typeof ret,
 										unpatcher = await patcher(ret2)
 									unpatch.push(unpatcher)

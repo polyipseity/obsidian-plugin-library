@@ -36,8 +36,7 @@ const FUNCTION_CONSTRUCTOR_OFFSETS =
 export function generateFunctionSourceMap(
 	ctor: AsyncFunctionConstructor | FunctionConstructor,
 	script: string,
-	options?: Omit<NonNullable<Parameters<
-		// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+	options?: Omit<NonNullable<Parameters< 
 		typeof generateSourceMap>[1]>, "offset">,
 ): SourceMapGenerator {
 	let offset = FUNCTION_CONSTRUCTOR_OFFSETS.get(ctor)
@@ -57,6 +56,7 @@ export function generateFunctionSourceMap(
 	return generateSourceMap(script, { ...options, offset })
 }
 
+// eslint-disable-next-line complexity
 export function generateSourceMap(
 	script: string,
 	options?: {

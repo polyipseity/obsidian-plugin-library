@@ -1,37 +1,37 @@
 <svelte:options immutable={false} />
 
 <script context="module" lang="typescript">
-	import type { Direction, Params } from "./find.js";
-	import { consumeEvent, getKeyModifiers } from "../util.js";
-	import type { DeepWritable } from "ts-essentials";
-	import { t as i18nt } from "i18next";
-	import { isEmpty } from "lodash-es";
-	import { setIcon } from "obsidian";
-	import { slide } from "svelte/transition";
+	import type { Direction, Params } from "./find.js"
+	import { consumeEvent, getKeyModifiers } from "../util.js"
+	import type { DeepWritable } from "ts-essentials"
+	import { t as i18nt } from "i18next"
+	import { isEmpty } from "lodash-es"
+	import { setIcon } from "obsidian"
+	import { slide } from "svelte/transition"
 </script>
 
 <script lang="typescript">
-	export let i18n = i18nt;
+	export let i18n = i18nt
 	export let params: DeepWritable<Params> = {
 		caseSensitive: false,
 		findText: "",
 		regex: false,
 		wholeWord: false,
-	};
-	export let onClose = (): void => {};
-	export let onFind = (_direction: Direction, _params: Params): void => {};
-	export let onParamsChanged = (_params: Params): void => {};
-	export let results = "";
+	}
+	export let onClose = (): void => {}
+	export let onFind = (_direction: Direction, _params: Params): void => {}
+	export let onParamsChanged = (_params: Params): void => {}
+	export let results = ""
 
-	let inputElement: HTMLElement | null = null;
+	let inputElement: HTMLElement | null = null
 	export function focus(): void {
-		inputElement?.focus();
+		inputElement?.focus()
 	}
 	export function blur(): void {
-		inputElement?.blur();
+		inputElement?.blur()
 	}
 
-	$: onParamsChanged(params);
+	$: onParamsChanged(params)
 </script>
 
 <div
@@ -39,8 +39,8 @@
 	transition:slide
 	on:keydown={(event) => {
 		if (event.key === "Escape" && isEmpty(getKeyModifiers(event))) {
-			onClose();
-			consumeEvent(event);
+			onClose()
+			consumeEvent(event)
 		}
 	}}
 >
@@ -52,7 +52,7 @@
 				}`}
 				aria-label={i18n("components.find.case-sensitive")}
 				on:click|preventDefault|stopPropagation={() => {
-					params.caseSensitive = !params.caseSensitive;
+					params.caseSensitive = !params.caseSensitive
 				}}
 				use:setIcon={i18n("asset:components.find.case-sensitive-icon")}
 			/>
@@ -60,7 +60,7 @@
 				class={`document-search-button${params.wholeWord ? " mod-cta" : ""}`}
 				aria-label={i18n("components.find.whole-word")}
 				on:click|preventDefault|stopPropagation={() => {
-					params.wholeWord = !params.wholeWord;
+					params.wholeWord = !params.wholeWord
 				}}
 				use:setIcon={i18n("asset:components.find.whole-word-icon")}
 			/>
@@ -68,7 +68,7 @@
 				class={`document-search-button${params.regex ? " mod-cta" : ""}`}
 				aria-label={i18n("components.find.regex")}
 				on:click|preventDefault|stopPropagation={() => {
-					params.regex = !params.regex;
+					params.regex = !params.regex
 				}}
 				use:setIcon={i18n("asset:components.find.regex-icon")}
 			/>
@@ -85,7 +85,7 @@
 				class="document-search-button"
 				aria-label={i18n("components.find.previous")}
 				on:click|preventDefault|stopPropagation={() => {
-					onFind("previous", params);
+					onFind("previous", params)
 				}}
 				use:setIcon={i18n("asset:components.find.previous-icon")}
 			/>
@@ -93,7 +93,7 @@
 				class="document-search-button"
 				aria-label={i18n("components.find.next")}
 				on:click|preventDefault|stopPropagation={() => {
-					onFind("next", params);
+					onFind("next", params)
 				}}
 				use:setIcon={i18n("asset:components.find.next-icon")}
 			/>

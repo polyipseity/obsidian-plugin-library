@@ -34,6 +34,7 @@ import {
 	multireplace,
 	onVisible,
 	promisePromise,
+	toJSONOrString,
 } from "./util.js"
 import { cloneDeep, constant, noop } from "lodash-es"
 import { revealPrivate, revealPrivateAsync } from "./private.js"
@@ -72,10 +73,12 @@ export class LambdaComponent extends Component {
 
 export abstract class ResourceComponent<T> extends Component {
 	protected static readonly sentinel = Symbol(this.name)
+	// `unknown` to make the class covariant.
 	#loader = promisePromise<unknown>()
 	#value: T | typeof ResourceComponent.sentinel = ResourceComponent.sentinel
 
 	public get onLoaded(): Promise<T> {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 		return (this.#loader as PromisePromise<T>)
 			.then(async ({ promise }) => promise)
 	}
@@ -105,6 +108,7 @@ export abstract class ResourceComponent<T> extends Component {
 		}
 		(async (): Promise<void> => {
 			try {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 				const { promise, resolve } = await (this.#loader as PromisePromise<T>)
 				resolve(loading)
 				this.#value = await promise
@@ -186,6 +190,7 @@ export class UpdatableUI {
 						try {
 							if ("onChange" in comp && typeof comp.onChange === "function") {
 								try {
+									// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 									comp.onChange(noop)
 								} catch (error) {
 									activeSelf(settingEl).console.error(error)
@@ -224,7 +229,7 @@ export class UpdatableUI {
 				addText: patch,
 				addTextArea: patch,
 				addToggle: patch,
-			} satisfies { [key in (keyof Setting) & `add${string}`]: unknown })
+			} satisfies Record<(keyof Setting) & `add${string}`, unknown>)
 			return setting
 		}, setting => {
 			configure(setting
@@ -271,7 +276,7 @@ export function statusUI(ui: UpdatableUI, element: HTMLElement): StatusUI {
 	ui.new(constant(element), noop, () => { element.textContent = null })
 	return deepFreeze({
 		report(status?: unknown) {
-			element.textContent = status === void 0 ? null : String(status)
+			element.textContent = status === void 0 ? null : toJSONOrString(status)
 		},
 	})
 }
@@ -487,6 +492,7 @@ export async function saveFileAs(
 ): Promise<void> {
 	if (await revealPrivateAsync(context, [adapter], async ({ fs }) => {
 		if ("open" in fs && fs.open.length === 1) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { length } = fs.open
 			await fs.open<typeof length>(
 				(await Filesystem.writeFile({

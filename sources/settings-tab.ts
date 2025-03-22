@@ -97,7 +97,7 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 				ui,
 				context: { settings, language: { value: i18n } },
 			} = this,
-			langs = deepFreeze(["", ...languages.filter(identity)])
+			langs = deepFreeze(["", ...languages.filter(Boolean)])
 		ui.newSetting(containerEl, setting => {
 			setting
 				.setName(i18n.t("settings.language"))

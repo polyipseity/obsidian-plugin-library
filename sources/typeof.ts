@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
 import { contravariant } from "./types.js"
 
 export type InverseTypeofMap<T> =
@@ -8,7 +7,7 @@ export type InverseTypeofMap<T> =
 	: T extends boolean ? "boolean"
 	: T extends symbol ? "symbol"
 	: T extends undefined ? "undefined"
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	: T extends Function ? "function"
 	: T extends never ? never
 	: "object"
@@ -19,7 +18,7 @@ export interface TypeofMap {
 	boolean: boolean
 	symbol: symbol
 	undefined: undefined
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	function: Function
 	object: object | null
 }
@@ -43,6 +42,7 @@ export function genericTypeofGuard<T extends PrimitiveType>(
 	return contravariant<PrimitiveType>(types).includes(typeof value)
 }
 export function primitiveOf<T>(value: T): PrimitiveOf<T> {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return value as PrimitiveOf<T>
 }
 
@@ -68,5 +68,6 @@ export function genericTypeofGuardE<T extends PrimitiveTypeE>(
 	return contravariant<PrimitiveTypeE>(types).includes(typeofE(value))
 }
 export function primitiveOfE<T>(value: T): PrimitiveOfE<T> {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return value as PrimitiveOfE<T>
 }

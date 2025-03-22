@@ -12,6 +12,7 @@ export namespace Platform {
 	export type Mobile = typeof MOBILE[number]
 	export type All = typeof ALL[number]
 	export type Current = Opaque<All, typeof LibraryUUIDs["UUID2"]>
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	export const CURRENT = ((): All => {
 		if (Platform0.isIosApp) {
 			return "ios"
