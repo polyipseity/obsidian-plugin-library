@@ -34,16 +34,7 @@
 	$: onParamsChanged(params)
 </script>
 
-<div
-	class="document-search-container"
-	transition:slide
-	on:keydown={(event) => {
-		if (event.key === "Escape" && isEmpty(getKeyModifiers(event))) {
-			onClose()
-			consumeEvent(event)
-		}
-	}}
->
+<div class="document-search-container" transition:slide role="search">
 	<div class="document-search">
 		<div class="document-search-buttons">
 			<button
@@ -55,7 +46,7 @@
 					params.caseSensitive = !params.caseSensitive
 				}}
 				use:setIcon={i18n("asset:components.find.case-sensitive-icon")}
-			/>
+			></button>
 			<button
 				class={`document-search-button${params.wholeWord ? " mod-cta" : ""}`}
 				aria-label={i18n("components.find.whole-word")}
@@ -63,7 +54,7 @@
 					params.wholeWord = !params.wholeWord
 				}}
 				use:setIcon={i18n("asset:components.find.whole-word-icon")}
-			/>
+			></button>
 			<button
 				class={`document-search-button${params.regex ? " mod-cta" : ""}`}
 				aria-label={i18n("components.find.regex")}
@@ -71,14 +62,21 @@
 					params.regex = !params.regex
 				}}
 				use:setIcon={i18n("asset:components.find.regex-icon")}
-			/>
+			></button>
 		</div>
 		<input
 			class="document-search-input"
 			type="text"
 			placeholder={i18n("components.find.input-placeholder")}
+			role="searchbox"
 			bind:value={params.findText}
 			bind:this={inputElement}
+			on:keydown={(event) => {
+				if (event.key === "Escape" && isEmpty(getKeyModifiers(event))) {
+					onClose()
+					consumeEvent(event)
+				}
+			}}
 		/>
 		<div class="document-search-buttons">
 			<button
@@ -88,7 +86,7 @@
 					onFind("previous", params)
 				}}
 				use:setIcon={i18n("asset:components.find.previous-icon")}
-			/>
+			></button>
 			<button
 				class="document-search-button"
 				aria-label={i18n("components.find.next")}
@@ -96,13 +94,13 @@
 					onFind("next", params)
 				}}
 				use:setIcon={i18n("asset:components.find.next-icon")}
-			/>
+			></button>
 			<div class="document-search-results">{results}</div>
 			<button
 				class="document-search-close-button"
 				aria-label={i18n("components.find.close")}
 				on:click|preventDefault|stopPropagation={onClose}
-			/>
+			></button>
 		</div>
 	</div>
 </div>

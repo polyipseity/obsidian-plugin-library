@@ -9,7 +9,7 @@ import esbuildSvelte from "esbuild-svelte"
 import { nodeExternalsPlugin } from "esbuild-node-externals"
 import shq from "shq"
 import { spawn } from "node:child_process"
-import sveltePreprocess from "svelte-preprocess"
+import { sveltePreprocess } from "svelte-preprocess"
 import which from "which"
 import { writeFile } from "node:fs/promises"
 
@@ -74,16 +74,12 @@ const ARGV_PRODUCTION = 2,
 						css: DEV,
 						js: true,
 					},
-					errorMode: "throw",
-					format: "esm",
 					generate: "dom",
 					hydratable: false,
 					immutable: true,
-					legacy: false,
 					loopGuardTimeout: 0,
 					preserveComments: false,
 					preserveWhitespace: false,
-					varsReport: "full",
 				},
 				filterWarnings: constant(true),
 				fromEntryFile: false,
@@ -101,8 +97,8 @@ const ARGV_PRODUCTION = 2,
 							compilerOptions: {
 								module: "ESNext",
 								moduleResolution: "node10",
+								verbatimModuleSyntax: true,
 							},
-							handleMixedImports: true,
 							reportDiagnostics: true,
 							tsconfigDirectory: "./",
 							tsconfigFile: "./tsconfig.json",
