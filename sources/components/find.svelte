@@ -6,8 +6,8 @@
 	import type { DeepWritable } from "ts-essentials"
 	import { t as i18nt } from "i18next"
 	import { isEmpty } from "lodash-es"
-	import { setIcon } from "obsidian"
 	import { onMount } from "svelte"
+	import { setIcon } from "obsidian"
 	import { slide } from "svelte/transition"
 </script>
 
