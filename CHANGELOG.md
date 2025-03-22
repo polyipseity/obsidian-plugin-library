@@ -1,5 +1,15 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.28.0
+
+### Minor Changes
+
+- 94eb4f6: Add `focused` prop to `FindComponent`.
+
+### Patch Changes
+
+- 2c1fb18: Fix missing icon for `FindComponent`.
+
 ## 1.27.0
 
 ### Minor Changes
