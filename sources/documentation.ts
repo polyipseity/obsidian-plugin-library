@@ -101,7 +101,7 @@ export class DocumentationMarkdownView extends ItemView {
 		await super.setState(state, result)
 		const { data } = value
 		this.state = value
-		await MarkdownRenderer.renderMarkdown(data, element, "", this)
+		await MarkdownRenderer.render(this.app, data, element, "", this)
 		recordViewStateHistory(plugin, result)
 	}
 
