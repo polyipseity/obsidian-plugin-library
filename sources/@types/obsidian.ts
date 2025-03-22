@@ -1,19 +1,13 @@
- 
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 declare module "obsidian" {
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface App extends Private<$App, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface CommunityPluginsSettingTab
 		extends Private<$CommunityPluginsSettingTab, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface DataAdapter extends Private<$DataAdapter, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface FileSystem extends Private<$FileSystem, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface Plugins extends Private<$Plugins, PrivateKey> { }
 	namespace Plugins {
 		type Map<I extends string> = I extends keyof Mapping ? Mapping[I] : Plugin
-		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		interface Mapping { }
 	}
 	interface Scope {
@@ -24,16 +18,11 @@ declare module "obsidian" {
 			func: KeymapEventListener,
 		): KeymapEventHandler
 	}
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface UnknownSettingTab
 		extends Private<$UnknownSettingTab, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface ViewStateResult extends Private<$ViewStateResult, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface Workspace extends Private<$Workspace, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface WorkspaceLeaf extends Private<$WorkspaceLeaf, PrivateKey> { }
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface WorkspaceRibbon extends Private<$WorkspaceRibbon, PrivateKey> { }
 }
 import type {
