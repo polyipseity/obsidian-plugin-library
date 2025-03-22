@@ -27,6 +27,7 @@
 		"shq": "^1.0.3",
 		"source-map": "^0.7.4",
 		"svelte": "^5.25.2",
+		"svelte-eslint-parser": "^1.1.0",
 		"ts-deepmerge": "^7.0.2",
 		"ts-essentials": "^10.0.4"
 	},
