@@ -1,7 +1,7 @@
 import { PACKAGE_ID, PATHS } from "./util.mjs"
 import { analyzeMetafile, context, formatMessages } from "esbuild"
 import { argv, platform } from "node:process"
-import { constant, isEmpty, kebabCase } from "lodash-es"
+import { isEmpty, kebabCase } from "lodash-es"
 import { copy } from "esbuild-plugin-copy"
 import cssEscape from "css.escape"
 import esbuildCompress from "esbuild-compress"
@@ -45,7 +45,7 @@ const ARGV_PRODUCTION = 2,
 			copy({
 				assets: [
 					{
-						from: ["sources/**/*.svelte"],
+						from: ["sources/**/*.d.svelte.ts", "sources/**/*.svelte"],
 						to: ["sources"],
 					},
 				],
@@ -59,30 +59,19 @@ const ARGV_PRODUCTION = 2,
 				],
 			}),
 			esbuildSvelte({
-				cache: "overzealous",
+				cache: true,
 				compilerOptions: {
-					accessors: false,
 					css: "injected",
 					cssHash({ name }) {
 						return cssEscape(`${PACKAGE_ID0}-svelte-${kebabCase(name)}`)
 							.replace(/\\./gu, "_")
 					},
-					customElement: false,
-					dev: DEV,
-					enableSourcemap: {
-						css: DEV,
-						js: true,
-					},
-					generate: "dom",
-					hydratable: false,
-					immutable: true,
-					loopGuardTimeout: 0,
-					preserveComments: false,
-					preserveWhitespace: false,
 				},
-				filterWarnings: constant(true),
-				fromEntryFile: false,
 				include: /\.svelte$/u,
+				moduleCompilerOptions: {
+					dev: DEV,
+					generate: "client",
+				},
 				preprocess: [
 					sveltePreprocess({
 						aliases: [],
@@ -91,7 +80,7 @@ const ARGV_PRODUCTION = 2,
 						},
 						preserve: [],
 						replace: [],
-						sourceMap: false,
+						sourceMap: DEV,
 						typescript: {
 							compilerOptions: {
 								module: "ESNext",
