@@ -25,7 +25,6 @@ const ARGV_PRODUCTION = 2,
 		drop: [],
 		entryPoints: [
 			"sources/index.ts",
-			"sources/esbuild-compress/index.ts",
 			"sources/inject/index.ts",
 			"sources/style.css",
 		],
