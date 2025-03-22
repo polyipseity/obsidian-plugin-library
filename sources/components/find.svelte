@@ -1,6 +1,6 @@
-<svelte:options immutable={false} />
+<svelte:options />
 
-<script context="module" lang="typescript">
+<script module lang="typescript">
 	import type { Direction, Params } from "./find.js"
 	import { consumeEvent, getKeyModifiers } from "../util.js"
 	import type { DeepWritable } from "ts-essentials"
@@ -11,17 +11,26 @@
 </script>
 
 <script lang="typescript">
-	export let i18n = i18nt
-	export let params: DeepWritable<Params> = {
-		caseSensitive: false,
-		findText: "",
-		regex: false,
-		wholeWord: false,
-	}
-	export let onClose = (): void => {}
-	export let onFind = (_direction: Direction, _params: Params): void => {}
-	export let onParamsChanged = (_params: Params): void => {}
-	export let results = ""
+	const {
+		i18n = i18nt,
+		params = {
+			caseSensitive: false,
+			findText: "",
+			regex: false,
+			wholeWord: false,
+		},
+		onClose = () => {},
+		onFind = (_direction, _params) => {},
+		onParamsChanged = (_params) => {},
+		results = "",
+	}: {
+		i18n?: typeof i18nt;
+		params?: DeepWritable<Params>;
+		onClose?: () => unknown;
+		onFind?: (direction: Direction, params: Params) => unknown;
+		onParamsChanged?: (params: Params) => unknown;
+		results?: string;
+	} = $props()
 
 	let inputElement: HTMLElement | null = null
 	export function focus(): void {
@@ -31,7 +40,9 @@
 		inputElement?.blur()
 	}
 
-	$: onParamsChanged(params)
+	$effect(() => {
+		onParamsChanged(params)
+	})
 </script>
 
 <div class="document-search-container" transition:slide role="search">
@@ -42,24 +53,27 @@
 					params.caseSensitive ? " mod-cta" : ""
 				}`}
 				aria-label={i18n("components.find.case-sensitive")}
-				on:click|preventDefault|stopPropagation={() => {
+				onclick={(event) => {
 					params.caseSensitive = !params.caseSensitive
+					consumeEvent(event)
 				}}
 				use:setIcon={i18n("asset:components.find.case-sensitive-icon")}
 			></button>
 			<button
 				class={`document-search-button${params.wholeWord ? " mod-cta" : ""}`}
 				aria-label={i18n("components.find.whole-word")}
-				on:click|preventDefault|stopPropagation={() => {
+				onclick={(event) => {
 					params.wholeWord = !params.wholeWord
+					consumeEvent(event)
 				}}
 				use:setIcon={i18n("asset:components.find.whole-word-icon")}
 			></button>
 			<button
 				class={`document-search-button${params.regex ? " mod-cta" : ""}`}
 				aria-label={i18n("components.find.regex")}
-				on:click|preventDefault|stopPropagation={() => {
+				onclick={(event) => {
 					params.regex = !params.regex
+					consumeEvent(event)
 				}}
 				use:setIcon={i18n("asset:components.find.regex-icon")}
 			></button>
@@ -71,7 +85,7 @@
 			role="searchbox"
 			bind:value={params.findText}
 			bind:this={inputElement}
-			on:keydown={(event) => {
+			onkeydown={(event) => {
 				if (event.key === "Escape" && isEmpty(getKeyModifiers(event))) {
 					onClose()
 					consumeEvent(event)
@@ -82,16 +96,18 @@
 			<button
 				class="document-search-button"
 				aria-label={i18n("components.find.previous")}
-				on:click|preventDefault|stopPropagation={() => {
+				onclick={(event) => {
 					onFind("previous", params)
+					consumeEvent(event)
 				}}
 				use:setIcon={i18n("asset:components.find.previous-icon")}
 			></button>
 			<button
 				class="document-search-button"
 				aria-label={i18n("components.find.next")}
-				on:click|preventDefault|stopPropagation={() => {
+				onclick={(event) => {
 					onFind("next", params)
+					consumeEvent(event)
 				}}
 				use:setIcon={i18n("asset:components.find.next-icon")}
 			></button>
@@ -99,7 +115,10 @@
 			<button
 				class="document-search-close-button"
 				aria-label={i18n("components.find.close")}
-				on:click|preventDefault|stopPropagation={onClose}
+				onclick={(event) => {
+					onClose()
+					consumeEvent(event)
+				}}
 			></button>
 		</div>
 	</div>
