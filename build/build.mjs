@@ -53,7 +53,7 @@ const ARGV_PRODUCTION = 2,
 			esbuildCompress({
 				compressors: [
 					{
-						filter: /\.json$/u,
+						filter: /\.json$/, // eslint-disable-line require-unicode-regexp
 						loader: "json",
 					},
 				],
