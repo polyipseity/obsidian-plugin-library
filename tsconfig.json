@@ -103,7 +103,7 @@
   ],
   "include": [
     "assets/**/*",
-    "sources/**/*"
+    "src/**/*"
   ],
   "references": [],
   "typeAcquisition": {

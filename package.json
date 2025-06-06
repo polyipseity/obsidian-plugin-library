@@ -73,21 +73,21 @@
 	},
 	"exports": {
 		".": {
-			"types": "./dist/sources/index.d.ts",
+			"types": "./dist/src/index.d.ts",
 			"module": "./dist/index.js",
 			"import": "./dist/index.js",
 			"require": null,
 			"default": "./dist/index.js"
 		},
 		"./esbuild-compress": {
-			"types": "./dist/sources/esbuild-compress/index.d.ts",
+			"types": "./dist/src/esbuild-compress/index.d.ts",
 			"module": "./dist/esbuild-compress/index.js",
 			"import": "./dist/esbuild-compress/index.js",
 			"require": null,
 			"default": "./dist/inject.index.js"
 		},
 		"./inject": {
-			"types": "./dist/sources/inject/index.d.ts",
+			"types": "./dist/src/inject/index.d.ts",
 			"module": "./dist/inject/index.js",
 			"import": "./dist/inject/index.js",
 			"require": null,
@@ -149,7 +149,7 @@
 	"sideEffects": false,
 	"style": "dist/style.css",
 	"type": "module",
-	"types": "dist/sources/index.d.ts",
+	"types": "dist/src/index.d.ts",
 	"version": "1.28.0",
 	"workspaces": [
 		".",

@@ -10,19 +10,19 @@ import type {
 	DistributeValues,
 	Evaluate,
 	IsExact,
-} from "../sources/types.js"
+} from "../src/types.js"
 import type {
 	I18nFormatters,
 	I18nNamespaces,
 	I18nResources,
-} from "../sources/i18n.js"
+} from "../src/i18n.js"
 import {
 	capitalize,
 	deepFreeze,
 	startCase,
 	typedKeys,
 	uncapitalize,
-} from "../sources/util.js"
+} from "../src/util.js"
 import type { Resource } from "i18next"
 import type en from "./locales/en/translation.json"
 import { merge } from "ts-deepmerge"

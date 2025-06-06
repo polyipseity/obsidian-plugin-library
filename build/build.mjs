@@ -24,9 +24,9 @@ const ARGV_PRODUCTION = 2,
 		color: true,
 		drop: [],
 		entryPoints: [
-			"sources/index.ts",
-			"sources/inject/index.ts",
-			"sources/style.css",
+			"src/index.ts",
+			"src/inject/index.ts",
+			"src/style.css",
 		],
 		external: ["node:*"],
 		footer: { js: COMMENT },
@@ -45,8 +45,8 @@ const ARGV_PRODUCTION = 2,
 			copy({
 				assets: [
 					{
-						from: ["sources/**/*.d.svelte.ts", "sources/**/*.svelte"],
-						to: ["sources"],
+						from: ["src/**/*.d.svelte.ts", "src/**/*.svelte"],
+						to: ["src/"],
 					},
 				],
 			}),
