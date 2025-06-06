@@ -67,7 +67,7 @@ const ARGV_PRODUCTION = 2,
 							.replace(/\\./gu, "_")
 					},
 				},
-				include: /\.svelte$/u,
+				include: /\.svelte$/, // eslint-disable-line require-unicode-regexp
 				moduleCompilerOptions: {
 					dev: DEV,
 					generate: "client",
