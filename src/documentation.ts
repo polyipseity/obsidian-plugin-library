@@ -76,7 +76,7 @@ export class DocumentationMarkdownView extends ItemView {
 			context: { language: { value: i18n, language } },
 			state: { displayTextI18nKey: key },
 		} = this
-		return key === null ? "" : capitalize(String(i18n.t(key)), language)
+		return key === null ? "" : capitalize(i18n.t(key), language)
 	}
 
 	public override getIcon(): string {
@@ -84,7 +84,7 @@ export class DocumentationMarkdownView extends ItemView {
 			context: { language: { value: i18n } },
 			state: { iconI18nKey: key },
 		} = this
-		return key === null ? super.getIcon() : String(i18n.t(key))
+		return key === null ? super.getIcon() : i18n.t(key)
 	}
 
 	public override async setState(
