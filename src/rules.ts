@@ -6,9 +6,14 @@ import { ListModal } from "./modals.js"
 import type { PluginContext } from "./plugin.js"
 import { normalizePath } from "obsidian"
 
-export interface Rule {
-	readonly op: "-" | "+"
+export type Rule = NormalRule | ErrorRule;
+export interface NormalRule {
+	readonly type: "-" | "+"
 	readonly value: RegExp
+}
+export interface ErrorRule {
+	readonly type: "error"
+	readonly value: unknown
 }
 
 type Rules0 = readonly Rule[]
@@ -16,32 +21,41 @@ type Rules0 = readonly Rule[]
 export interface Rules extends Rules0 { }
 export namespace Rules {
 	export function parse(
-		strs: readonly string[],
+		strings: readonly string[],
 		interpreter = identityInterpreter,
 	): Rules {
-		return strs.map(str => {
-			let op: Rule["op"] = "+",
+		return strings.map(str => {
+			let type: Rule["type"] = "+",
 				str2 = str
 			if (str2.startsWith("+")) {
 				str2 = str2.slice("+".length)
 			} else if (str2.startsWith("-")) {
-				op = "-"
+				type = "-"
 				str2 = str2.slice("-".length)
 			}
 			const [, pattern, flags] =
 				(/^\/(?<pattern>(?:\\\/|[^/])+)\/(?<flags>[dgimsuvy]*)$/u)
 					.exec(str2) ?? []
 			if (pattern !== void 0 && flags !== void 0) {
-				return { op, value: new RegExp(pattern, flags) }
+				// eslint-disable-next-line no-useless-assignment
+				let value = null
+				try {
+					value = new RegExp(pattern, flags)
+				} catch (error) {
+					/* @__PURE__ */ self.console.debug(error)
+					return { type: "error", value: error }
+				}
+				return { type, value }
 			}
-			return { op, value: interpreter(str2) }
+			return { type, value: interpreter(str2) }
 		})
 	}
 
 	export function test(rules: Rules, str: string): boolean {
 		let ret = false
-		for (const { op, value } of rules) {
-			if (op === (ret ? "-" : "+") && value.test(str)) { ret = !ret }
+		for (const { type, value } of rules) {
+			if (type === "error") { continue }
+			if (type === (ret ? "-" : "+") && value.test(str)) { ret = !ret }
 		}
 		return ret
 	}
