@@ -1,5 +1,13 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.29.0
+
+### Minor Changes
+
+- 03d5186: Make `Rules.parse` report regex syntax errors.
+- f235c5a: Rename `sources/` to `src/`.
+- 44afd13: Fix typo in `SettingRules` property names.
+
 ## 1.28.0
 
 ### Minor Changes
