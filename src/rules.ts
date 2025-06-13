@@ -72,14 +72,14 @@ export class SettingRules<S extends PluginContext.Settings> {
 		protected readonly accessor: (
 			setting: DeepReadonly<S>,
 		) => readonly string[],
-		protected readonly intepreter?: ((str: string) => RegExp) | undefined,
+		protected readonly interpreter?: ((str: string) => RegExp) | undefined,
 	) {
 		const { context: { settings } } = this
-		this.rules = Rules.parse(accessor(settings.value), intepreter)
+		this.rules = Rules.parse(accessor(settings.value), interpreter)
 		context.register(settings.onMutate(
 			accessor,
 			async cur => {
-				this.rules = Rules.parse(cur, intepreter)
+				this.rules = Rules.parse(cur, interpreter)
 				await this.onChanged.emit()
 			},
 		))
