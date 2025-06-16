@@ -104,7 +104,10 @@ interface $HotkeyManager {
 
 interface $Keymap {
 	readonly constructor: typeof Keymap & {
-		readonly isMatch: (key: RevealPrivate<BakedHotkey>, ctx: KeymapContext) => boolean
+		readonly isMatch: (
+			key: RevealPrivate<BakedHotkey>,
+			ctx: KeymapContext,
+		) => boolean
 	}
 }
 
