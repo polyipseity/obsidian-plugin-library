@@ -1,5 +1,12 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.30.0
+
+### Minor Changes
+
+- d22bbc4: Expand private typings in `obsidian.ts`.
+- b3b6a5f: Add `newHotkeyListener`.
+
 ## 1.29.0
 
 ### Minor Changes
