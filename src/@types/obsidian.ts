@@ -22,9 +22,11 @@ declare module "obsidian" {
 			func: KeymapEventListener,
 		): KeymapEventHandler
 	}
-	interface SuggestModal<T> extends Private<$SuggestModal<T>, PrivateKey> { }
-	interface SuggestModalInstruction
-		extends Private<$SuggestModalInstruction, PrivateKey> { }
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	interface SuggestModal<T> {
+		// eslint-disable-next-line @typescript-eslint/method-signature-style
+		setInstructions(instructions: readonly Instruction[]): void;
+	}
 	interface UnknownSettingTab
 		extends Private<$UnknownSettingTab, PrivateKey> { }
 	interface ViewStateResult extends Private<$ViewStateResult, PrivateKey> { }
@@ -45,7 +47,6 @@ import type {
 	PluginManifest,
 	Plugins,
 	SettingTab,
-	SuggestModalInstruction,
 	UnknownSettingTab,
 	UserEvent,
 } from "obsidian"
@@ -122,18 +123,6 @@ interface $Plugins {
 	readonly loadPlugin: <const I extends string>(
 		id: I,
 	) => PromiseLike<Plugins.Map<I> | null>
-}
-
-// @ts-expect-error: T is unused
-interface $SuggestModal<T> { // eslint-disable-line @typescript-eslint/no-unused-vars
-	readonly setInstructions: (
-		instructions: readonly RevealPrivate<SuggestModalInstruction>[],
-	) => void
-}
-
-interface $SuggestModalInstruction {
-	readonly command: string
-	readonly purpose: string
 }
 
 interface $UnknownSettingTab extends SettingTab {

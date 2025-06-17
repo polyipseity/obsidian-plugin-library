@@ -1,8 +1,8 @@
 import {
 	type ButtonComponent,
+	type Instruction,
 	Modal,
 	type Setting,
-	type SuggestModalInstruction,
 	type ValueComponent,
 } from "obsidian"
 import {
@@ -39,7 +39,6 @@ import {
 } from "./settings-widgets.js"
 import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
-import type { RevealPrivate } from "./private.js"
 import { simplifyType } from "./types.js"
 
 export function makeModalDynamicWidth(
@@ -53,9 +52,8 @@ export function makeModalDynamicWidth(
 
 export function getDefaultSuggestModalInstructions(
 	context: PluginContext,
-): readonly SuggestModalInstruction[] {
+): readonly Instruction[] {
 	const { language: { value: i18n } } = context
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	return [
 		{
 			get command(): string {
@@ -81,9 +79,7 @@ export function getDefaultSuggestModalInstructions(
 				return i18n.t("components.suggest.instructions.dismiss-purpose")
 			},
 		},
-	] satisfies readonly RevealPrivate<SuggestModalInstruction>[
-
-	] as unknown as readonly SuggestModalInstruction[]
+	]
 }
 
 export class ListModal<T> extends Modal {
