@@ -44,6 +44,16 @@
 		},
 		"rules-list": {
 			"description": "$t(generic.rule)是从上到下执行的。如果没有$t(generic.rule)匹配，则排除。支持JavaScript正则表达式。不前置任何文字或前置「+」表示包含，「-」表示排除。"
+		},
+		"suggest": {
+			"instructions": {
+				"dismiss": "esc",
+				"dismiss-purpose": "$t(generic.dismiss)",
+				"navigate": "↑↓",
+				"navigate-purpose": "$t(generic.navigate)",
+				"use": "↵",
+				"use-purpose": "$t(generic.use)"
+			}
 		}
 	},
 	"dialogs": {
@@ -74,6 +84,7 @@
 		"current-file": "目前$t(generic.file)",
 		"data": "数据",
 		"disable": "禁用",
+		"dismiss": "取消",
 		"edit": "编辑",
 		"exist": "存在",
 		"export": "导出",
@@ -85,6 +96,7 @@
 		"list": "列表",
 		"list-description_other": "有{{count, number}}项项目。",
 		"list-description_zero": "没有项目。",
+		"navigate": "移动",
 		"notice": "通知",
 		"open": "开啟",
 		"ordinal": "第{{count, number}}",

@@ -47,6 +47,16 @@
 		},
 		"rules-list": {
 			"description": "$t(generic.rule_other, capitalize) are executed from top to bottom. If no $t(generic.rule_other) match, it is excluded. JavaScript regexp literals are supported. Prepend nothing or \"+\" for inclusion and \"-\" for exclusion."
+		},
+		"suggest": {
+			"instructions": {
+				"dismiss": "esc",
+				"dismiss-purpose": "to $t(generic.dismiss)",
+				"navigate": "↑↓",
+				"navigate-purpose": "to $t(generic.navigate)",
+				"use": "↵",
+				"use-purpose": "to $t(generic.use)"
+			}
 		}
 	},
 	"dialogs": {
@@ -77,6 +87,7 @@
 		"current-file": "current $t(generic.file)",
 		"data": "data",
 		"disable": "disable",
+		"dismiss": "dismiss",
 		"edit": "edit",
 		"exist": "exist",
 		"exist_gerund": "existing",
@@ -94,6 +105,7 @@
 		"list-description_one": "There is {{count, number}} item.",
 		"list-description_other": "There are {{count, number}} items.",
 		"list-description_zero": "There are no items.",
+		"navigate": "navigate",
 		"notice": "notice",
 		"open": "open",
 		"open_gerund": "opening",
