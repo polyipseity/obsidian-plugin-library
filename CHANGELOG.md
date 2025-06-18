@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.31.0
+
+### Minor Changes
+
+- bd358df: Add `getDefaultSuggestModalInstructions`.
+
 ## 1.30.0
 
 ### Minor Changes
