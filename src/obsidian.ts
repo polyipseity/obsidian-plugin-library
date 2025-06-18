@@ -418,7 +418,7 @@ export function printMalformedData(
 	)
 }
 
-export function newCollabrativeState(
+export function newCollaborativeState(
 	context: Plugin | PluginManifest,
 	states: ReadonlyMap<UnnamespacedID<string>, unknown>,
 ): unknown {
@@ -469,7 +469,7 @@ export function printError(
 	activeSelf(noticeEl).console.error(`${message()}\n`, error)
 }
 
-export function readStateCollabratively(
+export function readStateCollaboratively(
 	implType: string,
 	state: unknown,
 ): unknown {
@@ -546,7 +546,7 @@ export function useSubsettings(element: HTMLElement): HTMLElement {
 	return ret
 }
 
-export function writeStateCollabratively(
+export function writeStateCollaboratively(
 	state: unknown,
 	implType: string,
 	implState: unknown,

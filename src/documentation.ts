@@ -7,12 +7,12 @@ import {
 } from "obsidian"
 import {
 	UnnamespacedID,
-	newCollabrativeState,
+	newCollaborativeState,
 	printMalformedData,
-	readStateCollabratively,
+	readStateCollaboratively,
 	recordViewStateHistory,
 	updateView,
-	writeStateCollabratively,
+	writeStateCollaboratively,
 } from "./obsidian.js"
 import { capitalize, createChildElement, deepFreeze } from "./util.js"
 import { DOMClasses } from "./magic.js"
@@ -92,7 +92,7 @@ export class DocumentationMarkdownView extends ItemView {
 		result: ViewStateResult,
 	): Promise<void> {
 		const { context: plugin, element } = this,
-			ownState = readStateCollabratively(
+			ownState = readStateCollaboratively(
 				DocumentationMarkdownView.type.namespaced(plugin),
 				state,
 			),
@@ -106,7 +106,7 @@ export class DocumentationMarkdownView extends ItemView {
 	}
 
 	public override getState(): unknown {
-		return writeStateCollabratively(
+		return writeStateCollaboratively(
 			super.getState(),
 			DocumentationMarkdownView.type.namespaced(this.context),
 			this.state,
@@ -131,7 +131,7 @@ class Registered0 {
 			workspace.onLayoutReady(() => {
 				resolve(workspace.getLeaf("tab").setViewState({
 					active,
-					state: newCollabrativeState(
+					state: newCollaborativeState(
 						context,
 						new Map([
 							[
