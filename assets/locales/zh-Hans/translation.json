@@ -9,7 +9,7 @@
 		"dialog": {
 			"cancel": "$t(generic.cancel)",
 			"confirm": "$t(generic.confirm)",
-			"double-confirm-hint": "按<Enter>兩次$t(generic.confirm)。"
+			"double-confirm-hint": "按<Enter>两次$t(generic.confirm)。"
 		},
 		"dropdown": {
 			"placeholder": "（未选择）"
@@ -31,7 +31,7 @@
 			"regex": "正则表达式",
 			"results": "{{index, number}}/{{count, number}}",
 			"too-many-results": "?/{{limit, number}}+",
-			"whole-word": "全字"
+			"whole-word": "全词匹配"
 		},
 		"list": {
 			"append": "后置",
@@ -67,12 +67,12 @@
 		"malformed-data": "$t(generic.data)格式不正确",
 		"missing-interpolation": "名称为「{{name}}」的缺少插值被替换为「{{value}}」：{{text}}",
 		"missing-translation": "键为「{{key}}」的缺少翻译被替换为「{{value}}」",
-		"no-formatter": "没有格式器",
+		"no-formatter": "没有前置信息",
 		"private-API-changed": "私有$t(generic.API)改变了",
 		"retry-outdated-frontmatter": "请$t(generic.retry)，因为$t(generic.frontmatter)在$t(generic.background)更新了"
 	},
 	"generic": {
-		"API": "应用程序接口",
+		"API": "API",
 		"app": "应用",
 		"background": "后台",
 		"cancel": "取消",
@@ -90,7 +90,7 @@
 		"export": "导出",
 		"file": "文件",
 		"find": "搜索",
-		"frontmatter": "前文",
+		"frontmatter": "前置信息",
 		"import": "导入",
 		"language": "语言",
 		"list": "列表",
@@ -98,7 +98,7 @@
 		"list-description_zero": "没有项目。",
 		"navigate": "移动",
 		"notice": "通知",
-		"open": "开啟",
+		"open": "开启",
 		"ordinal": "第{{count, number}}",
 		"overwrite": "覆盖",
 		"plugin": "插件",
@@ -116,16 +116,16 @@
 			"recover": "复原",
 			"reload": "重新加载",
 			"reset": "$t(generic.reset)",
-			"undo": "复原"
+			"undo": "撤消"
 		},
 		"description": "$t(generic.open)「$t(settings.all-settings)」下的「$t(settings.all-settings-actions.edit)」或$t(generic.use)$t(generic.command-palette)以$t(generic.export)或$t(generic.import)$t(generic.setting)。",
 		"error-notice-timeout": "错误$t(generic.notice)$t(generic.timeout)（s）",
 		"error-notice-timeout-description": "$t(settings.notice-timeout-description)",
 		"language": "$t(generic.language)",
 		"language-default": "$t(generic.use)$t(generic.app)$t(generic.setting)",
-		"language-description": "仅适用於此$t(generic.plugin)。标有🚧的$t(generic.language)需要您帮助来翻译！",
+		"language-description": "仅适用于此$t(generic.plugin)。标有🚧的$t(generic.language)需要您帮助来翻译！",
 		"notice-timeout": "$t(generic.notice)$t(generic.timeout)（s）",
-		"notice-timeout-description": "设为0 s是无$t(generic.timeout)。设为负数以$t(generic.disable)$t(generic.notice)。",
+		"notice-timeout-description": "设为0s是无$t(generic.timeout)。设为负数以$t(generic.disable)$t(generic.notice)。",
 		"reset": "$t(generic.reset)"
 	}
 }
