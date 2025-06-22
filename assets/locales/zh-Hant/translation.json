@@ -72,7 +72,7 @@
 		"retry-outdated-frontmatter": "請$t(generic.retry)，因為$t(generic.frontmatter)在$t(generic.background)更新了"
 	},
 	"generic": {
-		"API": "應用程序接口",
+		"API": "API",
 		"app": "應用程式",
 		"background": "後台",
 		"cancel": "取消",
@@ -90,7 +90,7 @@
 		"export": "導出",
 		"file": "檔案",
 		"find": "搜尋",
-		"frontmatter": "前文",
+		"frontmatter": "前置信息",
 		"import": "導入",
 		"language": "語言",
 		"list": "列表",
