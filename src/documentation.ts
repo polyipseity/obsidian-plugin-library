@@ -14,7 +14,13 @@ import {
 	updateView,
 	writeStateCollaboratively,
 } from "./obsidian.js"
-import { capitalize, createChildElement, deepFreeze } from "./util.js"
+import {
+	capitalize,
+	consumeEvent,
+	createChildElement,
+	deepFreeze,
+	instanceOf,
+} from "./util.js"
 import { DOMClasses } from "./magic.js"
 import type { PluginContext } from "./plugin.js"
 import type { TranslationKey } from "./i18n.js"
@@ -53,6 +59,33 @@ export class DocumentationMarkdownView extends ItemView {
 					DOMClasses.MARKDOWN_PREVIEW_SECTION,
 					DOMClasses.MARKDOWN_PREVIEW_SIZER,
 				)
+
+				function onInternalLinkClick(ev: MouseEvent): void {
+					const { button, target } = ev
+					if (![0, 1].includes(button) || !instanceOf(target, Node)) { return }
+
+					const linkEl = Array.from(element
+						.querySelectorAll<HTMLAnchorElement>("a.internal-link"))
+						.find(ele => ele.contains(target))
+					if (!linkEl) { return }
+					let href = linkEl.getAttribute("data-href") ?? ""
+					if (!href.startsWith("#")) { return }
+
+					href = href.slice(1)
+					for (const headingEl of Array.from(element
+						.querySelectorAll("*[data-heading]"))) {
+						const heading = headingEl.getAttribute("data-heading")
+						if (heading === null
+							|| heading.toLowerCase().replaceAll(" ", "-") !== href) {
+							continue
+						}
+						headingEl.scrollIntoView({ block: "start", inline: "start" })
+						consumeEvent(ev)
+						return
+					}
+				}
+				element.addEventListener("click", onInternalLinkClick)
+				element.addEventListener("auxclick", onInternalLinkClick)
 			},
 		)
 	}
@@ -91,18 +124,18 @@ export class DocumentationMarkdownView extends ItemView {
 		state: unknown,
 		result: ViewStateResult,
 	): Promise<void> {
-		const { context: plugin, element } = this,
+		const { context, element } = this,
 			ownState = readStateCollaboratively(
-				DocumentationMarkdownView.type.namespaced(plugin),
+				DocumentationMarkdownView.type.namespaced(context),
 				state,
 			),
 			{ value, valid } = DocumentationMarkdownView.State.fix(ownState)
-		if (!valid) { printMalformedData(plugin, ownState, value) }
+		if (!valid) { printMalformedData(context, ownState, value) }
 		await super.setState(state, result)
 		const { data } = value
 		this.state = value
 		await MarkdownRenderer.render(this.app, data, element, "", this)
-		recordViewStateHistory(plugin, result)
+		recordViewStateHistory(context, result)
 	}
 
 	public override getState(): unknown {
