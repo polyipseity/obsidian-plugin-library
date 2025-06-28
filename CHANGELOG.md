@@ -1,5 +1,16 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.32.0
+
+### Minor Changes
+
+- c885124: Fix significant typos.
+
+### Patch Changes
+
+- 6126321: Update `translation.json`. ([GH#4](https://github.com/polyipseity/obsidian-plugin-library/pull/4) by [@cuberwu](https://github.com/cuberwu))
+- 63ef697: Fix anchor links in `DocumentationMarkdownView`.
+
 ## 1.31.0
 
 ### Minor Changes
