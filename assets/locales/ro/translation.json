@@ -142,7 +142,7 @@
 		"language-default": "$t(generic.use, capitalize) $t(generic.app) $t(generic.setting)",
 		"language-description": "Applies to this $t(generic.plugin) only. $t(generic.language_other, capitalize) with 🚧 need your help with translation!",
 		"notice-timeout": "$t(generic.notice, capitalize) $t(generic.timeout) (s)",
-		"notice-timeout-description": "Set to 0 s for no $t(generic.timeout). Set to negative to $t(generic.disable) $t(generic.notice).",
+		"notice-timeout-description": "Set to 0\u00a0s for no $t(generic.timeout). Set to negative to $t(generic.disable) $t(generic.notice).",
 		"reset": "$t(generic.reset, capitalize)"
 	}
 }

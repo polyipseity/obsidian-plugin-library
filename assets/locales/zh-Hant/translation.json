@@ -125,7 +125,7 @@
 		"language-default": "$t(generic.use)$t(generic.app)$t(generic.setting)",
 		"language-description": "僅適用於此$t(generic.plugin)。標有🚧的$t(generic.language)需要您幫助來翻譯！",
 		"notice-timeout": "$t(generic.notice)$t(generic.timeout)（s）",
-		"notice-timeout-description": "設為0 s是無$t(generic.timeout)。設為負數以$t(generic.disable)$t(generic.notice)。",
+		"notice-timeout-description": "設為0\u00a0s是無$t(generic.timeout)。設為負數以$t(generic.disable)$t(generic.notice)。",
 		"reset": "$t(generic.reset)"
 	}
 }
