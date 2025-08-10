@@ -73,25 +73,25 @@
 	},
 	"exports": {
 		".": {
-			"types": "./dist/src/index.d.ts",
-			"module": "./dist/index.js",
+			"default": "./dist/index.js",
 			"import": "./dist/index.js",
+			"module": "./dist/index.js",
 			"require": null,
-			"default": "./dist/index.js"
+			"types": "./dist/src/index.d.ts"
 		},
 		"./esbuild-compress": {
-			"types": "./dist/src/esbuild-compress/index.d.ts",
-			"module": "./dist/esbuild-compress/index.js",
+			"default": "./dist/inject.index.js",
 			"import": "./dist/esbuild-compress/index.js",
+			"module": "./dist/esbuild-compress/index.js",
 			"require": null,
-			"default": "./dist/inject.index.js"
+			"types": "./dist/src/esbuild-compress/index.d.ts"
 		},
 		"./inject": {
-			"types": "./dist/src/inject/index.d.ts",
-			"module": "./dist/inject/index.js",
+			"default": "./dist/inject/index.js",
 			"import": "./dist/inject/index.js",
+			"module": "./dist/inject/index.js",
 			"require": null,
-			"default": "./dist/inject/index.js"
+			"types": "./dist/src/inject/index.d.ts"
 		},
 		"./style": {
 			"default": "./dist/style.css"
