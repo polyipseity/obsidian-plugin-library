@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
 
+## 1.33.0
+
+### Minor Changes
+
+- 9cd9979: Remove `dynamicWidth` and `makeModalDynamicWidth`.
+
 ## 1.32.0
 
 ### Minor Changes
