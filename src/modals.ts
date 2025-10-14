@@ -158,7 +158,7 @@ export class ListModal<T> extends Modal {
 
 	public override onOpen(): void {
 		super.onOpen()
-		const { context, placeholder, data, ui, titleEl, modalUI, modalEl } = this,
+		const { context, placeholder, data, ui, titleEl, modalUI } = this,
 			{ element: listEl, remover: listElRemover } = useSettings(this.contentEl),
 			{ language } = context,
 			{ value: i18n, onChangeLanguage } = language,
@@ -396,7 +396,7 @@ export class EditDataModal<T extends object> extends Modal {
 
 	public override onOpen(): void {
 		super.onOpen()
-		const { modalUI, ui, modalEl, contentEl, titleEl, context } = this,
+		const { modalUI, ui, contentEl, titleEl, context } = this,
 			errorEl = statusUI(ui, ((): HTMLElement => {
 				const ret = createChildElement(contentEl, "div", ele => {
 					ele.classList.add(DOMClasses.MOD_WARNING)
