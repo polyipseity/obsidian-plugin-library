@@ -48,10 +48,11 @@ We hope that there will never be any security vulnerabilities, but unfortunately
 
 ### Supported versions
 
-| Version | Supported |
-|-|-|
-| latest | ✅ |
-| outdated | ❌ |
+| Version  | Supported |
+| -------- | --------- |
+| rolling  | ✅        |
+| latest   | ✅        |
+| outdated | ❌        |
 
 ### Reporting a vulnerability
 
