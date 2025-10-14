@@ -41,15 +41,6 @@ import type { Fixer } from "./fixers.js"
 import type { PluginContext } from "./plugin.js"
 import { simplifyType } from "./types.js"
 
-export function makeModalDynamicWidth(
-	ui: UpdatableUI,
-	element: HTMLElement,
-): void {
-	const { width } = element.style
-	element.style.width = "unset"
-	ui.finally(() => { element.style.width = width })
-}
-
 export function getDefaultSuggestModalInstructions(
 	context: PluginContext,
 ): readonly Instruction[] {
@@ -95,7 +86,6 @@ export class ListModal<T> extends Modal {
 	readonly #descriptor
 	readonly #presets
 	readonly #presetPlaceholder
-	readonly #dynamicWidth
 	#setupListSubUI = noop
 
 	public constructor(
@@ -133,7 +123,6 @@ export class ListModal<T> extends Modal {
 		this.#presets = options?.presets
 		this.#presetPlaceholder = options?.presetPlaceholder ?? ((): string =>
 			i18n.t("components.list.preset-placeholder"))
-		this.#dynamicWidth = options?.dynamicWidth ?? false
 	}
 
 	public static stringInputter<T>(transformer: {
@@ -181,7 +170,6 @@ export class ListModal<T> extends Modal {
 		modalUI.finally(onChangeLanguage.listen(() => { modalUI.update() }))
 		ui.finally(listElRemover)
 			.finally(onChangeLanguage.listen(() => { ui.update() }))
-		if (this.#dynamicWidth) { makeModalDynamicWidth(modalUI, modalEl) }
 		if (title) {
 			modalUI.new(constant(titleEl), ele => {
 				ele.textContent = title()
@@ -377,7 +365,6 @@ export namespace ListModal {
 			readonly value: T
 		}[]
 		readonly presetPlaceholder?: (action: "append" | "prepend") => string
-		readonly dynamicWidth?: boolean
 	}
 }
 
@@ -387,7 +374,6 @@ export class EditDataModal<T extends object> extends Modal {
 	protected readonly data
 	#dataText
 	readonly #callback
-	readonly #dynamicWidth
 	readonly #elements
 	readonly #title
 	readonly #description
@@ -402,7 +388,6 @@ export class EditDataModal<T extends object> extends Modal {
 		this.data = simplifyType<T>(cloneAsWritable(protodata))
 		this.#dataText = JSON.stringify(this.data, null, JSON_STRINGIFY_SPACE)
 		this.#callback = options?.callback ?? ((): void => { })
-		this.#dynamicWidth = options?.dynamicWidth ?? true
 		this.#elements =
 			deepFreeze([...options?.elements ?? EditDataModal.ELEMENTS])
 		this.#title = options?.title
@@ -428,7 +413,6 @@ export class EditDataModal<T extends object> extends Modal {
 		ui.finally(listElRemover)
 			.finally(onChangeLanguage.listen(() => { ui.update() }))
 			.finally(() => { this.#resetDataText() })
-		if (this.#dynamicWidth) { makeModalDynamicWidth(modalUI, modalEl) }
 		if (title) {
 			modalUI.new(constant(titleEl), ele => {
 				ele.textContent = title()
@@ -571,7 +555,6 @@ export namespace EditDataModal {
 	])
 	export interface Options<T> {
 		readonly callback?: (data: DeepWritable<T>) => unknown
-		readonly dynamicWidth?: boolean
 		readonly elements?: readonly typeof ELEMENTS[number][]
 		readonly title?: () => string
 		readonly description?: () => string
@@ -587,7 +570,6 @@ export class DialogModal extends Modal {
 	readonly #description
 	readonly #draw
 	readonly #doubleConfirmTimeout
-	readonly #dynamicWidth
 
 	public constructor(
 		protected readonly context: PluginContext,
@@ -598,7 +580,6 @@ export class DialogModal extends Modal {
 			description?: () => string
 			draw?: (ui: UpdatableUI, element: HTMLElement) => void
 			doubleConfirmTimeout?: number
-			dynamicWidth?: boolean
 		},
 	) {
 		super(context.app)
@@ -608,7 +589,6 @@ export class DialogModal extends Modal {
 		this.#title = options?.title
 		this.#description = options?.description
 		this.#draw = options?.draw ?? noop
-		this.#dynamicWidth = options?.dynamicWidth ?? false
 	}
 
 	public override onOpen(): void {
@@ -621,7 +601,6 @@ export class DialogModal extends Modal {
 			doubleConfirmTimeout = this.#doubleConfirmTimeout ?? 0
 		modalUI.finally(onChangeLanguage.listen(() => { modalUI.update() }))
 		ui.finally(onChangeLanguage.listen(() => { ui.update() }))
-		if (this.#dynamicWidth) { makeModalDynamicWidth(modalUI, modalEl) }
 		if (title) {
 			modalUI.new(constant(titleEl), ele => {
 				ele.textContent = title()

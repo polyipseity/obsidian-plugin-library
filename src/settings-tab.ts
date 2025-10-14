@@ -200,7 +200,6 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 										})
 										this.postMutate(true)
 									},
-									dynamicWidth: true,
 									editables: ["remove"],
 									namer: (value): string => value[0],
 									title: (): string =>
