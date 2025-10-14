@@ -107,7 +107,6 @@ export abstract class AdvancedSettingTab<S extends PluginContext
 					setTextToEnum(
 						langs,
 						async value => settings.mutate(settingsM => {
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 							settingsM.language = value || defaults.language
 						}),
 					),
