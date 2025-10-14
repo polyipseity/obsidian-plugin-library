@@ -154,7 +154,7 @@
 	"style": "dist/style.css",
 	"type": "module",
 	"types": "dist/src/index.d.ts",
-	"version": "1.32.0",
+	"version": "1.33.0",
 	"workspaces": [
 		".",
 		"build/*"
