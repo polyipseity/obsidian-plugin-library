@@ -1,4 +1,4 @@
-import { PACKAGE_ID, PATHS } from "./util.mjs"
+import { PACKAGE_ID, PATHS } from "./utils.mjs"
 import { analyzeMetafile, context, formatMessages } from "esbuild"
 import { argv, platform } from "node:process"
 import { isEmpty, kebabCase } from "lodash-es"
