@@ -491,7 +491,7 @@ export async function saveFileAs(
 	data: File,
 ): Promise<void> {
 	if (await revealPrivateAsync(context, [adapter], async ({ fs }) => {
-		if ("open" in fs && fs.open.length === 1) {
+		if ("open" in fs && fs.open?.length === 1) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { length } = fs.open
 			await fs.open<typeof length>(
