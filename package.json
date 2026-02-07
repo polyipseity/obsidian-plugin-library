@@ -144,7 +144,7 @@
 	},
 	"scripts": {
 		"build": "npm run check && npm run build:force",
-		"build:force": "node build/build.mjs",
+		"build:force": "node scripts/build.mjs",
 		"check": "tsc --noEmit && eslint --cache .",
 		"dev": "npm run build:force -- dev",
 		"fix": "eslint --cache --fix ."
