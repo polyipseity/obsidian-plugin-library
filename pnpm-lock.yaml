@@ -105,18 +105,6 @@ importers:
       '@polyipseity/obsidian':
         specifier: ~1.4.11
         version: 1.4.11(@codemirror/state@6.5.2)(@codemirror/view@6.37.1)
-      '@tsconfig/node16':
-        specifier: ^16.1.4
-        version: 16.1.4
-      '@tsconfig/recommended':
-        specifier: ^1.0.10
-        version: 1.0.10
-      '@tsconfig/strictest':
-        specifier: ^2.0.5
-        version: 2.0.5
-      '@tsconfig/svelte':
-        specifier: ^5.0.4
-        version: 5.0.4
       '@types/async-lock':
         specifier: ^1.4.2
         version: 1.4.2
@@ -584,18 +572,6 @@ packages:
     resolution: {integrity: sha512-IwQk4yfwLdibDlrXVE04jTZYlLnwsTT2PIOQQGNLWfjavGifnk1JD1LcZjZaBTRcxZu2FfPfNLOE04DSu9lqtQ==}
     peerDependencies:
       acorn: ^8.9.0
-
-  '@tsconfig/node16@16.1.4':
-    resolution: {integrity: sha512-tkWPDtk18K2qJK/DhU010f03iDlw+C8qjXvhwZ4KKpJQC4QFOG3r8tIf2q6aWD0mz9N7RcZcaD9SPlrVLKiDoQ==}
-
-  '@tsconfig/recommended@1.0.10':
-    resolution: {integrity: sha512-cGvydvg03lONp5Z9yaplW493Vw9/um7k588mvDkm+VFPF2PZUVPx0uswq4PFpeEySsLbQRETrDRhzh4Dmxaslw==}
-
-  '@tsconfig/strictest@2.0.5':
-    resolution: {integrity: sha512-ec4tjL2Rr0pkZ5hww65c+EEPYwxOi4Ryv+0MtjeaSQRJyq322Q27eOQiFbuNgw2hpL4hB1/W/HBGk3VKS43osg==}
-
-  '@tsconfig/svelte@5.0.4':
-    resolution: {integrity: sha512-BV9NplVgLmSi4mwKzD8BD/NQ8erOY/nUE/GpgWe2ckx+wIQF5RyRirn/QsSSCPeulVpc3RA/iJt6DpfTIZps0Q==}
 
   '@tybys/wasm-util@0.9.0':
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
@@ -2786,14 +2762,6 @@ snapshots:
   '@sveltejs/acorn-typescript@1.0.5(acorn@8.15.0)':
     dependencies:
       acorn: 8.15.0
-
-  '@tsconfig/node16@16.1.4': {}
-
-  '@tsconfig/recommended@1.0.10': {}
-
-  '@tsconfig/strictest@2.0.5': {}
-
-  '@tsconfig/svelte@5.0.4': {}
 
   '@tybys/wasm-util@0.9.0':
     dependencies:
