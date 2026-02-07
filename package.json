@@ -147,8 +147,7 @@
 		"build:force": "node build/build.mjs",
 		"check": "tsc --noEmit && eslint --cache .",
 		"dev": "npm run build:force -- dev",
-		"fix": "eslint --cache --fix .",
-		"postversion": "node build/version-post.mjs"
+		"fix": "eslint --cache --fix ."
 	},
 	"sideEffects": false,
 	"style": "dist/style.css",
