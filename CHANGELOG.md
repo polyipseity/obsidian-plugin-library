@@ -1,4 +1,4 @@
-# @polyipseity/obsidian-plugin-library <!-- markdownlint-disable MD024 -->
+# @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
 ## 1.33.0
 
