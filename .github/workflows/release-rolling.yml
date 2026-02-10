@@ -54,4 +54,4 @@ jobs:
         env:
           GH_TOKEN: ${{github.token}}
         run: |
-          gh release upload rolling .github/*.tgz main.js manifest.json styles.css --clobber
+          gh release upload rolling .github/*.tgz --clobber
