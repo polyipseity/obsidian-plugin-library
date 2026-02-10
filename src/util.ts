@@ -107,13 +107,14 @@ export class Functions<
 
   public call(
     ...args: Args
+    // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   ): Async extends true ? Promise<void> : Async extends false ? void : never {
     return this.call0(null, ...args);
   }
 
   public call0(
     thisArg: unknown,
-    ...args: Args
+    ...args: Args // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   ): Async extends true ? Promise<void> : Async extends false ? void : never;
 
   public call0(thisArg: unknown, ...args: Args): AsyncOrSync<void> {
@@ -189,6 +190,7 @@ export function assignExact<
   T extends Partial<Record<K, unknown>>,
 >(self0: T, key: K & keyof T, value?: T[K]): typeof value {
   if (value === void 0) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete self0[key];
   } else {
     self0[key] = value;
@@ -300,6 +302,7 @@ export function clear(self0: unknown[]): void {
 
 export function clearProperties(self0: object): void {
   for (const key of typedOwnKeys(self0)) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete self0[key];
   }
 }

@@ -229,7 +229,7 @@ export namespace StorageSettingsManager {
       if (!key.startsWith(prefix)) {
         continue;
       }
-
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete recovery[key];
     }
     Object.assign(recovery, Object.fromEntries(map));

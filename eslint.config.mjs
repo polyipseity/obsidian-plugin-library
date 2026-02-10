@@ -1,12 +1,13 @@
 // @ts-check
-import eslint from "@eslint/js";
+import eslintJs from "@eslint/js";
+import eslintTs from "typescript-eslint";
+import eslintSvelte from "eslint-plugin-svelte";
+import eslintPrettier from "eslint-config-prettier/flat";
 import { defineConfig } from "eslint/config";
-import tseslint from "typescript-eslint";
 import { includeIgnoreFile } from "@eslint/compat";
-import path from "node:path";
 import { fileURLToPath } from "node:url";
+import path from "node:path";
 import globals from "globals"; // provide Node/browser globals for file-level overrides
-import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,14 +22,28 @@ export const FILE_GLOBS = [
   "**/*.mts",
   "**/*.ts",
   "**/*.tsx",
+  "**/*.svelte",
+  "**/*.svelte.js",
+  "**/*.svelte.ts",
 ];
 
 export default defineConfig([
-  eslint.configs.recommended,
-  tseslint.configs.recommended,
+  eslintJs.configs.recommended,
+  ...eslintTs.configs.strict,
+  ...eslintSvelte.configs["flat/recommended"],
   includeIgnoreFile(path.join(__dirname, ".gitignore")),
   {
     files: FILE_GLOBS,
+  },
+  {
+    files: ["**/*.svelte", "**/*.svelte.js", "**/*.svelte.ts"],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        extraFileExtensions: [".svelte"], // Add support for additional file extensions, such as .svelte
+        parser: eslintTs.parser,
+      },
+    },
   },
   {
     rules: {
@@ -45,5 +60,6 @@ export default defineConfig([
     },
   },
   // Disable formatting-related rules that may conflict with Prettier
-  eslintConfigPrettier,
+  eslintPrettier,
+  ...eslintSvelte.configs["flat/prettier"],
 ]);
