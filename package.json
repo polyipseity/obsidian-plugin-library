@@ -37,7 +37,7 @@
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
     "@eslint/compat": "^2.0.2",
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.2",
     "@polyipseity/obsidian": "~1.4.11",
     "@types/async-lock": "^1.4.2",
     "@types/browser-util-inspect": "^0.2.4",
