@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Run tests before pushing
+npm run test

@@ -1,0 +1,4 @@
+/**
+ * Prettier configuration.
+ */
+export default {};

@@ -132,5 +132,9 @@ dist
 # }
 
 # self {
+/.obsidian/
+/data.json
+/main.js
 /metafile.json
+/styles.css
 # }
