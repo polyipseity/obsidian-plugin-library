@@ -1,27 +1,26 @@
-export * from "../assets/locales.js"
-export type * from "./@types/lib.es5.js"
-// eslint-disable-next-line import/export
-export type * from "./@types/obsidian.js"
-export * from "./components/index.js"
-export * from "./documentation.js"
-export * from "./fixers.js"
-export * from "./i18n.js"
-export * from "./icons.js"
-export * from "./import.js"
-export * from "./keys.js"
-export * from "./magic.js"
-export * from "./modals.js"
-export * from "./obsidian.js"
-export * from "./patch.js"
-export * from "./platform.js"
-export * from "./plugin.js"
-export * from "./private.js"
-export * from "./rules.js"
-export * from "./settings-tab.js"
-export * from "./settings-widgets.js"
-export * from "./settings.js"
-export * from "./source-maps.js"
-export * from "./status-bar.js"
-export * from "./typeof.js"
-export * from "./types.js"
-export * from "./util.js"
+export * from "../assets/locales.js";
+export type * from "./@types/lib.es5.js";
+export type * from "./@types/obsidian.js";
+export * from "./components/index.js";
+export * from "./documentation.js";
+export * from "./fixers.js";
+export * from "./i18n.js";
+export * from "./icons.js";
+export * from "./import.js";
+export * from "./keys.js";
+export * from "./magic.js";
+export * from "./modals.js";
+export * from "./obsidian.js";
+export * from "./patch.js";
+export * from "./platform.js";
+export * from "./plugin.js";
+export * from "./private.js";
+export * from "./rules.js";
+export * from "./settings-tab.js";
+export * from "./settings-widgets.js";
+export * from "./settings.js";
+export * from "./source-maps.js";
+export * from "./status-bar.js";
+export * from "./typeof.js";
+export * from "./types.js";
+export * from "./util.js";
