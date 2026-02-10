@@ -1,5 +1,11 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
+## 1.33.1
+
+- 64a1faf: Bump dependencies and devDependencies for `obsidian-plugin-library`.
+
+  This changeset records a patch release to reflect dependency updates.
+
 ## 1.33.0
 
 ### Minor Changes
