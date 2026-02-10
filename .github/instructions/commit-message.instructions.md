@@ -43,6 +43,7 @@ Refs: dependabot config improvement
 - **Header should be ≤ 72 characters (use 72 as a human-friendly buffer; tooling still accepts up to 100).**
 - **Body lines must be hard-wrapped at 100 characters or less.** Prefer 72 for body lines intended for human readers.
 - All agents and contributors must comply; see `AGENTS.md` for enforcement policy.
+- Automated agents: follow `.github/prompts/commit-staged` to create commits (non-interactive), run `npm run commitlint` and ensure the message passes before committing; if the message is rejected, programmatically rewrap and retry. Do not ask for confirmation.
 - Example (compliant):
 
   ```text
