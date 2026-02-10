@@ -5,20 +5,19 @@ import type { t as i18nt } from "i18next";
 
 declare const FindComponent: Component<
   {
-    readonly i18n?: typeof i18nt;
-    readonly params?: Params;
-    readonly onClose?: () => unknown;
-    readonly onFind?: (direction: Direction, params: Params) => unknown;
-    readonly onParamsChanged?: (params: Params) => unknown;
-    readonly results?: string;
-    readonly focused?: boolean;
+    i18n?: typeof i18nt;
+    // `params` is bindable
+    params?: DeepWritable<Params>;
+    results?: string;
+    onClose?: () => unknown;
+    onFind?: (direction: Direction, params: Params) => unknown;
+    onParamsChanged?: (params: Params) => unknown;
+    initialFocus?: boolean;
   },
   {
-    readonly setI18n: (i18n: typeof i18nt) => void;
-    readonly getParamsRef: () => DeepWritable<Params>;
-    readonly setResults: (results: string) => void;
     readonly focus: () => void;
     readonly blur: () => void;
-  }
+  },
+  "params"
 >;
 export default FindComponent;
