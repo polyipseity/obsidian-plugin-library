@@ -37,7 +37,7 @@ export namespace Rules {
         /^\/(?<pattern>(?:\\\/|[^/])+)\/(?<flags>[dgimsuvy]*)$/u.exec(str2) ??
         [];
       if (pattern !== void 0 && flags !== void 0) {
-        let value = null;
+        let value;
         try {
           value = new RegExp(pattern, flags);
         } catch (error) {
