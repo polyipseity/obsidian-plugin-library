@@ -1,28 +1,28 @@
-import { SettingsManager, StorageSettingsManager } from "./settings.js"
-import type { LanguageManager } from "./i18n.js"
-import type { Plugin } from "obsidian"
+import { SettingsManager, StorageSettingsManager } from "./settings.js";
+import type { LanguageManager } from "./i18n.js";
+import type { Plugin } from "obsidian";
 
 export interface PluginContext<
-	S extends PluginContext.Settings = PluginContext.Settings,
-	LS extends PluginContext.LocalSettings = PluginContext.LocalSettings,
+  S extends PluginContext.Settings = PluginContext.Settings,
+  LS extends PluginContext.LocalSettings = PluginContext.LocalSettings,
 > extends Plugin {
-	readonly language: LanguageManager
-	readonly localSettings: StorageSettingsManager<LS>
-	readonly settings: SettingsManager<S>
-	readonly displayName: (unlocalized?: boolean) => string
+  readonly language: LanguageManager;
+  readonly localSettings: StorageSettingsManager<LS>;
+  readonly settings: SettingsManager<S>;
+  readonly displayName: (unlocalized?: boolean) => string;
 }
 export namespace PluginContext {
-	export type LocalSettings = StorageSettingsManager.Type
-	export namespace LocalSettings {
-		export const { fix } = StorageSettingsManager
-	}
-	export interface Settings extends SettingsManager.Type {
-		readonly errorNoticeTimeout: number
-		readonly noticeTimeout: number
+  export type LocalSettings = StorageSettingsManager.Type;
+  export namespace LocalSettings {
+    export const { fix } = StorageSettingsManager;
+  }
+  export interface Settings extends SettingsManager.Type {
+    readonly errorNoticeTimeout: number;
+    readonly noticeTimeout: number;
 
-		readonly language: string
-	}
-	export namespace Settings {
-		export const { fix } = SettingsManager
-	}
+    readonly language: string;
+  }
+  export namespace Settings {
+    export const { fix } = SettingsManager;
+  }
 }

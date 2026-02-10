@@ -4,10 +4,7 @@
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
-    "lib": [
-      "DOM",
-      "ES2024"
-    ],
+    "lib": ["DOM", "ES2024"],
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "noFallthroughCasesInSwitch": true,
@@ -19,25 +16,12 @@
     "noUnusedParameters": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "rootDirs": [
-      "assets",
-      "scripts",
-      "src",
-      "tests"
-    ],
+    "rootDirs": ["assets", "scripts", "src", "tests"],
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2018"
   },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
-  "include": [
-    "assets/**/*",
-    "scripts/**/*",
-    "src/**/*",
-    "tests/**/*"
-  ]
+  "exclude": ["node_modules", "dist"],
+  "include": ["assets/**/*", "scripts/**/*", "src/**/*", "tests/**/*"]
 }
