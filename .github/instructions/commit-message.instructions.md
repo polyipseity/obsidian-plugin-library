@@ -62,8 +62,3 @@ Refs: dependabot config improvement
 
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - [commitlint rules](https://commitlint.js.org/#/reference-rules)
-
-## References
-
-- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- [commitlint rules](https://commitlint.js.org/#/reference-rules)
