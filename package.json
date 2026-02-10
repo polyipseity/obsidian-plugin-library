@@ -1,169 +1,170 @@
 {
-	"author": "polyipseity",
-	"bugs": {
-		"url": "https://github.com/polyipseity/obsidian-plugin-library/issues"
-	},
-	"dependencies": {
-		"@capacitor/core": "^7.4.2",
-		"@capacitor/filesystem": "^7.1.4",
-		"@jridgewell/trace-mapping": "^0.3.29",
-		"async-lock": "^1.4.1",
-		"browser-util-inspect": "^0.2.0",
-		"convert-source-map": "^2.0.0",
-		"deep-equal": "^2.2.3",
-		"espree": "^10.4.0",
-		"file-saver": "^2.0.5",
-		"i18next": "^25.3.2",
-		"i18next-resources-to-backend": "^1.2.1",
-		"import-meta-resolve": "^4.1.0",
-		"lodash-es": "^4.17.21",
-		"lucide": "^0.539.0",
-		"lz-string": "^1.5.0",
-		"moment": "^2.30.1",
-		"monkey-around": "^3.0.0",
-		"obsidian": "~1.4.11",
-		"p-lazy": "^5.0.0",
-		"semver": "^7.7.2",
-		"shq": "^1.0.3",
-		"source-map": "^0.7.6",
-		"svelte": "^5.38.0",
-		"ts-deepmerge": "^7.0.3",
-		"ts-essentials": "^10.1.1"
-	},
-	"description": "Library for Obsidian plugins.",
-	"devDependencies": {
-		"@changesets/cli": "^2.29.8",
-		"@commitlint/cli": "^20.4.1",
-		"@commitlint/config-conventional": "^20.4.1",
-		"@eslint/compat": "^2.0.2",
-		"@eslint/js": "^9.39.2",
-		"@polyipseity/obsidian": "~1.4.11",
-		"@types/async-lock": "^1.4.2",
-		"@types/browser-util-inspect": "^0.2.4",
-		"@types/convert-source-map": "^2.0.3",
-		"@types/css.escape": "^1.5.2",
-		"@types/deep-equal": "^1.0.4",
-		"@types/file-saver": "^2.0.7",
-		"@types/lodash-es": "^4.17.12",
-		"@types/node": "^25.1.0",
-		"@types/semver": "^7.7.1",
-		"css.escape": "^1.5.1",
-		"esbuild": "^0.27.2",
-		"esbuild-compress": "^2.0.2",
-		"esbuild-node-externals": "^1.20.1",
-		"esbuild-plugin-copy": "^2.1.1",
-		"esbuild-plugin-globals": "^0.2.0",
-		"esbuild-plugin-text-replace": "^1.3.0",
-		"esbuild-svelte": "^0.9.3",
-		"eslint": "^9.39.2",
-		"eslint-plugin-svelte": "^3.11.0",
-		"globals": "^17.2.0",
-		"husky": "^9.1.7",
-		"lint-staged": "^16.2.7",
-		"markdownlint-cli2": "^0.20.0",
-		"@vitest/coverage-v8": "^4.0.18",
-		"prettier": "^3.2.5",
-		"svelte-preprocess": "^6.0.3",
-		"tslib": "^2.8.1",
-		"typescript": "^5.9.3",
-		"typescript-eslint": "^8.55.0",
-		"typescript-svelte-plugin": "^0.3.49",
-		"vitest": "^4.0.18",
-		"which": "^5.0.0"
-	},
-	"exports": {
-		".": {
-			"types": "./dist/src/index.d.ts",
-			"module": "./dist/index.js",
-			"import": "./dist/index.js",
-			"require": null,
-			"default": "./dist/index.js"
-		},
-		"./esbuild-compress": {
-			"types": "./dist/src/esbuild-compress/index.d.ts",
-			"module": "./dist/esbuild-compress/index.js",
-			"import": "./dist/esbuild-compress/index.js",
-			"require": null,
-			"default": "./dist/inject.index.js"
-		},
-		"./inject": {
-			"types": "./dist/src/inject/index.d.ts",
-			"module": "./dist/inject/index.js",
-			"import": "./dist/inject/index.js",
-			"require": null,
-			"default": "./dist/inject/index.js"
-		},
-		"./style": {
-			"default": "./dist/style.css"
-		}
-	},
-	"files": [
-		"dist"
-	],
-	"funding": [
-		{
-			"type": "Buy Me a Coffee",
-			"url": "https://buymeacoffee.com/polyipseity"
-		},
-		{
-			"type": "GitHub Sponsors",
-			"url": "https://github.com/sponsors/polyipseity"
-		}
-	],
-	"homepage": "https://github.com/polyipseity/obsidian-plugin-library#readme",
-	"keywords": [
-		"library",
-		"obsidian",
-		"obsidian-library",
-		"obsidian-plugin",
-		"plugin",
-		"plugin-library"
-	],
-	"license": "MIT",
-	"main": "dist/index.js",
-	"name": "@polyipseity/obsidian-plugin-library",
-	"overrides": {
-		"tmp": "^0.2.5"
-	},
-	"peerDependencies": {
-		"esbuild": ">=0.17.0"
-	},
-	"peerDependenciesMeta": {
-		"esbuild": {
-			"optional": true
-		}
-	},
-	"pnpm": {
-		"overrides": {
-			"tmp": "^0.2.5"
-		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/polyipseity/obsidian-plugin-library.git"
-	},
-	"scripts": {
-		"build": "npm run check && npm run build:force",
-		"build:dev": "npm run build:force -- dev",
-		"build:force": "node scripts/build.mjs",
-		"check": "tsc --noEmit && npm run check:eslint && npm run check:md && npm run check:prettier",
-		"check:eslint": "eslint --cache --max-warnings=0",
-		"check:md": "markdownlint-cli2",
-		"check:prettier": "prettier --cache --check \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
-		"commitlint": "commitlint --from=origin/main --to=HEAD",
-		"format": "npm run format:eslint && npm run format:md && npm run format:prettier",
-		"format:eslint": "eslint --cache --fix",
-		"format:md": "markdownlint-cli2 --fix",
-		"format:prettier": "prettier --cache --write \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
-		"prepare": "husky",
-		"test": "npm run test:vitest",
-		"test:vitest": "vitest run --coverage",
-		"test:watch": "vitest"
-	},
-	"sideEffects": false,
-	"style": "dist/style.css",
-	"type": "module",
-	"types": "dist/src/index.d.ts",
-	"version": "1.33.0",
-	"workspaces": []
+  "author": "polyipseity",
+  "bugs": {
+    "url": "https://github.com/polyipseity/obsidian-plugin-library/issues"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.4.2",
+    "@capacitor/filesystem": "^7.1.4",
+    "@jridgewell/trace-mapping": "^0.3.29",
+    "async-lock": "^1.4.1",
+    "browser-util-inspect": "^0.2.0",
+    "convert-source-map": "^2.0.0",
+    "deep-equal": "^2.2.3",
+    "eslint-config-prettier": "^10.1.8",
+    "espree": "^10.4.0",
+    "file-saver": "^2.0.5",
+    "i18next": "^25.3.2",
+    "i18next-resources-to-backend": "^1.2.1",
+    "import-meta-resolve": "^4.1.0",
+    "lodash-es": "^4.17.21",
+    "lucide": "^0.539.0",
+    "lz-string": "^1.5.0",
+    "moment": "^2.30.1",
+    "monkey-around": "^3.0.0",
+    "obsidian": "~1.4.11",
+    "p-lazy": "^5.0.0",
+    "semver": "^7.7.2",
+    "shq": "^1.0.3",
+    "source-map": "^0.7.6",
+    "svelte": "^5.38.0",
+    "ts-deepmerge": "^7.0.3",
+    "ts-essentials": "^10.1.1"
+  },
+  "description": "Library for Obsidian plugins.",
+  "devDependencies": {
+    "@changesets/cli": "^2.29.8",
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
+    "@eslint/compat": "^2.0.2",
+    "@eslint/js": "^9.39.2",
+    "@polyipseity/obsidian": "~1.4.11",
+    "@types/async-lock": "^1.4.2",
+    "@types/browser-util-inspect": "^0.2.4",
+    "@types/convert-source-map": "^2.0.3",
+    "@types/css.escape": "^1.5.2",
+    "@types/deep-equal": "^1.0.4",
+    "@types/file-saver": "^2.0.7",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^25.1.0",
+    "@types/semver": "^7.7.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "css.escape": "^1.5.1",
+    "esbuild": "^0.27.2",
+    "esbuild-compress": "^2.0.2",
+    "esbuild-node-externals": "^1.20.1",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-plugin-globals": "^0.2.0",
+    "esbuild-plugin-text-replace": "^1.3.0",
+    "esbuild-svelte": "^0.9.3",
+    "eslint": "^9.39.2",
+    "eslint-plugin-svelte": "^3.11.0",
+    "globals": "^17.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "markdownlint-cli2": "^0.20.0",
+    "prettier": "^3.2.5",
+    "svelte-preprocess": "^6.0.3",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.55.0",
+    "typescript-svelte-plugin": "^0.3.49",
+    "vitest": "^4.0.18",
+    "which": "^5.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "module": "./dist/index.js",
+      "import": "./dist/index.js",
+      "require": null,
+      "default": "./dist/index.js"
+    },
+    "./esbuild-compress": {
+      "types": "./dist/src/esbuild-compress/index.d.ts",
+      "module": "./dist/esbuild-compress/index.js",
+      "import": "./dist/esbuild-compress/index.js",
+      "require": null,
+      "default": "./dist/inject.index.js"
+    },
+    "./inject": {
+      "types": "./dist/src/inject/index.d.ts",
+      "module": "./dist/inject/index.js",
+      "import": "./dist/inject/index.js",
+      "require": null,
+      "default": "./dist/inject/index.js"
+    },
+    "./style": {
+      "default": "./dist/style.css"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "funding": [
+    {
+      "type": "Buy Me a Coffee",
+      "url": "https://buymeacoffee.com/polyipseity"
+    },
+    {
+      "type": "GitHub Sponsors",
+      "url": "https://github.com/sponsors/polyipseity"
+    }
+  ],
+  "homepage": "https://github.com/polyipseity/obsidian-plugin-library#readme",
+  "keywords": [
+    "library",
+    "obsidian",
+    "obsidian-library",
+    "obsidian-plugin",
+    "plugin",
+    "plugin-library"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "name": "@polyipseity/obsidian-plugin-library",
+  "overrides": {
+    "tmp": "^0.2.5"
+  },
+  "peerDependencies": {
+    "esbuild": ">=0.17.0"
+  },
+  "peerDependenciesMeta": {
+    "esbuild": {
+      "optional": true
+    }
+  },
+  "pnpm": {
+    "overrides": {
+      "tmp": "^0.2.5"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polyipseity/obsidian-plugin-library.git"
+  },
+  "scripts": {
+    "build": "npm run check && npm run build:force",
+    "build:dev": "npm run build:force -- dev",
+    "build:force": "node scripts/build.mjs",
+    "check": "tsc --noEmit && npm run check:eslint && npm run check:md && npm run check:prettier",
+    "check:eslint": "eslint --cache --max-warnings=0",
+    "check:md": "markdownlint-cli2",
+    "check:prettier": "prettier --cache --check \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
+    "commitlint": "commitlint --from=origin/main --to=HEAD",
+    "format": "npm run format:eslint && npm run format:md && npm run format:prettier",
+    "format:eslint": "eslint --cache --fix",
+    "format:md": "markdownlint-cli2 --fix",
+    "format:prettier": "prettier --cache --write \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
+    "prepare": "husky",
+    "test": "npm run test:vitest",
+    "test:vitest": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "sideEffects": false,
+  "style": "dist/style.css",
+  "type": "module",
+  "types": "dist/src/index.d.ts",
+  "version": "1.33.0",
+  "workspaces": []
 }
