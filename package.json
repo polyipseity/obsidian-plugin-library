@@ -60,6 +60,7 @@
     "eslint": "^9.39.2",
     "eslint-plugin-svelte": "^3.11.0",
     "globals": "^17.2.0",
+    "happy-dom": "^20.6.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "markdownlint-cli2": "^0.20.0",
@@ -71,7 +72,8 @@
     "typescript-eslint": "^8.55.0",
     "typescript-svelte-plugin": "^0.3.49",
     "vitest": "^4.0.18",
-    "which": "^6.0.0"
+    "which": "^6.0.0",
+    "yaml": "^2.8.2"
   },
   "exports": {
     ".": {

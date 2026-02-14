@@ -2,7 +2,7 @@
  * Tests for small test utilities in `tests/helpers.ts` — keep these fast and explicit.
  */
 import { describe, it, expect } from "vitest";
-import { toRecord } from "../helpers.js";
+import { toRecord, tick } from "./helpers.js";
 
 describe("tests/helpers.ts utilities", () => {
   it("toRecord works", async () => {
@@ -32,5 +32,19 @@ describe("tests/helpers.ts utilities", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (r as any).b = 2;
     expect(src).toEqual({ a: 1, b: 2 });
+  });
+
+  it("tick waits for next macrotask (setImmediate)", async () => {
+    let called = false;
+    setImmediate(() => {
+      called = true;
+    });
+
+    // not yet executed synchronously
+    expect(called).toBe(false);
+
+    // tick() resolves after the next macrotask (setImmediate)
+    await tick();
+    expect(called).toBe(true);
   });
 });

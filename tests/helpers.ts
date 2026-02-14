@@ -19,3 +19,11 @@ export function toRecord<
 >(v: unknown): T {
   return v as T;
 }
+
+/**
+ * Wait for the next macrotask tick — useful to await scheduled IIFEs or setImmediate usage
+ * in the library code under test.
+ */
+export function tick(): Promise<void> {
+  return new Promise((r) => setImmediate(r));
+}
