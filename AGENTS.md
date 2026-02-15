@@ -23,6 +23,15 @@ This file gives concise, actionable guidance to automated coding agents working 
 - When bumping versions use the repository's preferred manager: `pnpm` if a `pnpm-lock.yaml` exists; otherwise fall back to `npm`.
 - Keep changes minimal and scoped. Do not stage unrelated files; stage only files changed by your operation.
 
+TypeScript typing rules (required)
+
+- **Never use `any`.** Prefer `unknown`, explicit interfaces/types, unions, or generics. If you believe `any` is unavoidable, leave a TODO and open an issue instead of committing it.
+- **Never use `as` type assertions/casts.** Replace casts with properly-typed APIs, overloads, or type-guard helpers that narrow types at runtime.
+- **Make code type-checking friendly.** Add explicit `return` types for public functions/components, annotate exported symbols, prefer narrow unions and discriminated unions, and add small helper types instead of widening to `any`.
+- Fix TypeScript errors by improving type declarations — do not silence the checker with `// @ts-ignore` or `as` casts.
+- Run `npm run check` after changes and ensure `tsc` (with `strict` settings) passes locally before committing.
+- If an ESLint/TS rule is missing to enforce these practices, propose the lint/config update in a separate PR and reference it in your commit message.
+
 ## Project-specific patterns & examples 🔧
 
 - Settings & persistence: use `SettingsManager` / `StorageSettingsManager` + `fix()` helpers (see `src/settings.ts`). Persisted settings must be validated using `.fix()` helpers.
