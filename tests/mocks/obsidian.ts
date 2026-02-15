@@ -1254,9 +1254,8 @@ export class ButtonComponent {
 
   // Add `setIcon` as a harmless alias to improve API fidelity for tests that
   // call `setIcon(...)` (some package tests expect this chainable method).
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setIcon(_icon?: string): this {
-    // mark parameter as used so linters don't complain
-    void _icon;
     return this;
   }
 
@@ -1351,24 +1350,24 @@ export class Setting {
     return this;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addToggle(_v: unknown): this {
-    void _v;
     return this;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addDropdown(_v: unknown): this {
-    void _v;
     return this;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addText(_v: unknown): this {
-    void _v;
     return this;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addTextArea(_v: unknown): this {
-    void _v;
     return this;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addExtraButton(_v: unknown): this {
-    void _v;
     return this;
   }
 }
