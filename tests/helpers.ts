@@ -9,18 +9,6 @@
  */
 
 /**
- * Small helper to cast values to records for assertions without repeating inline casts.
- */
-export function toRecord<
-  T extends Record<string | number | symbol, unknown> = Record<
-    string | number | symbol,
-    unknown
-  >,
->(v: unknown): T {
-  return v as T;
-}
-
-/**
  * Wait for the next macrotask tick — useful to await scheduled IIFEs or setImmediate usage
  * in the library code under test.
  */

@@ -13,7 +13,7 @@ export interface FileStats {
   size: number;
 }
 
-export interface TFile {
+export interface TFile extends TAbstractFile {
   path: string;
   name: string;
   extension: string;
@@ -23,7 +23,7 @@ export interface TFile {
   vault: Vault;
 }
 
-export interface TFolder {
+export interface TFolder extends TAbstractFile {
   path: string;
   name: string;
   parent: TFolder | null;
@@ -104,20 +104,30 @@ export interface RequestUrlResponsePromise extends Promise<RequestUrlResponse> {
 
 // ===== Internal State =====
 
-const state = {
-  files: new Map<string, { content: string; stat: FileStats }>(),
-  editors: [] as Editor[],
-  icons: new Map<string, string>(),
-  requestHandler: null as
+const state: {
+  files: Map<string, { content: string; stat: FileStats }>;
+  editors: Editor[];
+  icons: Map<string, string>;
+  requestHandler:
     | ((param: RequestUrlParam) => Promise<RequestUrlResponse>)
-    | null,
-  requestStubs: [] as Array<{
+    | null;
+  requestStubs: {
     matcher: string | RegExp;
     response: RequestUrlResponse | (() => RequestUrlResponse);
-  }>,
-  requestCalls: [] as Array<{ url: string; param: RequestUrlParam }>,
+  }[];
+  requestCalls: { url: string; param: RequestUrlParam }[];
+  vaultConfig: Map<string, unknown>;
+  keymapScopes: Scope[];
+  pluginData: Map<Plugin, unknown>;
+} = {
+  files: new Map<string, { content: string; stat: FileStats }>(),
+  editors: [],
+  icons: new Map<string, string>(),
+  requestHandler: null,
+  requestStubs: [],
+  requestCalls: [],
   vaultConfig: new Map<string, unknown>(),
-  keymapScopes: [] as Scope[],
+  keymapScopes: [],
   pluginData: new Map<Plugin, unknown>(),
 };
 
@@ -448,7 +458,7 @@ export class FileManager {
           parsed !== null &&
           !Array.isArray(parsed)
         ) {
-          originalFmObj = parsed as Record<string, unknown>;
+          originalFmObj = parsed;
         } else {
           parseFailed = true;
           originalFmObj = null;
@@ -461,7 +471,7 @@ export class FileManager {
 
     // Start with a shallow clone of the original object (or empty when absent)
     const currentFm: Record<string, unknown> = originalFmObj
-      ? (JSON.parse(JSON.stringify(originalFmObj)) as Record<string, unknown>)
+      ? JSON.parse(JSON.stringify(originalFmObj))
       : {};
 
     // Call the provided processor (synchronous in real API)
@@ -724,10 +734,7 @@ export class MetadataCache extends Events {
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
     if (frontmatterMatch) {
       try {
-        metadata.frontmatter = parseYaml(frontmatterMatch[1] ?? "") as Record<
-          string,
-          unknown
-        >;
+        metadata.frontmatter = parseYaml(frontmatterMatch[1] ?? "");
       } catch {
         metadata.frontmatter = {};
       }
@@ -1201,18 +1208,8 @@ export class ItemView {
 
   constructor(leaf?: WorkspaceLeaf) {
     this.leaf = leaf ?? new WorkspaceLeaf();
-    this.contentEl =
-      typeof document !== "undefined"
-        ? document.createElement("div")
-        : ({} as HTMLElement);
-    // `getApp` is defined later in this mock; at runtime tests import order ensures it exists
-    // so reference it lazily in constructor.
-    try {
-      this.app = getApp();
-    } catch {
-      // fallback for environments where getApp isn't available yet
-      this.app = null as unknown as App;
-    }
+    this.contentEl = document.createElement("div");
+    this.app = getApp();
   }
 
   getViewType(): string {
@@ -1255,6 +1252,14 @@ export class ButtonComponent {
     return this.value;
   }
 
+  // Add `setIcon` as a harmless alias to improve API fidelity for tests that
+  // call `setIcon(...)` (some package tests expect this chainable method).
+  setIcon(_icon?: string): this {
+    // mark parameter as used so linters don't complain
+    void _icon;
+    return this;
+  }
+
   setTooltip(tooltip: string): this {
     this.tooltip = tooltip;
     return this;
@@ -1287,6 +1292,11 @@ export class ButtonComponent {
     return this;
   }
 
+  // provide `getCta()` (tests use that name) as an alias to `isCta()`
+  getCta(): boolean {
+    return this.cta;
+  }
+
   isCta(): boolean {
     return this.cta;
   }
@@ -1305,10 +1315,61 @@ export class ButtonComponent {
     return this;
   }
 
+  // provide `click()` as an alias used by some tests
+  click(): void {
+    this.trigger();
+  }
+
   trigger(): void {
     if (!this.disabled) {
       this.clickHandler?.();
     }
+  }
+}
+
+// --------- Add a lightweight `Setting` helper used by plugin tests ---------
+export class Setting {
+  constructor(public capturedButtons?: ButtonComponent[]) {}
+
+  public setName(): this {
+    return this;
+  }
+  public setDesc(): this {
+    return this;
+  }
+  public setTooltip(): this {
+    return this;
+  }
+  public setDisabled(): this {
+    return this;
+  }
+
+  public addButton(cb: (b: ButtonComponent) => void): this {
+    const b = new ButtonComponent();
+    if (this.capturedButtons) this.capturedButtons.push(b);
+    cb(b);
+    return this;
+  }
+
+  public addToggle(_v: unknown): this {
+    void _v;
+    return this;
+  }
+  public addDropdown(_v: unknown): this {
+    void _v;
+    return this;
+  }
+  public addText(_v: unknown): this {
+    void _v;
+    return this;
+  }
+  public addTextArea(_v: unknown): this {
+    void _v;
+    return this;
+  }
+  public addExtraButton(_v: unknown): this {
+    void _v;
+    return this;
   }
 }
 
@@ -1650,7 +1711,7 @@ export function requestUrl(param: RequestUrlParam): RequestUrlResponsePromise {
 
   const promise = fetch(param.url, {
     method: param.method,
-    body: param.body as BodyInit | undefined,
+    body: param.body,
     headers: param.headers,
   }).then(async (res) => {
     const text = await res.text();
@@ -1727,7 +1788,7 @@ export { parseYaml, stringifyYaml };
 
 export function parseFrontMatterEntry(entry: string): Record<string, unknown> {
   try {
-    return parseYaml(entry) as Record<string, unknown>;
+    return parseYaml(entry);
   } catch {
     return {};
   }
@@ -1844,61 +1905,3 @@ export function spyRequests(): {
 } {
   return { calls: state.requestCalls };
 }
-
-// ===== Default Export =====
-
-const obsidianMock = {
-  App,
-  Plugin,
-  PluginSettingTab,
-  Vault,
-  FileManager,
-  Editor,
-  MetadataCache,
-  Workspace,
-  WorkspaceLeaf,
-  Keymap,
-  Scope,
-  Events,
-  Component,
-  ButtonComponent,
-  ToggleComponent,
-  TextComponent,
-  ColorComponent,
-  SliderComponent,
-  DropdownComponent,
-  Modal,
-  Notice,
-  MarkdownRenderer,
-  normalizePath,
-  stripHeading,
-  debounce,
-  prepareQuery,
-  prepareSimpleSearch,
-  prepareFuzzySearch,
-  request,
-  requestUrl,
-  renderMath,
-  loadMathJax,
-  loadMermaid,
-  loadPdfJs,
-  loadPrism,
-  parseYaml,
-  stringifyYaml,
-  parseFrontMatterEntry,
-  parseFrontMatterTags,
-  parseFrontMatterAliases,
-  addIcon,
-  getIcon,
-  setIcon,
-  reset,
-  setVaultFiles,
-  setRequestHandler,
-  setRequestResponse,
-  getApp,
-  getVault,
-  makeEditor,
-  spyRequests,
-};
-
-export default obsidianMock;
