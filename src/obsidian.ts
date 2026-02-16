@@ -31,7 +31,7 @@ import {
   onVisible,
   promisePromise,
   toJSONOrString,
-} from "./util.js";
+} from "./utils.js";
 import { cloneDeep, constant, noop } from "lodash-es";
 import { revealPrivate, revealPrivateAsync } from "./private.js";
 import type { AsyncOrSync } from "ts-essentials";

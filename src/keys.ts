@@ -2,7 +2,7 @@ import type { HotkeyManager, KeymapEventListener } from "obsidian";
 import { constant, noop } from "lodash-es";
 import type { PluginContext } from "./plugin.js";
 import { around } from "monkey-around";
-import { cloneAsWritable } from "./util.js";
+import { cloneAsWritable } from "./utils.js";
 import { revealPrivate } from "./private.js";
 
 export function newHotkeyListener(

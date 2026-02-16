@@ -1,4 +1,4 @@
-import { Functions, remove } from "./util.js";
+import { Functions, remove } from "./utils.js";
 import type { Plugins, Workspace } from "obsidian";
 import { constant, noop } from "lodash-es";
 import type { AsyncOrSync } from "ts-essentials";

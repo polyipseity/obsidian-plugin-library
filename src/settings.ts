@@ -14,7 +14,7 @@ import {
   copyOnWriteAsync,
   deepFreeze,
   lazyInit,
-} from "./util.js";
+} from "./utils.js";
 import { type Fixed, type Fixer, markFixed } from "./fixers.js";
 import {
   ResourceComponent,

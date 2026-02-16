@@ -22,7 +22,7 @@ import {
   startCase,
   typedKeys,
   uncapitalize,
-} from "../src/util.js";
+} from "../src/utils.js";
 import type { Resource } from "i18next";
 import type en from "./locales/en/translation.json";
 import { merge } from "ts-deepmerge";

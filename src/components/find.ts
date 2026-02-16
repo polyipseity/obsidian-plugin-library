@@ -1,4 +1,4 @@
-import { deepFreeze } from "../util.js";
+import { deepFreeze } from "../utils.js";
 
 export const DIRECTIONS = deepFreeze(["next", "previous"]);
 export type Direction = (typeof DIRECTIONS)[number];

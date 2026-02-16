@@ -9,7 +9,7 @@ import {
   originalPositionFor,
   sourceContentFor,
 } from "@jridgewell/trace-mapping";
-import { assignExact, splitLines } from "./util.js";
+import { assignExact, splitLines } from "./utils.js";
 import { fromObject, fromSource } from "convert-source-map";
 import type { AsyncFunctionConstructor } from "./types.js";
 import { FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT } from "./internals/magic.js";

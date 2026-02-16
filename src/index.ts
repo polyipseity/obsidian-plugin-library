@@ -23,4 +23,4 @@ export * from "./source-maps.js";
 export * from "./status-bar.js";
 export * from "./typeof.js";
 export * from "./types.js";
-export * from "./util.js";
+export * from "./utils.js";

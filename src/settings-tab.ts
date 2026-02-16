@@ -8,7 +8,7 @@ import {
   createDocumentFragment,
   deepFreeze,
   unexpected,
-} from "./util.js";
+} from "./utils.js";
 import { identity, isEmpty } from "lodash-es";
 import {
   linkSetting,

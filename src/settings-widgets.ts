@@ -4,7 +4,7 @@ import type {
   ExtraButtonComponent,
   ValueComponent,
 } from "obsidian";
-import { inSet, instanceOf, unexpected } from "./util.js";
+import { inSet, instanceOf, unexpected } from "./utils.js";
 import { DOMClasses } from "./magic.js";
 import type { ReadonlyTuple } from "./types.js";
 

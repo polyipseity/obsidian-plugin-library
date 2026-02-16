@@ -1,5 +1,5 @@
 /**
- * Comprehensive tests for src/util.ts — utility functions
+ * Comprehensive tests for src/utils.ts — utility functions
  * This file tests core utilities like EventEmitterLite, Functions, and various helper functions
  */
 import { describe, it, expect, vi, afterEach } from "vitest";
@@ -53,11 +53,11 @@ import {
   unexpected,
   typedIn,
   typedOwnKeys,
-} from "../../src/util.js";
-import { codePoint } from "../../src/types.js";
-import { JSON_STRINGIFY_SPACE } from "../../src/magic.js";
+} from "../utils.js";
+import { codePoint } from "../types.js";
+import { JSON_STRINGIFY_SPACE } from "../magic.js";
 
-describe("util.ts — utility functions", () => {
+describe("utils.ts — utility functions", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });

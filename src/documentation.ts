@@ -20,7 +20,7 @@ import {
   createChildElement,
   deepFreeze,
   instanceOf,
-} from "./util.js";
+} from "./utils.js";
 import { DOMClasses } from "./magic.js";
 import type { PluginContext } from "./plugin.js";
 import type { TranslationKey } from "./i18n.js";

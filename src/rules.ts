@@ -1,7 +1,7 @@
 import { ALWAYS_REGEX, NEVER_REGEX } from "./magic.js";
 import { constant, escapeRegExp, identity } from "lodash-es";
 import type { DeepReadonly } from "ts-essentials";
-import { EventEmitterLite } from "./util.js";
+import { EventEmitterLite } from "./utils.js";
 import { ListModal } from "./modals.js";
 import type { PluginContext } from "./plugin.js";
 import { normalizePath } from "obsidian";

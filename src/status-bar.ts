@@ -1,4 +1,4 @@
-import { clear, remove } from "./util.js";
+import { clear, remove } from "./utils.js";
 import { Component } from "obsidian";
 import { DOMClasses } from "./magic.js";
 import { InternalDOMClasses } from "./internals/magic.js";

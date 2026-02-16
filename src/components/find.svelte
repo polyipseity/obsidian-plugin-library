@@ -2,7 +2,7 @@
 
 <script module lang="typescript">
   import type { Direction, Params } from "./find.js";
-  import { consumeEvent, getKeyModifiers } from "../util.js";
+  import { consumeEvent, getKeyModifiers } from "../utils.js";
   import type { DeepWritable } from "ts-essentials";
   import { t as i18nt } from "i18next";
   import { isEmpty, noop } from "lodash-es";

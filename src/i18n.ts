@@ -1,4 +1,4 @@
-import { EventEmitterLite, bracket } from "./util.js";
+import { EventEmitterLite, bracket } from "./utils.js";
 import {
   type FlatNamespace,
   type InitOptions,

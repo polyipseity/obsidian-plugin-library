@@ -5,7 +5,7 @@ import {
   primitiveOfE,
 } from "./typeof.js";
 import type { ReadonlyTuple, Unchecked } from "./types.js";
-import { inSet, isHomogenousArray, lazyInit } from "./util.js";
+import { inSet, isHomogenousArray, lazyInit } from "./utils.js";
 import type { DeepWritable } from "ts-essentials";
 import deepEqual from "deep-equal";
 

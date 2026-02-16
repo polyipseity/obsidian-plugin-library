@@ -1,7 +1,7 @@
 import type { LibraryUUIDs } from "./magic.js";
 import type { Opaque } from "ts-essentials";
 import { Platform as Platform0 } from "obsidian";
-import { deepFreeze } from "./util.js";
+import { deepFreeze } from "./utils.js";
 
 export namespace Platform {
   export const DESKTOP = deepFreeze(["darwin", "linux", "win32"]),
