@@ -1104,9 +1104,14 @@ export abstract class Plugin {
 export abstract class PluginSettingTab {
   app: App;
   plugin: Plugin;
+  // containerEl exists on the real API; the mock must provide it for UI tests
+  containerEl: HTMLElement;
+
   constructor(app: App, plugin: Plugin) {
     this.app = app;
     this.plugin = plugin;
+    // provide a real DOM element so tests can query/append children
+    this.containerEl = document.createElement("div");
   }
   abstract display(): void;
   hide(): void {}
@@ -1200,13 +1205,14 @@ export class Component {
   }
 }
 
-export class ItemView {
+export class ItemView extends Component {
   leaf: WorkspaceLeaf;
   contentEl: HTMLElement;
   app: App;
   navigation = false;
 
   constructor(leaf?: WorkspaceLeaf) {
+    super();
     this.leaf = leaf ?? new WorkspaceLeaf();
     this.contentEl = document.createElement("div");
     this.app = getApp();
@@ -1623,11 +1629,13 @@ export class Notice {
 // ===== Utility Functions =====
 
 export function normalizePath(path: string): string {
-  return path
-    .replace(/\\/g, "/")
-    .replace(/\/+/g, "/")
-    .replace(/^\//, "")
-    .replace(/\/$/, "");
+  return (
+    path
+      .replace(/\\/g, "/")
+      .replace(/\/+/g, "/")
+      .replace(/^\//, "")
+      .replace(/\/$/, "") || "/"
+  );
 }
 
 export function stripHeading(heading: string): string {
@@ -1752,6 +1760,19 @@ export const MarkdownRenderer = {
   ): Promise<void> => {
     el.textContent = markdown;
   },
+  // Some environments/tests expect the newer `render(app, ...)` API —
+  // provide a thin shim so both signatures work in tests.
+  render: async (
+    _app: App,
+    markdown: string,
+    el: HTMLElement,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _sourcePath: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _component: Component,
+  ): Promise<void> => {
+    el.textContent = markdown;
+  },
 };
 
 export function renderMath(
@@ -1827,6 +1848,10 @@ export function getIcon(iconId: string): string | null {
 export function setIcon(el: HTMLElement, iconId: string): void {
   const svg = state.icons.get(iconId);
   if (svg) el.innerHTML = svg;
+}
+
+export function removeIcon(iconId: string): void {
+  state.icons.delete(iconId);
 }
 
 // ===== Test Helpers =====
