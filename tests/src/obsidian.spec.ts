@@ -11,7 +11,7 @@ import {
   printError,
   printMalformedData,
 } from "../../src/obsidian.js";
-import { toJSONOrString } from "../utils.js";
+import { toJSONOrString } from "../../src/utils.js";
 import type { FrontMatterCache, Notice } from "obsidian";
 import type { PluginContext } from "../../src/plugin.js";
 
@@ -541,7 +541,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         .spyOn(console, "error")
         .mockImplementation(() => {});
       const ob = await import("../../src/obsidian.js");
-      const util = await import("../utils.js");
+      const util = await import("../../src/utils.js");
       const notice2Spy = vi.spyOn(ob, "notice2").mockImplementation(
         () =>
           ({
@@ -582,7 +582,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         .spyOn(console, "error")
         .mockImplementation(() => {});
       const ob = await import("../../src/obsidian.js");
-      const util = await import("../utils.js");
+      const util = await import("../../src/utils.js");
       const notice2Spy = vi.spyOn(ob, "notice2").mockImplementation(
         () =>
           ({
@@ -621,7 +621,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         .spyOn(console, "error")
         .mockImplementation(() => {});
       const ob = await import("../../src/obsidian.js");
-      const util = await import("../utils.js");
+      const util = await import("../../src/utils.js");
       const notice2Spy = vi.spyOn(ob, "notice2").mockImplementation(
         () =>
           ({

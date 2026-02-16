@@ -53,9 +53,9 @@ import {
   unexpected,
   typedIn,
   typedOwnKeys,
-} from "../utils.js";
-import { codePoint } from "../types.js";
-import { JSON_STRINGIFY_SPACE } from "../magic.js";
+} from "../../src/utils.js";
+import { codePoint } from "../../src/types.js";
+import { JSON_STRINGIFY_SPACE } from "../../src/magic.js";
 
 describe("utils.ts — utility functions", () => {
   afterEach(() => {
