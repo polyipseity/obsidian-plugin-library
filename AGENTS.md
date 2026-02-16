@@ -18,6 +18,7 @@ This file gives concise, actionable guidance to automated coding agents working 
 ## Agent rules (must follow) ⚠️
 
 - Always prefer non-interactive, reproducible commands. Do not ask confirmation questions when using built-in prompts like `commit-staged` or `bump-version` — those prompts are written for agents.
+- Do NOT run `vitest` interactively/watch mode. The `vitest` CLI defaults to interactive/watch mode when invoked without the `run` subcommand; agents must always use `vitest run <options>` or append `--run` so tests execute non-interactively.
 - Run project checks before making changes: `npm run check` and `npm test` where applicable. If CI/coverage fails, include failing test details in your report.
 - Commit messages must conform to Conventional Commits and pass `npm run commitlint`. Use the `commit-staged` prompt to generate and create commits.
 - When bumping versions use the repository's preferred manager: `pnpm` if a `pnpm-lock.yaml` exists; otherwise fall back to `npm`.
