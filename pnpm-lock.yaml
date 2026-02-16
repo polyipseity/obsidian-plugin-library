@@ -142,8 +142,8 @@ importers:
         specifier: ^0.27.2
         version: 0.27.3
       esbuild-compress:
-        specifier: ^2.0.2
-        version: 2.1.0(esbuild@0.27.3)
+        specifier: ^2.2.0
+        version: 2.2.0(esbuild@0.27.3)
       esbuild-node-externals:
         specifier: ^1.20.1
         version: 1.20.1(esbuild@0.27.3)
@@ -1320,8 +1320,8 @@ packages:
     resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
     engines: {node: '>= 0.4'}
 
-  esbuild-compress@2.1.0:
-    resolution: {integrity: sha512-gzYWFdx8glz3ig0oNd7rFb40GnlN3HySPHr6sLcJiNNPw25OpAz0dkoZzV+C0SsUJu+pAqYP30san3U2iRCruA==}
+  esbuild-compress@2.2.0:
+    resolution: {integrity: sha512-vip6wlerSEjauhs4hmN3Ow1L3/DbKyp4hWUENvOmE+pj9dig/E9JQQvvXC01+pc8oYU3g/66HLDcKqu9Zfbu5Q==}
     peerDependencies:
       esbuild: '>=0.17.0'
 
@@ -3942,7 +3942,7 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
 
-  esbuild-compress@2.1.0(esbuild@0.27.3):
+  esbuild-compress@2.2.0(esbuild@0.27.3):
     dependencies:
       esbuild: 0.27.3
       import-meta-resolve: 4.2.0
