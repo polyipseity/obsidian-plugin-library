@@ -50,13 +50,13 @@ export function fixArray<
   key: K,
   types: readonly InverseTypeofMapE<V>[],
 ): PrimitiveOfE<V>[] {
-  const val = from[key];
-  if (isHomogenousArray(types, val)) {
-    return val;
-  }
   const default0 = defaults[key];
   if (!Array.isArray(default0)) {
     throw new TypeError(String(default0));
+  }
+  const val = from[key];
+  if (isHomogenousArray(types, val)) {
+    return val;
   }
   const default1: readonly V[] = default0;
   return default1.map(primitiveOfE);

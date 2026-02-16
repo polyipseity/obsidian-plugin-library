@@ -19,6 +19,10 @@ export class StatusBarHider extends Component {
   public static readonly class = InternalDOMClasses.HIDE_STATUS_BAR;
   readonly #hiders: (() => boolean)[] = [];
 
+  public get _hiders(): (() => boolean)[] {
+    return this.#hiders;
+  }
+
   public constructor(protected readonly context: PluginContext) {
     super();
   }

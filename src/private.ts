@@ -38,6 +38,7 @@ export function revealPrivate<const As extends readonly HasPrivate[], R>(
       ...(args as { readonly [A in keyof As]: RevealPrivate<As[A]> }),
     );
   } catch (error) {
+    /* @__PURE__ */ self.console.debug(error);
     self.console.warn(
       context.language.value.t("errors.private-API-changed"),
       error,
@@ -63,6 +64,7 @@ export async function revealPrivateAsync<
       ...(args as { readonly [A in keyof As]: RevealPrivate<As[A]> }),
     );
   } catch (error) {
+    /* @__PURE__ */ self.console.debug(error);
     self.console.warn(
       context.language.value.t("errors.private-API-changed"),
       error,

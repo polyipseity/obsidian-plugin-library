@@ -19,16 +19,18 @@ export function attachFunctionSourceMap(
   ...args: Parameters<typeof generateFunctionSourceMap>
 ): string {
   const [, script] = args;
-  return `${script}
-${fromObject(generateFunctionSourceMap(...args).toJSON()).toComment()}`;
+  const comment = fromObject(
+    generateFunctionSourceMap(...args).toJSON(),
+  ).toComment();
+  return `${script}\n${comment}`;
 }
 
 export function attachSourceMap(
   ...args: Parameters<typeof generateSourceMap>
 ): string {
   const [script] = args;
-  return `${script}
-${fromObject(generateSourceMap(...args).toJSON()).toComment()}`;
+  const comment = fromObject(generateSourceMap(...args).toJSON()).toComment();
+  return `${script}\n${comment}`;
 }
 
 const FUNCTION_CONSTRUCTOR_OFFSETS = new WeakMap<
@@ -69,13 +71,13 @@ export function generateSourceMap(
     readonly offset?: Position;
   },
 ): SourceMapGenerator {
-  const subSourceMap0 = fromSource(script),
-    offset = options?.offset ?? { column: 0, line: 1 },
+  const offset = options?.offset ?? { column: 0, line: 1 },
     genOpts: StartOfSourceMap = { skipValidation: true };
   assignExact(genOpts, "file", options?.file);
   assignExact(genOpts, "sourceRoot", options?.sourceRoot);
   let subSourceMap = null;
   try {
+    const subSourceMap0 = fromSource(script);
     if (subSourceMap0) {
       subSourceMap = new TraceMap(subSourceMap0.toJSON());
     }

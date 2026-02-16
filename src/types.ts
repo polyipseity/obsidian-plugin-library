@@ -100,7 +100,7 @@ export function opaqueOrDefault<T, I extends string, D>(
 }
 export function codePoint(value: string): CodePoint {
   const cp = value.codePointAt(0);
-  if (cp === void 0 || String.fromCharCode(cp) !== value) {
+  if (cp === void 0 || String.fromCodePoint(cp) !== value) {
     throw new TypeError(value);
   }
 

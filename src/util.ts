@@ -170,7 +170,9 @@ export function alternativeRegExp(strs: readonly string[]): RegExp {
 }
 
 export function anyToError(obj: unknown): Error {
-  return obj instanceof Error ? obj : new Error(String(obj));
+  if (obj instanceof Error) return obj;
+  if (typeof obj === "object") return new Error(toJSONOrString(obj));
+  return new Error(String(obj));
 }
 
 export function aroundIdentityFactory<
@@ -402,7 +404,8 @@ export function escapeQuerySelectorAttribute(value: string): string {
 export function extname(path: string): string {
   const base = basename(path),
     idx = base.lastIndexOf(".");
-  return idx === -1 ? "" : base.slice(idx);
+  // Treat files like ".gitignore" (leading dot, no extension) as having no ext
+  return idx <= 0 ? "" : base.slice(idx);
 }
 
 export function getKeyModifiers(event: KeyboardEvent): readonly KeyModifier[] {
@@ -858,6 +861,7 @@ export function remove<T>(self0: T[], item: T): T | undefined {
 }
 
 export function removeAt<T>(self0: T[], index: number): T | undefined {
+  if (index < 0 || index >= self0.length) return undefined;
   return self0.splice(index, 1)[0];
 }
 

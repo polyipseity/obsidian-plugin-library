@@ -56,8 +56,11 @@ export namespace Rules {
       if (type === "error") {
         continue;
       }
-      if (type === (ret ? "-" : "+") && value.test(str)) {
-        ret = !ret;
+      // Apply each rule in order: inclusion sets true, exclusion sets false
+      if (type === "+" && value.test(str)) {
+        ret = true;
+      } else if (type === "-" && value.test(str)) {
+        ret = false;
       }
     }
     return ret;
