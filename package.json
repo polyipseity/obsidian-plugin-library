@@ -63,7 +63,7 @@
     "happy-dom": "^20.6.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "markdownlint-cli2": "^0.20.0",
+    "markdownlint-cli2": "^0.21.0",
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.4.1",
     "svelte-preprocess": "^6.0.3",
