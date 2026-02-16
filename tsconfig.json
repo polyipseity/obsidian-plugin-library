@@ -17,6 +17,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "dist",
+    "paths": {
+      "obsidian": ["./node_modules/@polyipseity/obsidian/obsidian.d.ts"]
+    },
     "resolveJsonModule": true,
     "rootDirs": ["assets", "scripts", "src", "tests"],
     "skipLibCheck": true,
