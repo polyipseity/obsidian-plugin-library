@@ -202,4 +202,128 @@ describe("scripts/build.mjs", () => {
 
     expect(warnSpy).toHaveBeenCalledWith("formatted warn");
   });
+
+  it("removes existing outDir before building", async () => {
+    const project = fs.mkdtempSync(path.join(os.tmpdir(), "build-proj-"));
+    const dist = path.join(project, "dist");
+    fs.mkdirSync(dist, { recursive: true });
+    fs.writeFileSync(path.join(dist, "old.txt"), "stale");
+
+    // Ensure PACKAGE_ID can be resolved by build.mjs on import
+    fs.writeFileSync(
+      path.join(project, "package.json"),
+      JSON.stringify({ name: "test-package" }),
+    );
+
+    // Mock tsc invocation (which + spawn)
+    vi.doMock("which", () => ({
+      __esModule: true,
+      default: vi.fn().mockResolvedValue("npx"),
+    }));
+    vi.doMock("node:child_process", () => ({
+      execFile: vi.fn(),
+      spawn: vi.fn().mockImplementation(() => {
+        const obj = {
+          once(event, cb) {
+            if (event === "exit") setImmediate(() => cb(0, null));
+            return obj;
+          },
+        };
+        return obj;
+      }),
+    }));
+
+    const context = vi.fn().mockResolvedValue({
+      rebuild: vi.fn().mockResolvedValue({
+        errors: [],
+        warnings: [],
+        metafile: undefined,
+      }),
+      dispose: vi.fn().mockResolvedValue(),
+    });
+    vi.doMock("esbuild", () => ({
+      analyzeMetafile: vi.fn(),
+      formatMessages: vi.fn(),
+      context,
+    }));
+
+    const cwd = process.cwd();
+    process.chdir(project);
+    try {
+      await import("../../scripts/build.mjs");
+    } finally {
+      process.chdir(cwd);
+    }
+
+    expect(fs.existsSync(path.join(dist, "old.txt"))).toBe(false);
+  });
+
+  it("logs a warning and continues when removing outDir fails", async () => {
+    const project = fs.mkdtempSync(path.join(os.tmpdir(), "build-proj-"));
+
+    // Ensure PACKAGE_ID can be resolved by build.mjs on import
+    fs.writeFileSync(
+      path.join(project, "package.json"),
+      JSON.stringify({ name: "test-package" }),
+    );
+
+    // Mock rm to fail while preserving other fs/promises functions (readFile is used by utils.PACKAGE_ID)
+    vi.doMock("node:fs/promises", async (importOriginal) => {
+      const actual = await importOriginal();
+      return {
+        ...actual,
+        rm: vi.fn().mockRejectedValue(new Error("boom")),
+      };
+    });
+
+    // Mock tsc invocation (which + spawn)
+    vi.doMock("which", () => ({
+      __esModule: true,
+      default: vi.fn().mockResolvedValue("npx"),
+    }));
+    vi.doMock("node:child_process", () => ({
+      execFile: vi.fn(),
+      spawn: vi.fn().mockImplementation(() => {
+        const obj = {
+          once(event, cb) {
+            if (event === "exit") setImmediate(() => cb(0, null));
+            return obj;
+          },
+        };
+        return obj;
+      }),
+    }));
+
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const context = vi.fn().mockResolvedValue({
+      rebuild: vi.fn().mockResolvedValue({
+        errors: [],
+        warnings: [],
+        metafile: undefined,
+      }),
+      dispose: vi.fn().mockResolvedValue(),
+    });
+    vi.doMock("esbuild", () => ({
+      analyzeMetafile: vi.fn(),
+      formatMessages: vi.fn(),
+      context,
+    }));
+
+    const cwd = process.cwd();
+    process.chdir(project);
+    try {
+      await import("../../scripts/build.mjs");
+    } finally {
+      process.chdir(cwd);
+    }
+
+    expect(warnSpy).toHaveBeenCalled();
+    const call = warnSpy.mock.calls[0];
+    expect(call[0]).toBe(
+      "Failed to remove previous build output, proceeding anyway:",
+    );
+    expect(call[1]).toBeInstanceOf(Error);
+    expect(call[1].message).toBe("boom");
+  });
 });

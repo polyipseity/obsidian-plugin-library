@@ -11,7 +11,7 @@ import shq from "shq";
 import { spawn } from "node:child_process";
 import { sveltePreprocess } from "svelte-preprocess";
 import which from "which";
-import { writeFile } from "node:fs/promises";
+import { writeFile, rm } from "node:fs/promises";
 
 const ARGV_PRODUCTION = 2,
   COMMENT =
@@ -187,4 +187,13 @@ async function esbuild() {
   }
 }
 
+// remove previous build output before starting a new build
+try {
+  await rm(PATHS.outDir, { force: true, recursive: true });
+} catch (err) {
+  console.warn(
+    "Failed to remove previous build output, proceeding anyway:",
+    err,
+  );
+}
 await Promise.all([tsc(), esbuild()]);
