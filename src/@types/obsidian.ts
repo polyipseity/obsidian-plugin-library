@@ -3,10 +3,8 @@ declare module "obsidian" {
   interface App extends Private<$App, PrivateKey> {}
   interface BakedHotkey extends Private<$BakedHotkey, PrivateKey> {}
   interface Commands extends Private<$Commands, PrivateKey> {}
-  interface CommunityPluginsSettingTab extends Private<
-    $CommunityPluginsSettingTab,
-    PrivateKey
-  > {}
+  interface CommunityPluginsSettingTab
+    extends Private<$CommunityPluginsSettingTab, PrivateKey> {}
   interface DataAdapter extends Private<$DataAdapter, PrivateKey> {}
   interface FileSystem extends Private<$FileSystem, PrivateKey> {}
   interface HotkeyManager extends Private<$HotkeyManager, PrivateKey> {}
