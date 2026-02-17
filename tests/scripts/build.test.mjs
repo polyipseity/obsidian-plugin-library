@@ -203,7 +203,7 @@ describe("scripts/build.mjs", () => {
     expect(warnSpy).toHaveBeenCalledWith("formatted warn");
   });
 
-  it("removes existing outDir before building", async () => {
+  it("removes existing built files (outDir) before building", async () => {
     const project = fs.mkdtempSync(path.join(os.tmpdir(), "build-proj-"));
     const dist = path.join(project, "dist");
     fs.mkdirSync(dist, { recursive: true });
@@ -258,7 +258,7 @@ describe("scripts/build.mjs", () => {
     expect(fs.existsSync(path.join(dist, "old.txt"))).toBe(false);
   });
 
-  it("logs a warning and continues when removing outDir fails", async () => {
+  it("logs a warning and continues when removing previous build files fails", async () => {
     const project = fs.mkdtempSync(path.join(os.tmpdir(), "build-proj-"));
 
     // Ensure PACKAGE_ID can be resolved by build.mjs on import
