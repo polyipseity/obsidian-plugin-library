@@ -1,5 +1,21 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
+## 1.35.0
+
+### Minor Changes
+
+- 791d88c: Refactor core utilities for maintainability and performance (no public API changes).
+
+  Fix source-map generation so stack traces and debugger stepping correctly map back to original TypeScript sources — this resolves incorrect file/line mappings seen during debugging.
+
+  Expand and tighten unit tests for plugin discovery and build-time utilities to cover edge cases and prevent regressions.
+
+### Patch Changes
+
+- 2a2aa89: Add comprehensive unit tests covering the entire library.
+
+  This patch adds and updates unit tests across the library (core utilities, inject, settings, platform, i18n helpers, and test-support utilities). The tests stabilize existing flaky cases, improve coverage, and verify edge-case behavior. All changes are test-only — no runtime or public API changes.
+
 ## 1.34.0
 
 ### Minor Changes
