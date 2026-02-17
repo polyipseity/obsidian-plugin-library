@@ -13,4 +13,11 @@ description: Short machine-consumable guidance for automated agents
 - Do not run `git add .` or other broad staging commands; stage only changed files.
 - When making public API changes, update types and run `npm run build` to ensure exported bundles and types are updated.
 
-See `AGENTS.md` for a concise playbook with examples and links to project-specific rules.
+## Copilot quick rules (short)
+
+- Run `npm run check` and `npm test` before changing code.
+- **Do not** use `any` or `as` in TypeScript; prefer `unknown` and type guards.
+- Use `.github/prompts/commit-staged` for non-interactive commit creation.
+- Add i18n keys to `assets/locales/en/translation.json` first; do not change `{{...}}` or `$t(...)` tokens.
+
+See `AGENTS.md` for the full playbook and additional example prompts. Available prompts: `.github/prompts/commit-staged.prompt.md`.
