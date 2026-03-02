@@ -1,4 +1,2 @@
-#!/bin/sh
-
-# Run tests before pushing
-npm run test
+#!/usr/bin/env sh
+npm run -- test
