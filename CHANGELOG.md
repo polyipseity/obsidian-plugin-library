@@ -1,5 +1,13 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
+## 1.36.1
+
+### Patch Changes
+
+- 5a44bf9: Simplified typings for the `find` component by removing unnecessary
+  `readonly` modifiers and fixing the exported component declaration. This
+  aligns the TypeScript definitions with actual runtime behaviour.
+
 ## 1.36.0
 
 ### Minor Changes
