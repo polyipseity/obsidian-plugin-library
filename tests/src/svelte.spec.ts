@@ -43,4 +43,14 @@ describe("svelteState helper", () => {
     expect(mockState).toHaveBeenCalledWith();
     expect(result).toBe(123);
   });
+
+  it("distinguishes an explicit undefined write from a read", () => {
+    // when `undefined` is intentionally stored we still expect `$state` to be
+    // invoked with that value rather than being called with no arguments.
+    mockState.mockReturnValue("ok");
+
+    const result = svelteState<undefined>(undefined);
+    expect(mockState).toHaveBeenCalledWith(undefined);
+    expect(result).toBe("ok");
+  });
 });

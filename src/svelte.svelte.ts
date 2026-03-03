@@ -35,18 +35,40 @@ export function svelteState<T>(props?: T): T | undefined {
   // constructor.  To work around that limitation we embed the store access
   // in a small helper class that performs the call from a constructor.
   //
-  // Each invocation of `svelteState` creates a fresh instance of
-  // `Internal` so the generic typing is preserved, and the actual call to
-  // `$state` happens in the constructor where the compiler is happy.
-  class Internal<U> {
-    readonly val?: U;
-
-    constructor(v?: U) {
-      // first assignment to a class field in the constructor – permitted by the compiler
-      const val = $state(v); // wtf: <https://github.com/sveltejs/svelte/issues/14600#issuecomment-2528564271>
-      this.val = val;
+  // Earlier versions used a single `Internal` class for both read and write
+  // operations.  That worked fine, but the compiler only knows whether we're
+  // using `new Internal(...)` with or without an argument at compile time.  To
+  // make the generated code more explicit (and satisfy a developer request) we
+  // now branch at runtime and define *two* tiny helper classes.  One is used
+  // when the caller omitted arguments (read operation) and simply calls
+  // `$state()`; the other is used when a value is provided and forwards that
+  // value to `$state(v)`.
+  //
+  // We detect the difference using `arguments.length` rather than checking
+  // `props === undefined`, because the generic `T` may legitimately be
+  // `undefined` when the caller intends to store that value.
+  if (arguments.length === 0) {
+    class InternalRead<U> {
+      readonly val: U | undefined;
+      constructor() {
+        // call with no arguments – allowed by the compiler inside the ctor
+        const val = $state<U>();
+        this.val = val;
+      }
     }
+    return new InternalRead<T>().val;
+  } else {
+    // a value must exist because `arguments.length > 0`, but the generic type
+    // may legitimately be `undefined`.  Capture it in a local variable and
+    // use a simple type assertion (not a forbidden non-null assertion comment)
+    const value = props as T;
+    class InternalWrite<U> {
+      readonly val: U;
+      constructor(v: U) {
+        const val = $state(v);
+        this.val = val;
+      }
+    }
+    return new InternalWrite<T>(value).val;
   }
-
-  return new Internal<T>(props).val;
 }
