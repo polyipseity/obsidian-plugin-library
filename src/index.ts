@@ -21,6 +21,7 @@ export * from "./settings-widgets.js";
 export * from "./settings.js";
 export * from "./source-maps.js";
 export * from "./status-bar.js";
+export * from "./svelte.svelte.js";
 export * from "./typeof.js";
 export * from "./types.js";
 export * from "./utils.js";
