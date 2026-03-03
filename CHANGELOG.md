@@ -1,5 +1,15 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
+## 1.36.0
+
+### Minor Changes
+
+- 8016629: Add `svelteState` helper and corresponding unit tests for reading and
+  writing values via the global `$state` store.
+- 130c3eb: The `FindComponent` exports were simplified and enriched with explicit types,
+  constants, and a corresponding declaration file. Unit tests for exports have
+  also been added.
+
 ## 1.35.0
 
 ### Minor Changes
