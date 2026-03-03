@@ -5,7 +5,7 @@
 // file avoids having to preprocess the `.svelte` file just for the type checker.
 
 import type { Component } from "svelte";
-import type { t as i18nt } from "i18next";
+import type i18next from "i18next";
 import type { DeepWritable } from "ts-essentials";
 
 export const DIRECTIONS = ["next", "previous"] as const;
@@ -19,8 +19,17 @@ export interface Params {
 }
 
 export interface Props {
-  readonly i18n?: typeof i18nt;
-  // `params` is bindable
+  /**
+   * Remember to bind `i18nt` if you want to use it in the component's markup.
+   * This is because the component expects a function that is already bound to
+   * the i18next instance, so it can be called directly without needing to reference
+   * the instance.  By default, `i18nt` is set to `i18next.t.bind(i18next)`,
+   * so if you don't provide your own it will still work as expected.
+   *
+   * However, if you want to use a custom translation function or a different
+   * i18next instance, you can pass it in as a prop and bind it in your markup.
+   */
+  readonly i18nt?: typeof i18next.t;
   params?: DeepWritable<Params>;
   readonly results?: string;
   readonly onClose?: () => unknown;

@@ -2,7 +2,7 @@
 
 <script lang="ts" module>
   // exported types and constants for library consumers
-  import { t as i18nt } from "i18next";
+  import i18next from "i18next";
   import type { DeepWritable } from "ts-essentials";
   import { consumeEvent, getKeyModifiers } from "../utils.js";
   import { isEmpty, noop } from "lodash-es";
@@ -21,8 +21,17 @@
   }
 
   export interface Props {
-    readonly i18n?: typeof i18nt;
-    // `params` is bindable
+    /**
+     * Remember to bind `i18nt` if you want to use it in the component's markup.
+     * This is because the component expects a function that is already bound to
+     * the i18next instance, so it can be called directly without needing to reference
+     * the instance.  By default, `i18nt` is set to `i18next.t.bind(i18next)`,
+     * so if you don't provide your own it will still work as expected.
+     *
+     * However, if you want to use a custom translation function or a different
+     * i18next instance, you can pass it in as a prop and bind it in your markup.
+     */
+    readonly i18nt?: typeof i18next.t;
     params?: DeepWritable<Params>;
     readonly results?: string;
     readonly onClose?: () => unknown;
@@ -41,7 +50,7 @@
 
 <script lang="ts">
   const {
-    i18n = i18nt,
+    i18nt = i18next.t.bind(i18next),
     params = $bindable({
       caseSensitive: false,
       findText: "",
@@ -81,38 +90,38 @@
         class={`document-search-button${
           params.caseSensitive ? " mod-cta" : ""
         }`}
-        aria-label={i18n("components.find.case-sensitive")}
+        aria-label={i18nt("components.find.case-sensitive")}
         onclick={(event) => {
           params.caseSensitive = !params.caseSensitive;
           consumeEvent(event);
         }}
-        use:setIcon={i18n("asset:components.find.case-sensitive-icon")}
+        use:setIcon={i18nt("asset:components.find.case-sensitive-icon")}
       ></button>
       <button
         type="button"
         class={`document-search-button${params.wholeWord ? " mod-cta" : ""}`}
-        aria-label={i18n("components.find.whole-word")}
+        aria-label={i18nt("components.find.whole-word")}
         onclick={(event) => {
           params.wholeWord = !params.wholeWord;
           consumeEvent(event);
         }}
-        use:setIcon={i18n("asset:components.find.whole-word-icon")}
+        use:setIcon={i18nt("asset:components.find.whole-word-icon")}
       ></button>
       <button
         type="button"
         class={`document-search-button${params.regex ? " mod-cta" : ""}`}
-        aria-label={i18n("components.find.regex")}
+        aria-label={i18nt("components.find.regex")}
         onclick={(event) => {
           params.regex = !params.regex;
           consumeEvent(event);
         }}
-        use:setIcon={i18n("asset:components.find.regex-icon")}
+        use:setIcon={i18nt("asset:components.find.regex-icon")}
       ></button>
     </div>
     <input
       class="document-search-input"
       type="text"
-      placeholder={i18n("components.find.input-placeholder")}
+      placeholder={i18nt("components.find.input-placeholder")}
       role="searchbox"
       bind:value={params.findText}
       bind:this={inputElement}
@@ -131,33 +140,33 @@
       <button
         type="button"
         class="document-search-button"
-        aria-label={i18n("components.find.previous")}
+        aria-label={i18nt("components.find.previous")}
         onclick={(event) => {
           onFind("previous", params);
           consumeEvent(event);
         }}
-        use:setIcon={i18n("asset:components.find.previous-icon")}
+        use:setIcon={i18nt("asset:components.find.previous-icon")}
       ></button>
       <button
         type="button"
         class="document-search-button"
-        aria-label={i18n("components.find.next")}
+        aria-label={i18nt("components.find.next")}
         onclick={(event) => {
           onFind("next", params);
           consumeEvent(event);
         }}
-        use:setIcon={i18n("asset:components.find.next-icon")}
+        use:setIcon={i18nt("asset:components.find.next-icon")}
       ></button>
       <div class="document-search-results" aria-live="polite">{results}</div>
       <button
         type="button"
         class="document-search-close-button"
-        aria-label={i18n("components.find.close")}
+        aria-label={i18nt("components.find.close")}
         onclick={(event) => {
           onClose();
           consumeEvent(event);
         }}
-        use:setIcon={i18n("asset:components.find.close-icon")}
+        use:setIcon={i18nt("asset:components.find.close-icon")}
       ></button>
     </div>
   </div>
