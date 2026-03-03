@@ -97,7 +97,7 @@ async function esbuild() {
             ).replace(/\\./gu, "_");
           },
         },
-        include: /\.svelte$/,
+        include: /\.svelte(?:\.js|\.ts)?$/,
         moduleCompilerOptions: {
           dev: DEV,
           generate: "client",
@@ -125,7 +125,7 @@ async function esbuild() {
         ],
       }),
     ],
-    sourcemap: "linked",
+    sourcemap: DEV && "linked",
     sourcesContent: true,
     target: "ES2022",
     treeShaking: true,
