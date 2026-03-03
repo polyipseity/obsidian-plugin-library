@@ -1,20 +1,47 @@
 <svelte:options />
 
-<script module lang="typescript">
-  import type { Direction, Params } from "./find.js";
-  import { consumeEvent, getKeyModifiers } from "../utils.js";
-  import type { DeepWritable } from "ts-essentials";
+<script lang="ts" module>
+  // exported types and constants for library consumers
   import { t as i18nt } from "i18next";
+  import type { DeepWritable } from "ts-essentials";
+  import { consumeEvent, getKeyModifiers } from "../utils.js";
   import { isEmpty, noop } from "lodash-es";
   import { onMount } from "svelte";
   import { setIcon } from "obsidian";
   import { slide } from "svelte/transition";
+
+  export const DIRECTIONS = ["next", "previous"] as const;
+  export type Direction = (typeof DIRECTIONS)[number];
+
+  export interface Params {
+    readonly caseSensitive: boolean;
+    readonly findText: string;
+    readonly regex: boolean;
+    readonly wholeWord: boolean;
+  }
+
+  export interface Props {
+    readonly i18n?: typeof i18nt;
+    // `params` is bindable
+    params?: DeepWritable<Params>;
+    readonly results?: string;
+    readonly onClose?: () => unknown;
+    readonly onFind?: (direction: Direction, params: Params) => unknown;
+    readonly onParamsChanged?: (params: Params) => unknown;
+    readonly initialFocus?: boolean;
+  }
+
+  export interface Exports {
+    readonly focus: () => void;
+    readonly blur: () => void;
+  }
+
+  export type Bindings = "params";
 </script>
 
-<script lang="typescript">
+<script lang="ts">
   const {
     i18n = i18nt,
-    // `params` is bindable
     params = $bindable({
       caseSensitive: false,
       findText: "",
@@ -26,15 +53,7 @@
     onFind = noop,
     onParamsChanged = noop,
     initialFocus = false,
-  }: {
-    readonly i18n?: typeof i18nt;
-    params?: DeepWritable<Params>;
-    readonly results?: string;
-    readonly onClose?: () => unknown;
-    readonly onFind?: (direction: Direction, params: Params) => unknown;
-    readonly onParamsChanged?: (params: Params) => unknown;
-    readonly initialFocus?: boolean;
-  } = $props();
+  }: Props = $props();
 
   $effect(() => {
     onParamsChanged(params);

@@ -23,8 +23,11 @@ import { defineConfig } from "vitest/config";
 // Only split test files in rare cases when a single file becomes unreasonably long.
 // Both `*.spec.*` and `*.test.*` are included below; run specific sets with the Vitest CLI if desired.
 export default defineConfig({
-  // Treat markdown as assets so imports like `import md from "../README.md"` resolve to a string
-  assetsInclude: ["**/*.md"],
+  // Treat markdown and svelte files as assets so imports like
+  // `import md from "../README.md"` or re-exports of `.svelte` modules
+  // no longer trigger parser errors in the test environment. the library's
+  // runtime build still bundles/compiles `.svelte` files as appropriate.
+  assetsInclude: ["**/*.md", "**/*.svelte"],
   // Resolve `obsidian` imports to our test mock so downstream packages (e.g.
   // `obsidian-plugin-library`) can be imported in node tests.
   resolve: {
