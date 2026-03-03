@@ -31,13 +31,13 @@
      * However, if you want to use a custom translation function or a different
      * i18next instance, you can pass it in as a prop and bind it in your markup.
      */
-    readonly i18nt?: i18n["t"];
+    i18nt?: i18n["t"];
     params?: DeepWritable<Params>;
-    readonly results?: string;
-    readonly onClose?: () => unknown;
-    readonly onFind?: (direction: Direction, params: Params) => unknown;
-    readonly onParamsChanged?: (params: Params) => unknown;
-    readonly initialFocus?: boolean;
+    results?: string;
+    onClose?: () => unknown;
+    onFind?: (direction: Direction, params: Params) => unknown;
+    onParamsChanged?: (params: Params) => unknown;
+    initialFocus?: boolean;
   }
 
   export interface Exports {
