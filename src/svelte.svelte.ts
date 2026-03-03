@@ -29,5 +29,24 @@ export function svelteState<T>(): T | undefined;
  * @returns the stored value when reading, or the result of `$state(props)` when writing
  */
 export function svelteState<T>(props?: T): T | undefined {
-  return props === undefined ? $state() : $state(props as T);
+  // the Svelte compiler restricts direct calls to `$state(...)` inside
+  // arbitrary functions – it only allows them as variable initializers,
+  // class fields, or the first assignment to a class field at the top of a
+  // constructor.  To work around that limitation we embed the store access
+  // in a small helper class that performs the call from a constructor.
+  //
+  // Each invocation of `svelteState` creates a fresh instance of
+  // `Internal` so the generic typing is preserved, and the actual call to
+  // `$state` happens in the constructor where the compiler is happy.
+  class Internal<U> {
+    readonly val?: U;
+
+    constructor(v?: U) {
+      // first assignment to a class field in the constructor – permitted by the compiler
+      const val = $state(v); // wtf: <https://github.com/sveltejs/svelte/issues/14600#issuecomment-2528564271>
+      this.val = val;
+    }
+  }
+
+  return new Internal<T>(props).val;
 }
