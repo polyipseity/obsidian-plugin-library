@@ -5,7 +5,7 @@
 // file avoids having to preprocess the `.svelte` file just for the type checker.
 
 import type { Component } from "svelte";
-import type i18next from "i18next";
+import type { i18n } from "i18next";
 import type { DeepWritable } from "ts-essentials";
 
 export const DIRECTIONS = ["next", "previous"] as const;
@@ -29,7 +29,7 @@ export interface Props {
    * However, if you want to use a custom translation function or a different
    * i18next instance, you can pass it in as a prop and bind it in your markup.
    */
-  readonly i18nt?: typeof i18next.t;
+  readonly i18nt?: i18n["t"];
   params?: DeepWritable<Params>;
   readonly results?: string;
   readonly onClose?: () => unknown;

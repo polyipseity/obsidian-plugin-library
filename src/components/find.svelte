@@ -2,7 +2,7 @@
 
 <script lang="ts" module>
   // exported types and constants for library consumers
-  import i18next from "i18next";
+  import { type i18n, default as i18next } from "i18next";
   import type { DeepWritable } from "ts-essentials";
   import { consumeEvent, getKeyModifiers } from "../utils.js";
   import { isEmpty, noop } from "lodash-es";
@@ -31,7 +31,7 @@
      * However, if you want to use a custom translation function or a different
      * i18next instance, you can pass it in as a prop and bind it in your markup.
      */
-    readonly i18nt?: typeof i18next.t;
+    readonly i18nt?: i18n["t"];
     params?: DeepWritable<Params>;
     readonly results?: string;
     readonly onClose?: () => unknown;
