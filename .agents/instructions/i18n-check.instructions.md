@@ -31,4 +31,4 @@ Ensure new user-facing strings are added safely and validated by tests. This ins
 - `assets/locales/README.md` for conventions
 - `tests/assets/locales.spec.ts` for test examples
 
-If you want, I can add an `i18n-check` instruction to `.github/prompts/` that agents can invoke programmatically.
+If you want, I can add an `i18n-check` instruction to `.agents/prompts/` that agents can invoke programmatically.
