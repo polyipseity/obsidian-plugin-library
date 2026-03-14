@@ -1,13 +1,12 @@
 import { PACKAGE_ID, PATHS } from "./utils.mjs";
 import { analyzeMetafile, context, formatMessages } from "esbuild";
-import { argv, platform } from "node:process";
+import { argv } from "node:process";
 import { isEmpty, kebabCase } from "lodash-es";
 import { copy } from "esbuild-plugin-copy";
 import cssEscape from "css.escape";
 import esbuildCompress from "esbuild-compress";
 import esbuildSvelte from "esbuild-svelte";
 import { nodeExternalsPlugin } from "esbuild-node-externals";
-import shq from "shq";
 import { spawn } from "node:child_process";
 import { sveltePreprocess } from "svelte-preprocess";
 import which from "which";
@@ -23,8 +22,9 @@ async function tsc() {
   const bun = await which("bun", {});
   return new Promise((resolve, reject) => {
     spawn(
-      platform === "win32" ? `"${bun}"` : shq(bun),
+      bun,
       [
+        "x",
         "--package",
         "typescript",
         "--",
