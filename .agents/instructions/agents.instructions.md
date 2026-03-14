@@ -9,7 +9,7 @@ description: Short machine-consumable guidance for automated agents
 - Always run `bun run check` and `bun run test` before proposing changes.
 - Use the `commit-staged` and `bump-version` prompts in `.agents/prompts/` for commits and version bumps. These are designed to be non-interactive for automation.
 - Ensure commits pass `bun run commitlint` and `husky` hooks. If the commit is rejected, rewrap and retry programmatically.
-- Prefer `bun` for version bumping when a `bun.lockb` is present.
+- Prefer `bun` for version bumping when a `bun.lock` is present.
 - Do not run `git add .` or other broad staging commands; stage only changed files.
 - When making public API changes, update types and run `bun run build` to ensure exported bundles and types are updated.
 

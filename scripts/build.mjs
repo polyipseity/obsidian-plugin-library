@@ -20,10 +20,10 @@ const ARGV_PRODUCTION = 2,
   PACKAGE_ID0 = await PACKAGE_ID;
 
 async function tsc() {
-  const npx = await which("npx", {});
+  const bun = await which("bun", {});
   return new Promise((resolve, reject) => {
     spawn(
-      platform === "win32" ? `"${npx}"` : shq(npx),
+      platform === "win32" ? `"${bun}"` : shq(bun),
       [
         "--package",
         "typescript",
@@ -33,8 +33,6 @@ async function tsc() {
         ...(DEV ? ["--watch"] : []),
       ],
       {
-        // https://github.com/nodejs/node/issues/52554
-        shell: true,
         stdio: "inherit",
       },
     )

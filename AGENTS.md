@@ -13,7 +13,7 @@ This file gives concise, actionable guidance to automated coding agents working 
   - `bun run check` (TypeScript + ESLint + markdown + Prettier)
   - `bun run test` (runs `vitest run --coverage`)
   - `bun run format` (eslint + prettier + markdown fixes)
-- Prefer `bun` when managing versions/releases (this repo is bun-friendly — `bun.lockb` may be present).
+- Prefer `bun` when managing versions/releases (this repo is bun-friendly — `bun.lock` may be present).
 
 ## Agent rules (must follow) ⚠️
 
@@ -21,7 +21,7 @@ This file gives concise, actionable guidance to automated coding agents working 
 - Do NOT run `vitest` interactively/watch mode. The `vitest` CLI defaults to interactive/watch mode when invoked without the `run` subcommand; agents must always use `vitest run <options>` or append `--run` so tests execute non-interactively.
 - Run project checks before making changes: `bun run check` and `bun run test` where applicable. If CI/coverage fails, include failing test details in your report.
 - Commit messages must conform to Conventional Commits and pass `bun run commitlint`. Use the `commit-staged` prompt to generate and create commits.
-- When bumping versions use the repository's preferred manager: `bun` if a `bun.lockb` exists; otherwise fall back to another supported package manager.
+- When bumping versions use the repository's preferred manager: `bun` if a `bun.lock` exists; otherwise fall back to another supported package manager.
 - Keep changes minimal and scoped. Do not stage unrelated files; stage only files changed by your operation.
 
 TypeScript typing rules (required)

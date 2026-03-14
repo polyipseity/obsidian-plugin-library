@@ -48,7 +48,7 @@ describe("scripts/build.mjs", () => {
     // Mock tsc invocation (which + spawn) to avoid running real tsc during import
     vi.doMock("which", () => ({
       __esModule: true,
-      default: vi.fn().mockResolvedValue("npx"),
+      default: vi.fn().mockResolvedValue("bunx"),
     }));
     vi.doMock("node:child_process", () => ({
       execFile: vi.fn(),
@@ -109,7 +109,7 @@ describe("scripts/build.mjs", () => {
     // Mock tsc invocation (which + spawn) to avoid running real tsc during import
     vi.doMock("which", () => ({
       __esModule: true,
-      default: vi.fn().mockResolvedValue("npx"),
+      default: vi.fn().mockResolvedValue("bunx"),
     }));
     vi.doMock("node:child_process", () => ({
       execFile: vi.fn(),
@@ -174,7 +174,7 @@ describe("scripts/build.mjs", () => {
     // Mock tsc invocation (which + spawn) to avoid running real tsc during import
     vi.doMock("which", () => ({
       __esModule: true,
-      default: vi.fn().mockResolvedValue("npx"),
+      default: vi.fn().mockResolvedValue("bunx"),
     }));
     vi.doMock("node:child_process", () => ({
       execFile: vi.fn(),
@@ -218,7 +218,7 @@ describe("scripts/build.mjs", () => {
     // Mock tsc invocation (which + spawn)
     vi.doMock("which", () => ({
       __esModule: true,
-      default: vi.fn().mockResolvedValue("npx"),
+      default: vi.fn().mockResolvedValue("bunx"),
     }));
     vi.doMock("node:child_process", () => ({
       execFile: vi.fn(),
@@ -279,7 +279,7 @@ describe("scripts/build.mjs", () => {
     // Mock tsc invocation (which + spawn)
     vi.doMock("which", () => ({
       __esModule: true,
-      default: vi.fn().mockResolvedValue("npx"),
+      default: vi.fn().mockResolvedValue("bunx"),
     }));
     vi.doMock("node:child_process", () => ({
       execFile: vi.fn(),
