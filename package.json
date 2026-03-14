@@ -153,7 +153,7 @@
     "format:eslint": "eslint --cache --fix",
     "format:md": "markdownlint-cli2 --fix",
     "format:prettier": "prettier --cache --write \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "test": "bun run test:vitest",
     "test:vitest": "vitest run --coverage",
     "test:watch": "vitest"
