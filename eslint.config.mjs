@@ -39,9 +39,10 @@ export default defineConfig([
     files: ["**/*.svelte", "**/*.svelte.js", "**/*.svelte.ts"],
     languageOptions: {
       parserOptions: {
-        projectService: true,
         extraFileExtensions: [".svelte"], // Add support for additional file extensions, such as .svelte
         parser: eslintTs.parser,
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
   },
