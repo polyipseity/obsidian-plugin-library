@@ -14,7 +14,7 @@ Ensure new user-facing strings are added safely and validated by tests. This ins
 
 1. Add the new key/value pair into `assets/locales/en/translation.json` first.
 2. Add or update a unit test under `tests/assets/locales.spec.ts` (or `tests/src/*`) that asserts the key resolves via `language.value.t('your.key')`.
-3. Run `npm run check` and `npm test` to ensure the change passes linting and tests.
+3. Run `bun run check` and `bun run test` to ensure the change passes linting and tests.
 4. If required, add translations to other locales (copy of English is acceptable for initial PR) and add a short note in PR description.
 
 ## Important rules
@@ -30,5 +30,3 @@ Ensure new user-facing strings are added safely and validated by tests. This ins
 
 - `assets/locales/README.md` for conventions
 - `tests/assets/locales.spec.ts` for test examples
-
-If you want, I can add an `i18n-check` instruction to `.agents/prompts/` that agents can invoke programmatically.

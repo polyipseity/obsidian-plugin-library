@@ -127,6 +127,7 @@
   "main": "dist/index.js",
   "name": "@polyipseity/obsidian-plugin-library",
   "overrides": {},
+  "packageManager": "bun@1.3.10",
   "peerDependencies": {
     "esbuild": ">=0.17.0"
   },
@@ -135,28 +136,25 @@
       "optional": true
     }
   },
-  "pnpm": {
-    "overrides": {}
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/polyipseity/obsidian-plugin-library.git"
   },
   "scripts": {
-    "build": "npm run check && npm run build:force",
-    "build:dev": "npm run build:force -- dev",
+    "build": "bun run check && bun run build:force",
+    "build:dev": "bun run build:force -- dev",
     "build:force": "node scripts/build.mjs",
-    "check": "tsc --noEmit && npm run check:eslint && npm run check:md && npm run check:prettier",
+    "check": "tsc --noEmit && bun run check:eslint && bun run check:md && bun run check:prettier",
     "check:eslint": "eslint --cache --max-warnings=0",
     "check:md": "markdownlint-cli2",
     "check:prettier": "prettier --cache --check \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
     "commitlint": "commitlint --from=origin/main --to=HEAD",
-    "format": "npm run format:eslint && npm run format:md && npm run format:prettier",
+    "format": "bun run format:eslint && bun run format:md && bun run format:prettier",
     "format:eslint": "eslint --cache --fix",
     "format:md": "markdownlint-cli2 --fix",
     "format:prettier": "prettier --cache --write \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
     "prepare": "husky",
-    "test": "npm run test:vitest",
+    "test": "bun run test:vitest",
     "test:vitest": "vitest run --coverage",
     "test:watch": "vitest"
   },

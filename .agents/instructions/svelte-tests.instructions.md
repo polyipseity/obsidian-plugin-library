@@ -72,5 +72,3 @@ describe('Find component', () => {
 
 - `tests/src/` — existing test files for patterns and utilities
 - `tests/support/` — helper utilities and i18n test helpers
-
-If you want, I can add a concrete `tests/src/find.spec.ts` using this template — tell me and I will create it.

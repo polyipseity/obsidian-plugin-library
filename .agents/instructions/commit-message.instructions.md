@@ -29,10 +29,10 @@ Optional footer (BREAKING CHANGE, Refs, etc)
 ## Examples
 
 ```text
-fix(dependabot): split update groups for github-actions and npm
+fix(dependabot): split update groups for github-actions and bun
 
 - Change dependabot group name from 'all-dependencies' to 'github-actions'.
-- Change dependabot group name from 'all-dependencies' to 'npm'.
+- Change dependabot group name from 'all-dependencies' to 'bun'.
 
 Refs: dependabot config improvement
 ```
@@ -43,7 +43,7 @@ Refs: dependabot config improvement
 - **Header should be ≤ 72 characters (use 72 as a human-friendly buffer; tooling still accepts up to 100).**
 - **Body lines must be hard-wrapped at 100 characters or less.** Prefer 72 for body lines intended for human readers.
 - All agents and contributors must comply; see `AGENTS.md` for enforcement policy.
-- Automated agents: follow `.agents/prompts/commit-staged` to create commits (non-interactive), run `npm run commitlint` and ensure the message passes before committing; if the message is rejected, programmatically rewrap and retry. Do not ask for confirmation.
+- Automated agents: follow `.agents/prompts/commit-staged` to create commits (non-interactive), run `bun run commitlint` and ensure the message passes before committing; if the message is rejected, programmatically rewrap and retry. Do not ask for confirmation.
 - Example (compliant):
 
   ```text
