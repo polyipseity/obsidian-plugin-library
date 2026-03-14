@@ -61,6 +61,7 @@
     "globals": "^17.2.0",
     "happy-dom": "^20.6.1",
     "husky": "^9.1.7",
+    "if-ci": "^3.0.0",
     "lint-staged": "^16.2.7",
     "markdownlint-cli2": "^0.21.0",
     "prettier": "^3.2.5",
@@ -152,7 +153,7 @@
     "format:eslint": "eslint --cache --fix",
     "format:md": "markdownlint-cli2 --fix",
     "format:prettier": "prettier --cache --write \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
-    "prepare": "husky || true",
+    "prepare": "bun x --package if-ci -- if-not-ci husky",
     "test": "bun run test:vitest",
     "test:vitest": "vitest run --coverage",
     "test:watch": "vitest"
