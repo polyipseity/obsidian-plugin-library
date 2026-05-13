@@ -42,7 +42,6 @@
       "name_other": "$t(generic.ordinal_other, capitalize)",
       "name_two": "$t(generic.ordinal_two, capitalize)",
       "prepend": "Prepend",
-      "preset-placeholder": "$t(components.dropdown.placeholder)",
       "remove": "Remove"
     },
     "rules-list": {

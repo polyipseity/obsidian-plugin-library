@@ -1,17 +1,16 @@
+import { constant, noop } from "lodash-es";
 import {
+  App,
   type ButtonComponent,
+  FuzzySuggestModal,
   type Instruction,
   Modal,
   type Setting,
   type ValueComponent,
 } from "obsidian";
-import {
-  DISABLED_TOOLTIP,
-  DOMClasses,
-  JSON_STRINGIFY_SPACE,
-  SI_PREFIX_SCALE,
-} from "./magic.js";
-import type { DeepReadonly, DeepWritable } from "ts-essentials";
+import type { DeepReadonly, DeepWritable, Writable } from "ts-essentials";
+import type { Fixer } from "./fixers.js";
+import { DOMClasses, JSON_STRINGIFY_SPACE, SI_PREFIX_SCALE } from "./magic.js";
 import {
   type StatusUI,
   UpdatableUI,
@@ -19,6 +18,9 @@ import {
   useSettings,
   useSubsettings,
 } from "./obsidian.js";
+import type { PluginContext } from "./plugin.js";
+import { linkSetting, resetButton } from "./settings-widgets.js";
+import { simplifyType } from "./types.js";
 import {
   activeSelf,
   bracket,
@@ -29,17 +31,7 @@ import {
   deepFreeze,
   removeAt,
   swap,
-  unexpected,
 } from "./utils.js";
-import { constant, noop } from "lodash-es";
-import {
-  dropdownSelect,
-  linkSetting,
-  resetButton,
-} from "./settings-widgets.js";
-import type { Fixer } from "./fixers.js";
-import type { PluginContext } from "./plugin.js";
-import { simplifyType } from "./types.js";
 
 export function getDefaultSuggestModalInstructions(
   context: PluginContext,
@@ -75,6 +67,42 @@ export function getDefaultSuggestModalInstructions(
   ];
 }
 
+class PresetSuggestModal<T> extends FuzzySuggestModal<
+  NonNullable<ListModal.Options<T>["presets"]>[number]
+> {
+  public constructor(
+    app: App,
+    protected readonly presets: NonNullable<ListModal.Options<T>["presets"]>,
+    protected readonly callback: (value: T) => Promise<unknown>,
+  ) {
+    super(app);
+  }
+
+  public override getItems(): Writable<
+    NonNullable<ListModal.Options<T>["presets"]>
+  > {
+    return [...this.presets];
+  }
+
+  public override getItemText(
+    item: NonNullable<ListModal.Options<T>["presets"]>[number],
+  ): string {
+    return item.name;
+  }
+
+  public override onChooseItem(
+    item: NonNullable<ListModal.Options<T>["presets"]>[number],
+  ): void {
+    (async (): Promise<void> => {
+      try {
+        await this.callback(item.value);
+      } catch (error) {
+        /* @__PURE__ */ activeSelf(this.contentEl).console.debug(error);
+      }
+    })();
+  }
+}
+
 export class ListModal<T> extends Modal {
   protected readonly modalUI = new UpdatableUI();
   protected readonly ui = new UpdatableUI();
@@ -87,7 +115,6 @@ export class ListModal<T> extends Modal {
   readonly #namer;
   readonly #descriptor;
   readonly #presets;
-  readonly #presetPlaceholder;
   #setupListSubUI = noop;
 
   public constructor(
@@ -95,10 +122,12 @@ export class ListModal<T> extends Modal {
     protected readonly inputter: (
       setting: Setting,
       editable: boolean,
-      getter: () => T,
-      setter: (
+      refs?: {
+      readonly getter: () => T,
+      readonly setter: (
         setter: (item: T, index: number, data: T[]) => unknown,
       ) => unknown,
+      }
     ) => void,
     protected readonly placeholder: () => T,
     data: readonly T[],
@@ -125,9 +154,6 @@ export class ListModal<T> extends Modal {
         }));
     this.#descriptor = options?.descriptor ?? ((): string => "");
     this.#presets = options?.presets;
-    this.#presetPlaceholder =
-      options?.presetPlaceholder ??
-      ((): string => i18n.t("components.list.preset-placeholder"));
   }
 
   public static stringInputter<T>(transformer: {
@@ -137,13 +163,16 @@ export class ListModal<T> extends Modal {
     return (
       setting: Setting,
       editable: boolean,
-      getter: () => T,
-      setter: (
+      refs?: {
+      readonly getter: () => T,
+      readonly setter: (
         setter: (item: T, index: number, data: T[]) => unknown,
       ) => unknown,
+    },
       input: (
         setting: Setting,
         callback: (
+          element: HTMLElement,
           component: ValueComponent<string> & {
             readonly onChange: (
               callback: (value: string) => unknown,
@@ -151,20 +180,108 @@ export class ListModal<T> extends Modal {
           },
         ) => unknown,
       ) => void = (setting0, callback): void => {
-        setting0.addTextArea(callback);
+        setting0.addTextArea(textArea => callback(textArea.inputEl, textArea));
       },
     ): void => {
-      input(setting, (text) =>
+      input(setting, (element, text) => {
         text
-          .setValue(transformer.forth(getter()))
-          .setDisabled(!editable)
+          .setDisabled(!editable);
+        if (!refs) {
+          element.style.visibility = "hidden";
+          return;
+        }
+        text.setValue(transformer.forth(refs.getter()))
           .onChange((value) =>
-            setter((_0, index, data) => {
+            refs.setter((_0, index, data) => {
               data[index] = transformer.back(value);
             }),
-          ),
-      );
+          )
+      });
     };
+  }
+
+  #addRemoveButton(
+    setting: Setting,
+    refs?: {
+      readonly index: number;
+      readonly data: T[];
+    }
+  ): void {
+    const { language } = this.context,
+      { value: i18n } = language;
+    setting.addButton((button) => {
+      button
+        .setTooltip(i18n.t("components.list.remove"))
+        .setIcon(i18n.t("asset:components.list.remove-icon"));
+      if (!refs) {
+        button.buttonEl.style.visibility = "hidden";
+        return;
+      }
+        const { index, data } = refs;
+        button.onClick(async () => {
+          removeAt(data, index);
+          this.#setupListSubUI();
+          await this.postMutate();
+        });
+    });
+  }
+
+  #addMoveUpButton(
+    setting: Setting,
+    refs?: {
+      readonly index: number;
+      readonly data: T[];
+    }
+  ): void {
+    const { language } = this.context,
+      { value: i18n } = language;
+    setting.addExtraButton((button) => {
+      button
+        .setTooltip(i18n.t("components.list.move-up"))
+        .setIcon(i18n.t("asset:components.list.move-up-icon"));
+      if (!refs) {
+        button.extraSettingsEl.style.visibility = "hidden";
+        return;
+      }
+        const { index, data } = refs;
+        button.onClick(async () => {
+          if (index <= 0) {
+            return;
+          }
+          swap(data, index - 1, index);
+          this.#setupListSubUI();
+          await this.postMutate();
+        });
+    });
+  }
+
+  #addMoveDownButton(
+    setting: Setting,
+    refs?: {
+      readonly index: number;
+      readonly data: T[];
+    }
+  ): void {
+    const { language } = this.context,
+      { value: i18n } = language;
+    setting.addExtraButton((button) => {
+      button
+        .setTooltip(i18n.t("components.list.move-down"))
+        .setIcon(i18n.t("asset:components.list.move-down-icon"));
+      if (!refs) {
+        button.extraSettingsEl.style.visibility = "hidden";
+        return;
+      }
+        const { index, data } = refs;
+        button.onClick(async () => {
+          if (index >= data.length - 1) {
+            return;
+          }
+          swap(data, index, index + 1);
+          this.#setupListSubUI();
+          await this.postMutate();
+        });
+      });
   }
 
   public override onOpen(): void {
@@ -176,8 +293,7 @@ export class ListModal<T> extends Modal {
       editables = this.#editables,
       title = this.#title,
       description = this.#description,
-      presets = this.#presets,
-      presetPlaceholder = this.#presetPlaceholder;
+      presets = this.#presets;
     modalUI.finally(
       onChangeLanguage.listen(() => {
         modalUI.update();
@@ -211,105 +327,82 @@ export class ListModal<T> extends Modal {
         },
       );
     }
-    ui.newSetting(listEl, (setting) => {
-      if (!editables.includes("prepend")) {
-        setting.settingEl.remove();
-        return;
-      }
-      if (presets) {
-        setting
-          .setName(i18n.t("components.list.prepend"))
-          .addDropdown(
-            dropdownSelect(
-              presetPlaceholder("prepend"),
-              presets,
-              async (value) => {
-                data.unshift(value);
-                this.#setupListSubUI();
-                await this.postMutate();
-              },
-            ),
-          )
-          .addExtraButton(
-            resetButton(
-              i18n.t("asset:components.list.prepend-icon"),
-              DISABLED_TOOLTIP,
-              unexpected,
-              unexpected,
-              {
-                post(component) {
-                  component.setDisabled(true);
-                },
-              },
-            ),
-          );
-        return;
-      }
-      setting.setName(i18n.t("components.list.prepend")).addButton((button) => {
-        button
-          .setIcon(i18n.t("asset:components.list.prepend-icon"))
-          .setTooltip(i18n.t("components.list.prepend"))
-          .onClick(async () => {
-            data.unshift(placeholder());
-            this.#setupListSubUI();
-            await this.postMutate();
-          });
-      });
-    })
-      .embed(() => {
-        const subUI = new UpdatableUI(),
-          ele = useSubsettings(listEl);
-        this.#setupListSubUI = (): void => {
-          this.setupListSubUI(subUI, ele);
-        };
-        this.#setupListSubUI();
-        return subUI;
-      })
-      .newSetting(listEl, (setting) => {
-        if (!editables.includes("append")) {
-          setting.settingEl.remove();
-          return;
-        }
-        if (presets) {
-          setting
-            .setName(i18n.t("components.list.append"))
-            .addDropdown(
-              dropdownSelect(
-                presetPlaceholder("append"),
-                presets,
-                async (value) => {
-                  data.push(value);
+    // Add prepend button at the top if editable
+    if (editables.includes("prepend")) {
+      ui.newSetting(listEl, (setting) => {
+        // Add invisible placeholder buttons to align with item buttons
+        this.#inputter(setting, editables.includes("edit"));
+        // Add the visible "+" button for prepending items
+        setting.addButton((button) => {
+          button
+            .setIcon(i18n.t("asset:components.list.prepend-icon"))
+            .setTooltip(i18n.t("components.list.prepend"))
+            .onClick(async (): Promise<void> => {
+              if (presets) {
+                new PresetSuggestModal(context.app, presets, async (value) => {
+                  data.unshift(value);
                   this.#setupListSubUI();
                   await this.postMutate();
-                },
-              ),
-            )
-            .addExtraButton(
-              resetButton(
-                i18n.t("asset:components.list.append-icon"),
-                DISABLED_TOOLTIP,
-                unexpected,
-                unexpected,
-                {
-                  post: (component) => {
-                    component.setDisabled(true);
-                  },
-                },
-              ),
-            );
-          return;
+                }).open();
+                return;
+              }
+              data.unshift(placeholder());
+              this.#setupListSubUI();
+              await this.postMutate();
+            });
+        });
+        // Add invisible placeholder buttons to align with item buttons
+        if (editables.includes("moveUp")) {
+          this.#addMoveUpButton(setting);
         }
-        setting.setName(i18n.t("components.list.append")).addButton((button) =>
+        if (editables.includes("moveDown")) {
+          this.#addMoveDownButton(setting);
+        }
+      });
+    }
+    // Embed the list items in the middle
+    ui.embed(() => {
+      const subUI = new UpdatableUI(),
+        ele = useSubsettings(listEl);
+      this.#setupListSubUI = (): void => {
+        this.setupListSubUI(subUI, ele);
+      };
+      this.#setupListSubUI();
+      return subUI;
+    });
+    // Add append button at the bottom if editable
+    if (editables.includes("append")) {
+      ui.newSetting(listEl, (setting) => {
+      // Add invisible placeholder buttons to align with item buttons
+      this.#inputter(setting, editables.includes("edit"));
+        // Add the visible "+" button for appending items
+        setting.addButton((button) => {
           button
             .setIcon(i18n.t("asset:components.list.append-icon"))
             .setTooltip(i18n.t("components.list.append"))
-            .onClick(async () => {
+            .onClick(async (): Promise<void> => {
+              if (presets) {
+                new PresetSuggestModal(context.app, presets, async (value) => {
+                  data.push(value);
+                  this.#setupListSubUI();
+                  await this.postMutate();
+                }).open();
+                return;
+              }
               data.push(placeholder());
               this.#setupListSubUI();
               await this.postMutate();
-            }),
-        );
+            });
+        });
+        // Add invisible placeholder buttons to align with item buttons
+        if (editables.includes("moveUp")) {
+          this.#addMoveUpButton(setting);
+        }
+        if (editables.includes("moveDown")) {
+          this.#addMoveDownButton(setting);
+        }
       });
+    }
   }
 
   public override onClose(): void {
@@ -327,12 +420,10 @@ export class ListModal<T> extends Modal {
   }
 
   protected setupListSubUI(ui: UpdatableUI, element: HTMLElement): void {
-    const { context, data } = this,
+    const { data } = this,
       editables = this.#editables,
       namer = this.#namer,
-      descriptor = this.#descriptor,
-      { language } = context,
-      { value: i18n } = language;
+      descriptor = this.#descriptor;
     ui.destroy();
     for (const [index] of data.entries()) {
       ui.newSetting(element, (setting) => {
@@ -346,53 +437,22 @@ export class ListModal<T> extends Modal {
         this.#inputter(
           setting,
           editables.includes("edit"),
-          () => item,
-          async (setter) => {
+          {
+            getter: () => item,
+          setter: async (setter) => {
             await setter(item, index, data);
             await this.postMutate();
           },
+        },
         );
         if (editables.includes("remove")) {
-          setting.addButton((button) =>
-            button
-              .setTooltip(i18n.t("components.list.remove"))
-              .setIcon(i18n.t("asset:components.list.remove-icon"))
-              .onClick(async () => {
-                removeAt(data, index);
-                this.#setupListSubUI();
-                await this.postMutate();
-              }),
-          );
+          this.#addRemoveButton(setting, { data, index });
         }
         if (editables.includes("moveUp")) {
-          setting.addExtraButton((button) =>
-            button
-              .setTooltip(i18n.t("components.list.move-up"))
-              .setIcon(i18n.t("asset:components.list.move-up-icon"))
-              .onClick(async () => {
-                if (index <= 0) {
-                  return;
-                }
-                swap(data, index - 1, index);
-                this.#setupListSubUI();
-                await this.postMutate();
-              }),
-          );
+          this.#addMoveUpButton(setting, { data, index });
         }
         if (editables.includes("moveDown")) {
-          setting.addExtraButton((button) =>
-            button
-              .setTooltip(i18n.t("components.list.move-down"))
-              .setIcon(i18n.t("asset:components.list.move-down-icon"))
-              .onClick(async () => {
-                if (index >= data.length - 1) {
-                  return;
-                }
-                swap(data, index, index + 1);
-                this.#setupListSubUI();
-                await this.postMutate();
-              }),
-          );
+          this.#addMoveDownButton(setting, { data, index });
         }
       });
     }
@@ -422,7 +482,6 @@ export namespace ListModal {
       readonly name: string;
       readonly value: T;
     }[];
-    readonly presetPlaceholder?: (action: "append" | "prepend") => string;
   }
 }
 

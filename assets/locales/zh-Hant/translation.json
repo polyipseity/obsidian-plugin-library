@@ -39,7 +39,6 @@
       "move-up": "上移",
       "name": "$t(generic.ordinal)",
       "prepend": "前置",
-      "preset-placeholder": "$t(components.dropdown.placeholder)",
       "remove": "刪除"
     },
     "rules-list": {

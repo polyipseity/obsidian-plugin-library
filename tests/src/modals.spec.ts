@@ -295,25 +295,6 @@ describe("modals.ts — modal dialogs", () => {
       expect(modal).toBeDefined();
     });
 
-    it("accepts preset placeholder option", () => {
-      const inputter = vi.fn();
-      const placeholder = (): string => "placeholder";
-      const data = ["item1"];
-      const options = {
-        presetPlaceholder: () => "Select a preset",
-      };
-
-      const modal = new ListModal(
-        mockContext,
-        inputter,
-        placeholder,
-        data,
-        options,
-      );
-
-      expect(modal).toBeDefined();
-    });
-
     it("accepts editables option", () => {
       const inputter = vi.fn();
       const placeholder = (): string => "placeholder";
@@ -355,20 +336,24 @@ describe("modals.ts — modal dialogs", () => {
 
       const inputter = ListModal.stringInputter(transformer);
 
+      const mockTextArea = {
+        inputEl: document.createElement("input"),
+        setValue: vi.fn().mockReturnThis(),
+        setDisabled: vi.fn().mockReturnThis(),
+        onChange: vi.fn().mockReturnThis(),
+      };
+
       const mockSetting = {
         addTextArea: vi.fn((callback) => {
-          callback({
-            setValue: vi.fn().mockReturnThis(),
-            setDisabled: vi.fn().mockReturnThis(),
-            onChange: vi.fn().mockReturnThis(),
-          });
+          callback(mockTextArea);
+          return mockSetting;
         }),
       } as unknown as Setting;
 
       const getter = vi.fn(() => "test");
       const setter = vi.fn();
 
-      inputter(mockSetting, true, getter, setter);
+      inputter(mockSetting, true, { getter, setter });
 
       expect(mockSetting.addTextArea).toHaveBeenCalled();
     });
@@ -382,20 +367,24 @@ describe("modals.ts — modal dialogs", () => {
       const inputter = ListModal.stringInputter(transformer);
 
       const setDisabled = vi.fn().mockReturnThis();
+      const mockTextArea = {
+        inputEl: document.createElement("input"),
+        setValue: vi.fn().mockReturnThis(),
+        setDisabled,
+        onChange: vi.fn().mockReturnThis(),
+      };
+
       const mockSetting = {
         addTextArea: vi.fn((callback) => {
-          callback({
-            setValue: vi.fn().mockReturnThis(),
-            setDisabled,
-            onChange: vi.fn().mockReturnThis(),
-          });
+          callback(mockTextArea);
+          return mockSetting;
         }),
       } as unknown as Setting;
 
       const getter = vi.fn(() => "test");
       const setter = vi.fn();
 
-      inputter(mockSetting, false, getter, setter);
+      inputter(mockSetting, false, { getter, setter });
 
       expect(setDisabled).toHaveBeenCalledWith(true);
     });
@@ -409,20 +398,24 @@ describe("modals.ts — modal dialogs", () => {
       const inputter = ListModal.stringInputter(transformer);
 
       const setDisabled = vi.fn().mockReturnThis();
+      const mockTextArea = {
+        inputEl: document.createElement("input"),
+        setValue: vi.fn().mockReturnThis(),
+        setDisabled,
+        onChange: vi.fn().mockReturnThis(),
+      };
+
       const mockSetting = {
         addTextArea: vi.fn((callback) => {
-          callback({
-            setValue: vi.fn().mockReturnThis(),
-            setDisabled,
-            onChange: vi.fn().mockReturnThis(),
-          });
+          callback(mockTextArea);
+          return mockSetting;
         }),
       } as unknown as Setting;
 
       const getter = vi.fn(() => "test");
       const setter = vi.fn();
 
-      inputter(mockSetting, true, getter, setter);
+      inputter(mockSetting, true, { getter, setter });
 
       expect(setDisabled).toHaveBeenCalledWith(false);
     });
@@ -437,20 +430,24 @@ describe("modals.ts — modal dialogs", () => {
       const inputter = ListModal.stringInputter(transformer);
 
       const setValue = vi.fn().mockReturnThis();
+      const mockTextArea = {
+        inputEl: document.createElement("input"),
+        setValue,
+        setDisabled: vi.fn().mockReturnThis(),
+        onChange: vi.fn().mockReturnThis(),
+      };
+
       const mockSetting = {
         addTextArea: vi.fn((callback) => {
-          callback({
-            setValue,
-            setDisabled: vi.fn().mockReturnThis(),
-            onChange: vi.fn().mockReturnThis(),
-          });
+          callback(mockTextArea);
+          return mockSetting;
         }),
       } as unknown as Setting;
 
       const getter = vi.fn(() => 42);
       const setter = vi.fn();
 
-      inputter(mockSetting, true, getter, setter);
+      inputter(mockSetting, true, { getter, setter });
 
       expect(transformer.forth).toHaveBeenCalledWith(42);
       expect(setValue).toHaveBeenCalledWith("Value: 42");
@@ -465,16 +462,20 @@ describe("modals.ts — modal dialogs", () => {
       const inputter = ListModal.stringInputter(transformer);
 
       let onChangeCallback: ((value: string) => unknown) | undefined;
+      const mockTextArea = {
+        inputEl: document.createElement("input"),
+        setValue: vi.fn().mockReturnThis(),
+        setDisabled: vi.fn().mockReturnThis(),
+        onChange: vi.fn((cb) => {
+          onChangeCallback = cb;
+          return mockTextArea;
+        }),
+      };
+
       const mockSetting = {
         addTextArea: vi.fn((callback) => {
-          callback({
-            setValue: vi.fn().mockReturnThis(),
-            setDisabled: vi.fn().mockReturnThis(),
-            onChange: vi.fn((cb) => {
-              onChangeCallback = cb;
-              return {};
-            }),
-          });
+          callback(mockTextArea);
+          return mockSetting;
         }),
       } as unknown as Setting;
 
@@ -482,7 +483,7 @@ describe("modals.ts — modal dialogs", () => {
       // mock `setter` should execute the provided updater so `transformer.back` runs
       const setter = vi.fn((updater) => updater(undefined, 0, [undefined]));
 
-      inputter(mockSetting, true, getter, setter);
+      inputter(mockSetting, true, { getter, setter });
 
       expect(onChangeCallback).toBeDefined();
 
@@ -506,7 +507,7 @@ describe("modals.ts — modal dialogs", () => {
       const getter = vi.fn(() => "test");
       const setter = vi.fn();
 
-      inputter(mockSetting, true, getter, setter, customInput);
+      inputter(mockSetting, true, { getter, setter }, customInput);
 
       expect(customInput).toHaveBeenCalled();
     });
