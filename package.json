@@ -82,13 +82,6 @@
       "require": null,
       "default": "./dist/index.js"
     },
-    "./esbuild-compress": {
-      "types": "./dist/src/esbuild-compress/index.d.ts",
-      "module": "./dist/esbuild-compress/index.js",
-      "import": "./dist/esbuild-compress/index.js",
-      "require": null,
-      "default": "./dist/inject.index.js"
-    },
     "./inject": {
       "types": "./dist/src/inject/index.d.ts",
       "module": "./dist/inject/index.js",
