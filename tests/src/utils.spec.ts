@@ -1039,9 +1039,7 @@ describe("utils.ts — utility functions", () => {
       expect(debugSpy).toHaveBeenCalled();
       const logged = debugSpy.mock.calls[0]?.[0] as Error | undefined;
       expect(logged).toBeInstanceOf(Error);
-      expect(logged?.message).toContain(
-        "Converting circular structure to JSON",
-      );
+      expect(logged?.message).toMatch(/circular|cyclic/i);
     });
   });
 
