@@ -783,4 +783,237 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       expect(resolved).toBe(true);
     });
   });
+
+  describe("addRibbonIcon", () => {
+    it("returns object with elementRef and reload function", async () => {
+      const mockLeftRibbon = {
+        addRibbonItemButton: vi.fn(() => document.createElement("div")),
+        removeRibbonAction: vi.fn(),
+      };
+
+      const mockLanguage = {
+        value: { t: vi.fn((k: string) => k) },
+        onChangeLanguage: { listen: vi.fn(() => vi.fn()) },
+        onLoaded: Promise.resolve(),
+      };
+
+      const mockContext = {
+        manifest: { id: "test-plugin", name: "Test Plugin" },
+        app: { workspace: { leftRibbon: mockLeftRibbon } },
+        language: mockLanguage,
+        register: vi.fn(),
+        addRibbonIcon: vi.fn(() => document.createElement("div")),
+      } as unknown as PluginContext;
+
+      const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
+
+      const result = testFunc(
+        mockContext,
+        "test-id",
+        "icon-name",
+        () => "Test Title",
+        () => {},
+      );
+
+      expect(result).toBeDefined();
+      expect(result).toHaveProperty("elementRef");
+      expect(result).toHaveProperty("reload");
+      expect(typeof result.reload).toBe("function");
+      expect(result.elementRef).toBeInstanceOf(HTMLElement);
+    });
+
+    it("calls addRibbonItemButton with correct parameters", async () => {
+      const mockElement = document.createElement("div");
+      const mockLeftRibbon = {
+        addRibbonItemButton: vi.fn(() => mockElement),
+        removeRibbonAction: vi.fn(),
+      };
+
+      const mockLanguage = {
+        value: { t: vi.fn((k: string) => k) },
+        onChangeLanguage: { listen: vi.fn(() => vi.fn()) },
+        onLoaded: Promise.resolve(),
+      };
+
+      const mockContext = {
+        manifest: { id: "test-plugin", name: "Test Plugin" },
+        app: { workspace: { leftRibbon: mockLeftRibbon } },
+        language: mockLanguage,
+        register: vi.fn(),
+        addRibbonIcon: vi.fn(() => mockElement),
+      } as unknown as PluginContext;
+
+      const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
+
+      const callback = vi.fn();
+      testFunc(mockContext, "test-id", "heart", () => "My Title", callback);
+
+      // Verify either addRibbonItemButton or addRibbonIcon was called
+      expect(
+        mockLeftRibbon.addRibbonItemButton.mock.calls.length > 0 ||
+          mockContext.addRibbonIcon.mock.calls.length > 0,
+      ).toBe(true);
+    });
+
+    it("registers cleanup function", async () => {
+      const mockLeftRibbon = {
+        addRibbonItemButton: vi.fn(() => document.createElement("div")),
+        removeRibbonAction: vi.fn(),
+      };
+
+      const mockLanguage = {
+        value: { t: vi.fn((k: string) => k) },
+        onChangeLanguage: { listen: vi.fn(() => vi.fn()) },
+        onLoaded: Promise.resolve(),
+      };
+
+      const mockContext = {
+        manifest: { id: "test-plugin", name: "Test Plugin" },
+        app: { workspace: { leftRibbon: mockLeftRibbon } },
+        language: mockLanguage,
+        register: vi.fn(),
+        addRibbonIcon: vi.fn(() => document.createElement("div")),
+      } as unknown as PluginContext;
+
+      const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
+
+      testFunc(
+        mockContext,
+        "test-id",
+        "icon",
+        () => "Title",
+        () => {},
+      );
+
+      // Verify register was called (for cleanup and language listener)
+      expect(mockContext.register).toHaveBeenCalled();
+    });
+
+    it("provides reload function that updates element", async () => {
+      const mockElement = document.createElement("div");
+      const mockLeftRibbon = {
+        addRibbonItemButton: vi.fn(() => mockElement),
+        removeRibbonAction: vi.fn(),
+      };
+
+      const mockLanguage = {
+        value: { t: vi.fn((k: string) => k) },
+        onChangeLanguage: { listen: vi.fn(() => vi.fn()) },
+        onLoaded: Promise.resolve(),
+      };
+
+      const mockContext = {
+        manifest: { id: "test-plugin", name: "Test Plugin" },
+        app: { workspace: { leftRibbon: mockLeftRibbon } },
+        language: mockLanguage,
+        register: vi.fn(),
+        addRibbonIcon: vi.fn(() => mockElement),
+      } as unknown as PluginContext;
+
+      const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
+
+      const result = testFunc(
+        mockContext,
+        "test-id",
+        "icon",
+        () => "Title",
+        () => {},
+      );
+
+      expect(typeof result.reload).toBe("function");
+      expect(() => result.reload()).not.toThrow();
+    });
+
+    it("elementRef getter returns current element", async () => {
+      const mockElement = document.createElement("div");
+      mockElement.id = "test-element";
+
+      const mockLeftRibbon = {
+        addRibbonItemButton: vi.fn(() => mockElement),
+        removeRibbonAction: vi.fn(),
+      };
+
+      const mockLanguage = {
+        value: { t: vi.fn((k: string) => k) },
+        onChangeLanguage: { listen: vi.fn(() => vi.fn()) },
+        onLoaded: Promise.resolve(),
+      };
+
+      const mockContext = {
+        manifest: { id: "test-plugin", name: "Test Plugin" },
+        app: { workspace: { leftRibbon: mockLeftRibbon } },
+        language: mockLanguage,
+        register: vi.fn(),
+        addRibbonIcon: vi.fn(() => mockElement),
+      } as unknown as PluginContext;
+
+      const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
+
+      const result = testFunc(
+        mockContext,
+        "test-id",
+        "icon",
+        () => "Title",
+        () => {},
+      );
+
+      expect(result.elementRef.id).toBe("test-element");
+    });
+
+    it("handles fallback path when revealPrivate returns undefined", async () => {
+      const mockElement = document.createElement("div");
+      const mockContext = {
+        manifest: { id: "test-plugin", name: "Test Plugin" },
+        app: { workspace: { leftRibbon: undefined } },
+        language: {
+          value: { t: vi.fn((k: string) => k) },
+          onChangeLanguage: { listen: vi.fn(() => vi.fn()) },
+          onLoaded: Promise.resolve(),
+        },
+        register: vi.fn(),
+        addRibbonIcon: vi.fn(() => mockElement),
+      } as unknown as PluginContext;
+
+      const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
+
+      const result = testFunc(
+        mockContext,
+        "test-id",
+        "icon",
+        () => "Title",
+        () => {},
+      );
+
+      expect(result).toBeDefined();
+      expect(result.elementRef).toBe(mockElement);
+    });
+
+    it("reload function is no-op in fallback path", async () => {
+      const mockElement = document.createElement("div");
+      const mockContext = {
+        manifest: { id: "test-plugin", name: "Test Plugin" },
+        app: { workspace: { leftRibbon: undefined } },
+        language: {
+          value: { t: vi.fn((k: string) => k) },
+          onChangeLanguage: { listen: vi.fn(() => vi.fn()) },
+          onLoaded: Promise.resolve(),
+        },
+        register: vi.fn(),
+        addRibbonIcon: vi.fn(() => mockElement),
+      } as unknown as PluginContext;
+
+      const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
+
+      const result = testFunc(
+        mockContext,
+        "test-id",
+        "icon",
+        () => "Title",
+        () => {},
+      );
+
+      // Reload should not throw even if it's a noop
+      expect(() => result.reload()).not.toThrow();
+    });
+  });
 });

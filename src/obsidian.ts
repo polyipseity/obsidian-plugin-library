@@ -345,18 +345,21 @@ export function addRibbonIcon(
   icon: string,
   title: () => string,
   callback: (event: MouseEvent) => unknown,
-): void {
+): {
+  readonly elementRef: HTMLElement;
+  readonly reload: () => void;
+} {
   const {
     app: {
       workspace: { leftRibbon },
     },
     language,
   } = context;
-  revealPrivate(
+  return revealPrivate(
     context,
     [leftRibbon],
     (leftRibbon0) => {
-      const ribbon = (): readonly [ele: HTMLElement, title: string] => {
+      function ribbon(): readonly [ele: HTMLElement, title: string] {
         const title0 = title();
         return Object.freeze([
           leftRibbon0.addRibbonItemButton(
@@ -367,20 +370,29 @@ export function addRibbonIcon(
           ),
           title0,
         ]);
-      };
+      }
       let [ele, title0] = ribbon();
       context.register(() => {
         leftRibbon0.removeRibbonAction(title0);
         ele.remove();
       });
-      context.register(
-        language.onChangeLanguage.listen(() => {
-          ele.replaceWith(([ele, title0] = ribbon())[0]);
-        }),
-      );
+
+      function reload() {
+        ele.replaceWith(([ele, title0] = ribbon())[0]);
+      }
+      context.register(language.onChangeLanguage.listen(reload));
+      return {
+        get elementRef(): HTMLElement {
+          return ele;
+        },
+        reload,
+      };
     },
     () => {
-      context.addRibbonIcon(icon, id, callback);
+      return {
+        elementRef: context.addRibbonIcon(icon, id, callback),
+        reload: noop,
+      };
     },
   );
 }
