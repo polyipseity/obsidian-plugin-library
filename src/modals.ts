@@ -123,11 +123,11 @@ export class ListModal<T> extends Modal {
       setting: Setting,
       editable: boolean,
       refs?: {
-      readonly getter: () => T,
-      readonly setter: (
-        setter: (item: T, index: number, data: T[]) => unknown,
-      ) => unknown,
-      }
+        readonly getter: () => T;
+        readonly setter: (
+          setter: (item: T, index: number, data: T[]) => unknown,
+        ) => unknown;
+      },
     ) => void,
     protected readonly placeholder: () => T,
     data: readonly T[],
@@ -164,11 +164,11 @@ export class ListModal<T> extends Modal {
       setting: Setting,
       editable: boolean,
       refs?: {
-      readonly getter: () => T,
-      readonly setter: (
-        setter: (item: T, index: number, data: T[]) => unknown,
-      ) => unknown,
-    },
+        readonly getter: () => T;
+        readonly setter: (
+          setter: (item: T, index: number, data: T[]) => unknown,
+        ) => unknown;
+      },
       input: (
         setting: Setting,
         callback: (
@@ -180,22 +180,22 @@ export class ListModal<T> extends Modal {
           },
         ) => unknown,
       ) => void = (setting0, callback): void => {
-        setting0.addTextArea(textArea => callback(textArea.inputEl, textArea));
+        setting0.addTextArea((textArea) =>
+          callback(textArea.inputEl, textArea),
+        );
       },
     ): void => {
       input(setting, (element, text) => {
-        text
-          .setDisabled(!editable);
+        text.setDisabled(!editable);
         if (!refs) {
           element.style.visibility = "hidden";
           return;
         }
-        text.setValue(transformer.forth(refs.getter()))
-          .onChange((value) =>
-            refs.setter((_0, index, data) => {
-              data[index] = transformer.back(value);
-            }),
-          )
+        text.setValue(transformer.forth(refs.getter())).onChange((value) =>
+          refs.setter((_0, index, data) => {
+            data[index] = transformer.back(value);
+          }),
+        );
       });
     };
   }
@@ -205,7 +205,7 @@ export class ListModal<T> extends Modal {
     refs?: {
       readonly index: number;
       readonly data: T[];
-    }
+    },
   ): void {
     const { language } = this.context,
       { value: i18n } = language;
@@ -217,12 +217,12 @@ export class ListModal<T> extends Modal {
         button.buttonEl.style.visibility = "hidden";
         return;
       }
-        const { index, data } = refs;
-        button.onClick(async () => {
-          removeAt(data, index);
-          this.#setupListSubUI();
-          await this.postMutate();
-        });
+      const { index, data } = refs;
+      button.onClick(async () => {
+        removeAt(data, index);
+        this.#setupListSubUI();
+        await this.postMutate();
+      });
     });
   }
 
@@ -231,7 +231,7 @@ export class ListModal<T> extends Modal {
     refs?: {
       readonly index: number;
       readonly data: T[];
-    }
+    },
   ): void {
     const { language } = this.context,
       { value: i18n } = language;
@@ -243,15 +243,15 @@ export class ListModal<T> extends Modal {
         button.extraSettingsEl.style.visibility = "hidden";
         return;
       }
-        const { index, data } = refs;
-        button.onClick(async () => {
-          if (index <= 0) {
-            return;
-          }
-          swap(data, index - 1, index);
-          this.#setupListSubUI();
-          await this.postMutate();
-        });
+      const { index, data } = refs;
+      button.onClick(async () => {
+        if (index <= 0) {
+          return;
+        }
+        swap(data, index - 1, index);
+        this.#setupListSubUI();
+        await this.postMutate();
+      });
     });
   }
 
@@ -260,7 +260,7 @@ export class ListModal<T> extends Modal {
     refs?: {
       readonly index: number;
       readonly data: T[];
-    }
+    },
   ): void {
     const { language } = this.context,
       { value: i18n } = language;
@@ -272,16 +272,16 @@ export class ListModal<T> extends Modal {
         button.extraSettingsEl.style.visibility = "hidden";
         return;
       }
-        const { index, data } = refs;
-        button.onClick(async () => {
-          if (index >= data.length - 1) {
-            return;
-          }
-          swap(data, index, index + 1);
-          this.#setupListSubUI();
-          await this.postMutate();
-        });
+      const { index, data } = refs;
+      button.onClick(async () => {
+        if (index >= data.length - 1) {
+          return;
+        }
+        swap(data, index, index + 1);
+        this.#setupListSubUI();
+        await this.postMutate();
       });
+    });
   }
 
   public override onOpen(): void {
@@ -373,8 +373,8 @@ export class ListModal<T> extends Modal {
     // Add append button at the bottom if editable
     if (editables.includes("append")) {
       ui.newSetting(listEl, (setting) => {
-      // Add invisible placeholder buttons to align with item buttons
-      this.#inputter(setting, editables.includes("edit"));
+        // Add invisible placeholder buttons to align with item buttons
+        this.#inputter(setting, editables.includes("edit"));
         // Add the visible "+" button for appending items
         setting.addButton((button) => {
           button
@@ -434,17 +434,13 @@ export class ListModal<T> extends Modal {
         setting
           .setName(namer(item, index, data))
           .setDesc(descriptor(item, index, data));
-        this.#inputter(
-          setting,
-          editables.includes("edit"),
-          {
-            getter: () => item,
+        this.#inputter(setting, editables.includes("edit"), {
+          getter: () => item,
           setter: async (setter) => {
             await setter(item, index, data);
             await this.postMutate();
           },
-        },
-        );
+        });
         if (editables.includes("remove")) {
           this.#addRemoveButton(setting, { data, index });
         }
