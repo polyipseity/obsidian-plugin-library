@@ -1,3 +1,7 @@
+import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import { saveAs } from "file-saver";
+import { cloneDeep, constant, noop } from "lodash-es";
+import { around } from "monkey-around";
 import {
   AbstractTextComponent,
   type BaseComponent,
@@ -15,9 +19,12 @@ import {
   type View,
   type ViewStateResult,
 } from "obsidian";
-import { type AnyObject, launderUnchecked } from "./types.js";
+import type { AsyncOrSync } from "ts-essentials";
+import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
-import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import type { PluginContext } from "./plugin.js";
+import { revealPrivate, revealPrivateAsync } from "./private.js";
+import { type AnyObject, launderUnchecked } from "./types.js";
 import {
   Functions,
   type PromisePromise,
@@ -32,13 +39,6 @@ import {
   promisePromise,
   toJSONOrString,
 } from "./utils.js";
-import { cloneDeep, constant, noop } from "lodash-es";
-import { revealPrivate, revealPrivateAsync } from "./private.js";
-import type { AsyncOrSync } from "ts-essentials";
-import { InternalDOMClasses } from "./internals/magic.js";
-import type { PluginContext } from "./plugin.js";
-import { around } from "monkey-around";
-import { saveAs } from "file-saver";
 
 export class LambdaComponent extends Component {
   public constructor(
@@ -614,6 +614,7 @@ export function useSubsettings(element: HTMLElement): HTMLElement {
   if (element.firstChild) {
     createChildElement(ret, "div");
   }
+  ret.style.paddingBottom = "var(--size-4-4)";
   return ret;
 }
 
