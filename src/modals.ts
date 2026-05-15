@@ -97,7 +97,7 @@ class PresetSuggestModal<T> extends FuzzySuggestModal<
       try {
         await this.callback(item.value);
       } catch (error) {
-        /* @__PURE__ */ activeSelf(this.contentEl).console.debug(error);
+        activeSelf(this.contentEl).console.error(error);
       }
     })();
   }
