@@ -81,6 +81,13 @@ interface $Commands {
 
 interface $CommunityPluginsSettingTab extends SettingTab {
   readonly id: "community-plugins";
+  readonly installedPlugins: {
+    readonly groupEl: HTMLElement;
+    readonly listEl: HTMLElement;
+  };
+  /**
+   * @deprecated Outdated private API.
+   */
   readonly renderInstalledPlugin: (
     manifest: PluginManifest,
     element: HTMLElement,
