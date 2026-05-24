@@ -94,6 +94,7 @@ async function esbuild() {
               `${PACKAGE_ID0}-svelte-${kebabCase(name)}`,
             ).replace(/\\./gu, "_");
           },
+          dev: DEV,
         },
         include: /\.svelte(?:\.js|\.ts)?$/,
         moduleCompilerOptions: {
@@ -111,13 +112,28 @@ async function esbuild() {
             sourceMap: DEV,
             typescript: {
               compilerOptions: {
-                module: "ESNext",
-                moduleResolution: "node10",
+                // svelte-preprocess uses transpileModule (no type checking),
+                // so the full tsconfig is not needed. We only need enough
+                // options for transpilation.
+                //
+                // svelte-preprocess internally forces `module: ESNext` and
+                // checks whether moduleResolution is Bundler; if not, it
+                // falls back to the deprecated Node10. Setting "bundler"
+                // here (with tsconfigFile: false to prevent the project
+                // tsconfig from overriding it to nodenext) makes
+                // svelte-preprocess keep Bundler, avoiding the TypeScript 6
+                // Node10 deprecation error.
+                moduleResolution: "bundler",
                 verbatimModuleSyntax: true,
               },
               reportDiagnostics: true,
-              tsconfigDirectory: "./",
-              tsconfigFile: "./tsconfig.json",
+              // Do not load the project tsconfig. transpileModule does not
+              // type-check and does not read package.json for node16/nodenext
+              // semantics, so the project tsconfig settings are not needed
+              // here. More importantly, if the tsconfig were loaded it would
+              // override moduleResolution back to "nodenext", causing
+              // svelte-preprocess to fall through to the deprecated Node10.
+              tsconfigFile: false,
             },
           }),
         ],
