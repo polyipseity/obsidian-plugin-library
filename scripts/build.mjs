@@ -190,7 +190,7 @@ async function esbuild() {
       })(),
       ...(metafile
         ? [
-            writeFile(PATHS.metafile, JSON.stringify(metafile, null, "\t"), {
+            writeFile(PATHS.metafile, JSON.stringify(metafile, null, "  "), {
               encoding: "utf-8",
             }),
           ]
