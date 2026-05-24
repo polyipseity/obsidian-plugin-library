@@ -40,7 +40,6 @@ export async function createI18n(
   let missingInterpolationHandlerReentrant = false;
   const ret = createInstance({
     cleanCode: true,
-    initImmediate: true,
     missingInterpolationHandler(text, value: RegExpExecArray) {
       if (missingInterpolationHandlerReentrant) {
         self.console.warn(value, text);

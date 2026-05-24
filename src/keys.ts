@@ -1,4 +1,4 @@
-import type { HotkeyManager, KeymapEventListener } from "obsidian";
+import type { Hotkey, HotkeyManager, KeymapEventListener } from "obsidian";
 import { constant, noop } from "lodash-es";
 import type { PluginContext } from "./plugin.js";
 import { around } from "monkey-around";
@@ -44,7 +44,8 @@ export function newHotkeyListener(
                         ),
                       );
 
-                      const customKeysOld = cloneAsWritable(this0.customKeys);
+                      const customKeysOld: Record<string, Hotkey[]> =
+                        cloneAsWritable(this0.customKeys);
                       try {
                         for (const id of Object.keys(customKeysOld)) {
                           if (!ids || ids.has(id)) {
