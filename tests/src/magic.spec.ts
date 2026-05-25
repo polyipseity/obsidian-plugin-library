@@ -68,10 +68,10 @@ describe("magic.ts — constants and magic values", () => {
       expect(DISABLED_TOOLTIP.length).toBe(0);
     });
 
-    it("JSON_STRINGIFY_SPACE is tab character", () => {
-      expect(JSON_STRINGIFY_SPACE).toBe("\t");
+    it("JSON_STRINGIFY_SPACE is two spaces", () => {
+      expect(JSON_STRINGIFY_SPACE).toBe("  ");
       const json = JSON.stringify({ a: 1 }, null, JSON_STRINGIFY_SPACE);
-      expect(json).toContain("\t");
+      expect(json).toContain("  ");
     });
   });
 
@@ -224,7 +224,7 @@ describe("magic.ts — constants and magic values", () => {
     it("JSON_STRINGIFY_SPACE for pretty printing", () => {
       const obj = { nested: { value: 42 } };
       const json = JSON.stringify(obj, null, JSON_STRINGIFY_SPACE);
-      expect(json).toContain("\t");
+      expect(json).toContain("  ");
       expect(json.split("\n").length).toBeGreaterThan(1);
     });
 
