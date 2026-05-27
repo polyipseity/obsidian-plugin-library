@@ -31,6 +31,7 @@
   },
   "description": "Library for Obsidian plugins.",
   "devDependencies": {
+    "@j178/prek": "^0.4.1",
     "@changesets/cli": "^2.29.8",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
@@ -60,9 +61,7 @@
     "eslint-plugin-svelte": "^3.11.0",
     "globals": "^17.2.0",
     "happy-dom": "^20.6.1",
-    "husky": "^9.1.7",
     "if-ci": "^3.0.0",
-    "lint-staged": "^17.0.4",
     "markdownlint-cli2": "^0.22.1",
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.4.1",
@@ -145,7 +144,7 @@
     "format:eslint": "eslint --cache --fix",
     "format:md": "markdownlint-cli2 --fix",
     "format:prettier": "prettier --cache --write \"**/*.{astro,cjs,css,csv,gql,graphql,hbs,html,js,jsx,json,json5,jsonc,jsonl,less,mjs,pcss,sass,scss,svelte,styl,ts,tsx,vue,xml,yaml,yml}\"",
-    "prepare": "bun x --package if-ci -- if-not-ci husky",
+    "prepare": "bun x --package if-ci -- if-not-ci prek install",
     "test": "bun run test:vitest",
     "test:vitest": "vitest run --coverage",
     "test:watch": "vitest"
