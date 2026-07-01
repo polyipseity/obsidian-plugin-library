@@ -26,7 +26,7 @@
     "semver": "^7.7.2",
     "source-map": "^0.7.6",
     "svelte": "^5.38.0",
-    "ts-deepmerge": "^7.0.3",
+    "ts-deepmerge": "^8.0.0",
     "ts-essentials": "^10.1.1"
   },
   "description": "Library for Obsidian plugins.",
