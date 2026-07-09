@@ -62,7 +62,7 @@
     "globals": "^17.2.0",
     "happy-dom": "^20.6.1",
     "if-ci": "^3.0.0",
-    "markdownlint-cli2": "^0.22.1",
+    "markdownlint-cli2": "^0.23.0",
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^4.1.1",
     "svelte-preprocess": "^6.0.3",
