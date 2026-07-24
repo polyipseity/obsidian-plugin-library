@@ -780,7 +780,7 @@ export function mapFirstCodePoint(
 
 export function multireplace(
   self0: string,
-  replacements: Map<string, string>,
+  replacements: ReadonlyMap<string, string>,
 ): string {
   return self0.replace(
     alternativeRegExp([...replacements.keys()]),
