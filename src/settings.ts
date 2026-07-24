@@ -215,7 +215,7 @@ export namespace StorageSettingsManager {
   export function getRecovery(
     recovery: Recovery,
     prefix: string,
-  ): Map<string, string> {
+  ): ReadonlyMap<string, string> {
     return new Map(
       Object.entries(recovery).filter(([key]) => key.startsWith(prefix)),
     );
@@ -223,7 +223,7 @@ export namespace StorageSettingsManager {
   export function setRecovery(
     recovery: DeepWritable<Recovery>,
     prefix: string,
-    map: Map<string, string>,
+    map: ReadonlyMap<string, string>,
   ): void {
     for (const key of Object.keys(recovery)) {
       if (!key.startsWith(prefix)) {
