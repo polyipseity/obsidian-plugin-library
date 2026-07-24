@@ -32,6 +32,7 @@ TypeScript typing rules (required)
 - Fix TypeScript errors by improving type declarations — do not silence the checker with `// @ts-ignore` or `as` casts.
 - Run `bun run check` after changes and ensure `tsc` (with `strict` settings) passes locally before committing.
 - If an ESLint/TS rule is missing to enforce these practices, propose the lint/config update in a separate PR and reference it in your commit message.
+- **Default to `readonly`.** All type properties, interfaces, function parameters, and local variables must be `readonly` by default. Mutation requires explicit justification.
 
 ## Project-specific patterns & examples 🔧
 
@@ -60,7 +61,7 @@ TypeScript typing rules (required)
 Applies to: `src/**/*.ts`, `src/**/*.svelte`, `assets/locales/**/*.json`, `tests/**/*.spec.{ts,js}`, `.github/**`, `README.md`
 
 - Run checks before proposing code changes: `bun run check` and `bun run test`.
-- TypeScript: **do not** use `any` or `as`; prefer `unknown`, explicit return types and type guards.
+- TypeScript: **default everything to `readonly`** — interfaces, properties, variables, parameters. Do not use `any` or `as`; prefer `unknown`, explicit return types and type guards.
 - Commits: follow Conventional Commits and use `.agents/prompts/commit-staged` for automation.
 - i18n: add new keys in `assets/locales/en/translation.json` first; do **not** change `{{...}}` or `$t(...)` tokens.
 - Settings/persistence: use `SettingsManager` / `StorageSettingsManager` + `.fix()` helpers for persisted data.
