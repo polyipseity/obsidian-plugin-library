@@ -464,7 +464,7 @@ export namespace ListModal {
     "moveDown",
   ]);
   export interface Options<T> {
-    readonly callback?: (data_: T[]) => unknown;
+    readonly callback?: (data_: readonly T[]) => unknown;
     readonly editables?: readonly (typeof EDITABLES)[number][];
     readonly title?: () => string;
     readonly description?: () => string;
