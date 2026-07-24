@@ -7,7 +7,7 @@ import { revealPrivate } from "./private.js";
 
 export function newHotkeyListener(
   context: PluginContext,
-  ids?: Set<string>,
+  ids?: ReadonlySet<string>,
 ): KeymapEventListener {
   const {
     app,
@@ -44,7 +44,7 @@ export function newHotkeyListener(
                         ),
                       );
 
-                      const customKeysOld: Record<string, Hotkey[]> =
+                      const customKeysOld: Record<string, readonly Hotkey[]> =
                         cloneAsWritable(this0.customKeys);
                       try {
                         for (const id of Object.keys(customKeysOld)) {
