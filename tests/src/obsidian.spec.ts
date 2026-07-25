@@ -835,12 +835,13 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         onLoaded: Promise.resolve(),
       };
 
+      const addRibbonIconMock = vi.fn(() => mockElement);
       const mockContext = {
         manifest: { id: "test-plugin", name: "Test Plugin" },
         app: { workspace: { leftRibbon: mockLeftRibbon } },
         language: mockLanguage,
         register: vi.fn(),
-        addRibbonIcon: vi.fn(() => mockElement),
+        addRibbonIcon: addRibbonIconMock,
       } as unknown as PluginContext;
 
       const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
@@ -851,7 +852,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       // Verify either addRibbonItemButton or addRibbonIcon was called
       expect(
         mockLeftRibbon.addRibbonItemButton.mock.calls.length > 0 ||
-          mockContext.addRibbonIcon.mock.calls.length > 0,
+          addRibbonIconMock.mock.calls.length > 0,
       ).toBe(true);
     });
 
