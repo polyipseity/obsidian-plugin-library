@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { FindComponent } from "../../../src/components";
-import type { FindComponent$ } from "../../../src/components";
+import { FindComponent } from "../../../src/components/index.js";
+import type { FindComponent$ } from "../../../src/components/index.js";
 
 // The public index exports a named value `FindComponent` and a namespace
 // `FindComponent$` containing the raw module (types, constants, helpers).
