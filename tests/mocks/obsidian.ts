@@ -1180,7 +1180,7 @@ export class Component {
     el: HTMLElement,
     type: K,
     callback: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown,
-  );
+  ): void;
   registerDomEvent(_el: unknown, _type: string, _callback: unknown): void {
     // Store for cleanup
   }
