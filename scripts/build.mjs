@@ -26,7 +26,7 @@ async function tsc() {
       [
         "x",
         "--package",
-        "typescript",
+        "@typescript/native",
         "--",
         "tsc",
         "--emitDeclarationOnly",
