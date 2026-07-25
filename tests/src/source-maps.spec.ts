@@ -408,7 +408,6 @@ ${"//"}# sourceMappingURL=data:application/json;base64,invalid!!!`;
       // Use a constructor that returns a function whose `toString()` does NOT
       // contain the FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT. That forces the
       // offset-detection branch to log an error so we can assert it was called.
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const BrokenCtor = function BrokenCtor(_script?: string) {
         return function broken() {
           return 42;

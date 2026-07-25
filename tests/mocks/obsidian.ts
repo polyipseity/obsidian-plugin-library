@@ -307,7 +307,6 @@ export class Vault extends Events {
     this.trigger("modify", fileObj);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async delete(file: TFile | string, _force?: boolean): Promise<void> {
     const path = typeof file === "string" ? file : file.path;
     const normalized = normalizePath(path);
@@ -439,7 +438,6 @@ export class FileManager {
     file: TFile,
     fn: (fm: Record<string, unknown>) => void,
     // options ignored in the mock but accepted for signature parity
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _options?: unknown,
   ): Promise<void> {
     const content = await this.vault.read(file);
@@ -505,7 +503,6 @@ export class FileManager {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getNewFileParent(_sourcePath: string): TFolder {
     return this.vault.getRoot();
   }
@@ -672,9 +669,7 @@ export class Editor {
   getScrollInfo(): { top: number; left: number } {
     return { top: 0, left: 0 };
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   scrollTo(_x?: number, _y?: number): void {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   scrollIntoView(_range: EditorRange, _center?: boolean): void {}
 }
 
@@ -841,7 +836,6 @@ export class WorkspaceLeaf {
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   openFile(file: TFile, _openState?: { active?: boolean }): Promise<void> {
     this.view.file = file;
     return Promise.resolve();
@@ -861,7 +855,6 @@ export class Workspace extends Events {
     return this.activeLeaf?.view.file ?? null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getActiveViewOfType<T>(_type: new (...args: unknown[]) => T): T | null {
     return null;
   }
@@ -873,7 +866,6 @@ export class Workspace extends Events {
     return leaf;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getLeavesOfType(_type: string): WorkspaceLeaf[] {
     return [];
   }
@@ -1188,8 +1180,7 @@ export class Component {
     el: HTMLElement,
     type: K,
     callback: (this: HTMLElement, ev: HTMLElementEventMap[K]) => unknown,
-  ): void;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  );
   registerDomEvent(_el: unknown, _type: string, _callback: unknown): void {
     // Store for cleanup
   }
@@ -1229,7 +1220,6 @@ export class ItemView extends Component {
     return "";
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async setState(_state: unknown, _result?: unknown): Promise<void> {
     return Promise.resolve();
   }
@@ -1259,7 +1249,6 @@ export class ButtonComponent {
 
   // Add `setIcon` as a harmless alias to improve API fidelity for tests that
   // call `setIcon(...)` (some package tests expect this chainable method).
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setIcon(_icon?: string): this {
     return this;
   }
@@ -1355,23 +1344,18 @@ export class Setting {
     return this;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addToggle(_v: unknown): this {
     return this;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addDropdown(_v: unknown): this {
     return this;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addText(_v: unknown): this {
     return this;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addTextArea(_v: unknown): this {
     return this;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public addExtraButton(_v: unknown): this {
     return this;
   }
@@ -1495,7 +1479,6 @@ export class SliderComponent {
     return this;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setLimits(_min: number, _max: number, _step: number): this {
     return this;
   }
@@ -1504,7 +1487,6 @@ export class SliderComponent {
     return this;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setDisabled(_disabled: boolean): this {
     return this;
   }
@@ -1540,7 +1522,6 @@ export class DropdownComponent {
     return this;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setDisabled(_disabled: boolean): this {
     return this;
   }
@@ -1768,9 +1749,7 @@ export const MarkdownRenderer = {
   renderMarkdown: async (
     markdown: string,
     el: HTMLElement,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _sourcePath: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _component: Component,
   ): Promise<void> => {
     el.textContent = markdown;
@@ -1781,9 +1760,7 @@ export const MarkdownRenderer = {
     _app: App,
     markdown: string,
     el: HTMLElement,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _sourcePath: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _component: Component,
   ): Promise<void> => {
     el.textContent = markdown;
@@ -1791,11 +1768,8 @@ export const MarkdownRenderer = {
 };
 
 export function renderMath(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _el: HTMLElement,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _text: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _displayMode: boolean,
 ): Promise<void> {
   return Promise.resolve();

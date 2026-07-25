@@ -351,7 +351,6 @@ export async function copyOnWriteAsync<T extends object>(
 export function createChildElement<K extends keyof HTMLElementTagNameMap>(
   element: ParentNode & { readonly ownerDocument: Document },
   type: K,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   callback = (_element: HTMLElementTagNameMap[K]): void => {},
   options?: ElementCreationOptions,
 ): HTMLElementTagNameMap[K] {

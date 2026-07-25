@@ -22,17 +22,14 @@ describe("inject/index.ts — timing utilities", () => {
 
     // Mock activeWindow
     mockActiveWindow = {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       requestAnimationFrame: vi.fn((_callback) => {
         // Mock RAF ID
         return 1;
       }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       setInterval: vi.fn((_callback, _delay) => {
         // Mock interval ID
         return 1;
       }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       setTimeout: vi.fn((_callback, _delay) => {
         // Mock timeout ID
         return 1;
