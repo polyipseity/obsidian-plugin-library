@@ -7,12 +7,7 @@ import {
   afterEach,
   type Mock,
 } from "vitest";
-import { svelteState } from "../../src";
-
-// augment the global object with the $state function so TypeScript will allow it
-declare global {
-  var $state: unknown;
-}
+import { svelteState } from "../../src/index.js";
 
 describe("svelteState helper", () => {
   let mockState: Mock;
@@ -20,11 +15,11 @@ describe("svelteState helper", () => {
   beforeEach(() => {
     // each test gets a fresh, strongly-typed mock
     mockState = vi.fn();
-    global.$state = mockState;
+    vi.stubGlobal("$state", mockState);
   });
 
   afterEach(() => {
-    delete global.$state;
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
