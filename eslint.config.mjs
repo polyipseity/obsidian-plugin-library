@@ -28,7 +28,7 @@ export const FILE_GLOBS = [
 
 export default defineConfig([
   eslintJs.configs.recommended,
-  ...eslintTs.configs.strict,
+  ...eslintTs.configs.strictTypeChecked,
   ...eslintSvelte.configs["flat/recommended"],
   includeIgnoreFile(path.join(__dirname, ".gitignore")),
   {
@@ -48,6 +48,9 @@ export default defineConfig([
   {
     languageOptions: {
       parserOptions: {
+        projectService: {
+          allowDefaultProject: ["*.mjs", "*.mts"],
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
