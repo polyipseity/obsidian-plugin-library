@@ -31,12 +31,12 @@
   },
   "description": "Library for Obsidian plugins.",
   "devDependencies": {
-    "@j178/prek": "^0.4.1",
     "@changesets/cli": "^2.29.8",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
+    "@j178/prek": "^0.4.1",
     "@polyipseity/obsidian": "~1.4.11",
     "@types/async-lock": "^1.4.2",
     "@types/browser-util-inspect": "^0.2.4",

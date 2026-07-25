@@ -1,16 +1,16 @@
-import { PACKAGE_ID, PATHS } from "./utils.mjs";
-import { analyzeMetafile, context, formatMessages } from "esbuild";
-import { argv } from "node:process";
-import { isEmpty, kebabCase } from "lodash-es";
-import { copy } from "esbuild-plugin-copy";
 import cssEscape from "css.escape";
+import { analyzeMetafile, context, formatMessages } from "esbuild";
 import esbuildCompress from "esbuild-compress";
-import esbuildSvelte from "esbuild-svelte";
 import { nodeExternalsPlugin } from "esbuild-node-externals";
+import { copy } from "esbuild-plugin-copy";
+import esbuildSvelte from "esbuild-svelte";
+import { isEmpty, kebabCase } from "lodash-es";
 import { spawn } from "node:child_process";
+import { rm, writeFile } from "node:fs/promises";
+import { argv } from "node:process";
 import { sveltePreprocess } from "svelte-preprocess";
 import which from "which";
-import { writeFile, rm } from "node:fs/promises";
+import { PACKAGE_ID, PATHS } from "./utils.mjs";
 
 const ARGV_PRODUCTION = 2,
   COMMENT =
