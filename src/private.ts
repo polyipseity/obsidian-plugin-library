@@ -11,10 +11,22 @@ export type Private<T, P extends keyof PrivateKeys> = Readonly<Record<P, T>>;
 export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = {
   readonly [K in P]: Private<unknown, K>;
 }[P];
+/**
+ * Brand interface for types that should be exempt from `RevealPrivate`
+ * recursion. Any type extending this interface will pass through
+ * `RevealPrivate<T>` unchanged.
+ */
+export interface RevealPrivateExempt {
+  readonly __reveal_private_exempt?: never;
+}
 type RevealPrivate0<T> = Omit<T, PrivateKeys$> &
   UnionToIntersection<DistributeValues<T, PrivateKeys$>>;
 export type RevealPrivate<T> =
-  T extends Exclude<Builtin, Error> ? T : RevealPrivate2<T>;
+  T extends Exclude<Builtin, Error>
+    ? T
+    : T extends RevealPrivateExempt
+      ? T
+      : RevealPrivate2<T>;
 type RevealPrivate2<T> = T extends readonly (infer U)[]
   ? T extends U[]
     ? RevealPrivate<U>[]
