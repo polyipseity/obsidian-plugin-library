@@ -1,6 +1,6 @@
 import type { AsyncOrSync, Builtin, UnionToIntersection } from "ts-essentials";
-import type { DistributeValues } from "./types.js";
 import type { PluginContext } from "./plugin.js";
+import type { DistributeValues } from "./types.js";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface PrivateKeys {
