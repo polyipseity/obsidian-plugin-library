@@ -141,7 +141,9 @@ describe("scripts/utils.mjs", () => {
         promisify: () => () => {
           const p = new Promise((resolve) =>
             // resolve asynchronously to mimic real execFile behavior
-            setImmediate(() => resolve({ stdout: "stdout", stderr: "stderr" })),
+            setImmediate(() => {
+              resolve({ stdout: "stdout", stderr: "stderr" });
+            }),
           );
           p.child = { exitCode: 5 };
           return p;

@@ -89,7 +89,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       });
       const component = new LambdaComponent(onLoad);
 
-      expect(() => component.load()).toThrow("Load error");
+      expect(() => {
+        component.load();
+      }).toThrow("Load error");
 
       consoleError.mockRestore();
     });
@@ -104,7 +106,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       const component = new LambdaComponent(undefined, onUnload);
 
       component.load();
-      expect(() => component.unload()).toThrow("Unload error");
+      expect(() => {
+        component.unload();
+      }).toThrow("Unload error");
 
       consoleError.mockRestore();
     });
@@ -263,7 +267,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
 
       const component = new MutableResourceComponent();
 
-      expect(() => component.setValue("value")).toThrow();
+      expect(() => {
+        component.setValue("value");
+      }).toThrow();
     });
   });
 
@@ -763,7 +769,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         await Promise.resolve();
       });
 
-      ui.new(() => ({}), configure as never, null);
+      ui.new(() => ({}), configure, null);
 
       expect(configure).toHaveBeenCalled();
     });
@@ -775,7 +781,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         resolved = true;
       };
 
-      const component = new LambdaComponent(onLoad as never);
+      const component = new LambdaComponent(onLoad);
 
       component.load();
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -922,7 +928,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       );
 
       expect(typeof result.reload).toBe("function");
-      expect(() => result.reload()).not.toThrow();
+      expect(() => {
+        result.reload();
+      }).not.toThrow();
     });
 
     it("elementRef getter returns current element", async () => {
@@ -1014,7 +1022,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       );
 
       // Reload should not throw even if it's a noop
-      expect(() => result.reload()).not.toThrow();
+      expect(() => {
+        result.reload();
+      }).not.toThrow();
     });
   });
 });

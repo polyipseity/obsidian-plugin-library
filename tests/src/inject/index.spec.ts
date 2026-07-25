@@ -38,7 +38,7 @@ describe("inject/index.ts — timing utilities", () => {
 
     // Set up self.activeWindow
     Object.defineProperty(self, "activeWindow", {
-      value: mockActiveWindow as unknown as Window & typeof globalThis,
+      value: mockActiveWindow,
       writable: true,
       configurable: true,
     });
@@ -227,7 +227,7 @@ describe("inject/index.ts — timing utilities", () => {
 
       // Change activeWindow
       Object.defineProperty(self, "activeWindow", {
-        value: newActiveWindow as unknown as Window & typeof globalThis,
+        value: newActiveWindow,
         writable: true,
         configurable: true,
       });
@@ -375,7 +375,7 @@ describe("inject/index.ts — timing utilities", () => {
     it("setInterval callback can be string", () => {
       const code = "console.log('test')";
 
-      setInterval(code as never, 1000);
+      setInterval(code, 1000);
 
       expect(mockActiveWindow.setInterval).toHaveBeenCalledWith(code, 1000);
     });
@@ -383,7 +383,7 @@ describe("inject/index.ts — timing utilities", () => {
     it("setTimeout callback can be string", () => {
       const code = "console.log('test')";
 
-      setTimeout(code as never, 1000);
+      setTimeout(code, 1000);
 
       expect(mockActiveWindow.setTimeout).toHaveBeenCalledWith(code, 1000);
     });

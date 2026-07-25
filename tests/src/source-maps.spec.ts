@@ -133,7 +133,7 @@ const z = 3;`;
       const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
       const script = `const x = 1;
-${"//"}# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
 
       // Should not throw and should log debug information (mocked to avoid printing stacktrace)
       expect(() => generateSourceMap(script)).not.toThrow();
@@ -232,7 +232,7 @@ ${"//"}# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
 
       expect(result).toContain(script);
       // Deliberately check for the comment in a way that avoids triggering source map parsing in the test environment
-      expect(result).toContain(`${"//"}# sourceMappingURL=`);
+      expect(result).toContain(`//# sourceMappingURL=`);
     });
 
     it("appends source map as base64 comment", () => {
@@ -288,7 +288,7 @@ ${"//"}# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
 
       expect(result).toContain(script);
       // Check for source map comment without triggering source map parsing
-      expect(result).toContain(`${"//"}# sourceMappingURL=`);
+      expect(result).toContain(`//# sourceMappingURL=`);
     });
 
     it("works with AsyncFunction", () => {
@@ -366,7 +366,7 @@ ${"//"}# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
 
       // Deliberately break the source map comment to avoid triggering source map parsing in the test environment
       const script = `const x = 1;
-${"//"}# sourceMappingURL=data:application/json;base64,invalid!!!`;
+//# sourceMappingURL=data:application/json;base64,invalid!!!`;
 
       expect(() => generateSourceMap(script)).not.toThrow();
       expect(debugSpy).toHaveBeenCalled();

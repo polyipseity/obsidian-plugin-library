@@ -119,9 +119,9 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("returns default when type does not match", () => {
       const defaults: TestSettings = { name: "default", age: 0, active: false };
       const from: Unchecked<TestSettings> = {
-        name: 123 as unknown as string,
-        age: "not a number" as unknown as number,
-        active: "yes" as unknown as boolean,
+        name: 123,
+        age: "not a number",
+        active: "yes",
       };
 
       expect(fixTyped(defaults, from, "name", ["string"])).toBe("default");
@@ -134,7 +134,7 @@ describe("fixers.ts — settings validation and fixing", () => {
       const from1: Unchecked<typeof defaults> = { value: "text" };
       const from2: Unchecked<typeof defaults> = { value: 42 };
       const from3: Unchecked<typeof defaults> = {
-        value: true as unknown as string | number,
+        value: true,
       };
 
       expect(fixTyped(defaults, from1, "value", ["string", "number"])).toBe(
@@ -204,9 +204,9 @@ describe("fixers.ts — settings validation and fixing", () => {
         flags: [false],
       };
       const from: Unchecked<SettingsWithArray> = {
-        tags: [1, 2, 3] as unknown as string[],
-        scores: ["a", "b"] as unknown as number[],
-        flags: ["yes", "no"] as unknown as boolean[],
+        tags: [1, 2, 3] as unknown,
+        scores: ["a", "b"] as unknown,
+        flags: ["yes", "no"] as unknown,
       };
 
       expect(fixArray(defaults, from, "tags", ["string"])).toEqual(["default"]);
@@ -221,9 +221,9 @@ describe("fixers.ts — settings validation and fixing", () => {
         flags: [false],
       };
       const from: Unchecked<SettingsWithArray> = {
-        tags: "not an array" as unknown as string[],
-        scores: 42 as unknown as number[],
-        flags: null as unknown as boolean[],
+        tags: "not an array",
+        scores: 42,
+        flags: null,
       };
 
       expect(fixArray(defaults, from, "tags", ["string"])).toEqual(["default"]);
@@ -265,7 +265,7 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("throws TypeError when default is not an array", () => {
       const defaults = { notArray: "string" };
       const from: Unchecked<typeof defaults> = {
-        notArray: ["a", "b"] as unknown as string,
+        notArray: ["a", "b"] as unknown,
       };
 
       expect(() => {
@@ -289,7 +289,7 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("returns default when value not in set", () => {
       const defaults = { color: "red" as const };
       const set = ["red", "green", "blue"] as const;
-      const from: Unchecked<typeof defaults> = { color: "yellow" as "red" };
+      const from: Unchecked<typeof defaults> = { color: "yellow" };
 
       expect(fixInSet(defaults, from, "color", set)).toBe("red");
     });
@@ -308,13 +308,13 @@ describe("fixers.ts — settings validation and fixing", () => {
       const defaults = { value: "default" as const };
       const set = ["a", 1, true, null] as const;
       const from1: Unchecked<typeof defaults> = {
-        value: 1 as unknown as "default",
+        value: 1,
       };
       const from2: Unchecked<typeof defaults> = {
-        value: true as unknown as "default",
+        value: true,
       };
       const from3: Unchecked<typeof defaults> = {
-        value: "invalid" as "default",
+        value: "invalid",
       };
 
       expect(fixInSet(defaults, from1, "value", set)).toBe(1);
@@ -334,7 +334,7 @@ describe("fixers.ts — settings validation and fixing", () => {
       const defaults = { value: "only" as const };
       const set = ["only"] as const;
       const from1: Unchecked<typeof defaults> = { value: "only" };
-      const from2: Unchecked<typeof defaults> = { value: "other" as "only" };
+      const from2: Unchecked<typeof defaults> = { value: "other" };
 
       expect(fixInSet(defaults, from1, "value", set)).toBe("only");
       expect(fixInSet(defaults, from2, "value", set)).toBe("only");
@@ -345,7 +345,7 @@ describe("fixers.ts — settings validation and fixing", () => {
       const set = [0, 1, 2] as const;
       const from1: Unchecked<typeof defaults> = { value: 0 };
       const from2: Unchecked<typeof defaults> = {
-        value: false as unknown as number,
+        value: false,
       };
 
       expect(fixInSet(defaults, from1, "value", set)).toBe(0);

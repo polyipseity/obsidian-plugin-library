@@ -250,7 +250,9 @@ describe("status-bar.ts — status bar utilities", () => {
       it("does nothing when status bar not found", () => {
         document.body.removeChild(mockStatusBar);
 
-        expect(() => hider.update()).not.toThrow();
+        expect(() => {
+          hider.update();
+        }).not.toThrow();
       });
     });
 
@@ -432,7 +434,9 @@ describe("status-bar.ts — status bar utilities", () => {
       it("handles update before onload", () => {
         const newHider = new StatusBarHider(mockContext);
 
-        expect(() => newHider.update()).not.toThrow();
+        expect(() => {
+          newHider.update();
+        }).not.toThrow();
       });
     });
   });

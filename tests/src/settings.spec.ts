@@ -238,12 +238,12 @@ describe("settings.ts — settings management", () => {
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete storageData[key];
         }),
-        clear: vi.fn(() =>
+        clear: vi.fn(() => {
           Object.keys(storageData).forEach((key) => {
             // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete storageData[key];
-          }),
-        ),
+          });
+        }),
         length: 0,
         key: vi.fn(() => null),
       };
@@ -569,7 +569,9 @@ describe("settings.ts — settings management", () => {
     });
 
     it("registers settings commands", () => {
-      expect(() => registerSettingsCommands(mockContext)).not.toThrow();
+      expect(() => {
+        registerSettingsCommands(mockContext);
+      }).not.toThrow();
     });
 
     it("uses context language for command names", () => {

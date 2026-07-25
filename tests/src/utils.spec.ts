@@ -194,7 +194,9 @@ describe("utils.ts — utility functions", () => {
         });
         const functions = new Functions({ async: false }, fn);
 
-        expect(() => functions.call()).toThrow("Test error");
+        expect(() => {
+          functions.call();
+        }).toThrow("Test error");
       });
 
       it("transforms function array", () => {
@@ -844,10 +846,10 @@ describe("utils.ts — utility functions", () => {
 
   describe("isNonNil", () => {
     it("returns true for non-null/undefined values", () => {
-      expect(isNonNil("string" as string | null)).toBe(true);
-      expect(isNonNil(0 as number | null)).toBe(true);
-      expect(isNonNil(false as boolean | null)).toBe(true);
-      expect(isNonNil({} as object | null)).toBe(true);
+      expect(isNonNil("string")).toBe(true);
+      expect(isNonNil(0)).toBe(true);
+      expect(isNonNil(false)).toBe(true);
+      expect(isNonNil({})).toBe(true);
     });
 
     it("returns false for null and undefined", () => {

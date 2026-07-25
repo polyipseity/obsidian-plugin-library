@@ -116,7 +116,9 @@ describe("settings-tab.ts — settings tab", () => {
     it("calls display method", () => {
       const tab = new TestSettingTab(mockContext);
 
-      expect(() => tab.display()).not.toThrow();
+      expect(() => {
+        tab.display();
+      }).not.toThrow();
     });
 
     it("has containerEl property", () => {
@@ -300,11 +302,7 @@ describe("settings-tab.ts — settings tab", () => {
         languageNamer: (language: string) => string,
         defaults: { language: string },
       ): void {
-        this.newLanguageWidget(
-          languages as never,
-          languageNamer as never,
-          defaults as never,
-        );
+        this.newLanguageWidget(languages as never, languageNamer, defaults);
       }
     }
 

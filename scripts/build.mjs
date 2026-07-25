@@ -183,7 +183,9 @@ async function esbuild() {
                 kind,
               })
             ).join("\n");
-            return () => log(message);
+            return () => {
+              log(message);
+            };
           })) {
           logging();
         }

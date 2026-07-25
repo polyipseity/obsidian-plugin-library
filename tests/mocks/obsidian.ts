@@ -680,8 +680,12 @@ export class MetadataCache extends Events {
 
   constructor(private vault: Vault) {
     super();
-    vault.on("create", (file: TAbstractFile) => this.updateCache(file.path));
-    vault.on("modify", (file: TAbstractFile) => this.updateCache(file.path));
+    vault.on("create", (file: TAbstractFile) => {
+      this.updateCache(file.path);
+    });
+    vault.on("modify", (file: TAbstractFile) => {
+      this.updateCache(file.path);
+    });
     vault.on("delete", (file: TAbstractFile) =>
       this.cache.delete(normalizePath(file.path)),
     );
@@ -1129,12 +1133,18 @@ export class Component {
   unload(): void {
     if (this.loaded) {
       this.onunload();
-      this.callbacks.forEach((cb) => cb());
+      this.callbacks.forEach((cb) => {
+        cb();
+      });
       this.callbacks = [];
       this.eventRefs = [];
-      this.intervals.forEach((id) => clearInterval(id));
+      this.intervals.forEach((id) => {
+        clearInterval(id);
+      });
       this.intervals = [];
-      this.children.forEach((child) => child.unload());
+      this.children.forEach((child) => {
+        child.unload();
+      });
       this.loaded = false;
     }
   }
@@ -1590,7 +1600,9 @@ export class Notice {
     this.message = message;
     this.duration = duration;
     if (duration > 0) {
-      this.hideTimeout = setTimeout(() => this.hide(), duration);
+      this.hideTimeout = setTimeout(() => {
+        this.hide();
+      }, duration);
     }
   }
 

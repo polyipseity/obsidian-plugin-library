@@ -52,7 +52,9 @@ describe("settings-widgets.ts — widget utilities", () => {
       const container = document.createElement("div");
       document.body.appendChild(container);
 
-      expect(() => closeSetting(container)).not.toThrow();
+      expect(() => {
+        closeSetting(container);
+      }).not.toThrow();
 
       document.body.removeChild(container);
     });
@@ -66,7 +68,9 @@ describe("settings-widgets.ts — widget utilities", () => {
 
       document.body.appendChild(modal);
 
-      expect(() => closeSetting(container)).not.toThrow();
+      expect(() => {
+        closeSetting(container);
+      }).not.toThrow();
 
       document.body.removeChild(modal);
     });
@@ -367,7 +371,7 @@ describe("settings-widgets.ts — widget utilities", () => {
       const component = {} as TestComponent;
       const getter = () => "option1";
 
-      const result = await validator("invalid" as never, component, getter);
+      const result = await validator("invalid", component, getter);
 
       expect(result).toBe(false);
       expect(setter).not.toHaveBeenCalled();
@@ -409,7 +413,7 @@ describe("settings-widgets.ts — widget utilities", () => {
       const component = {} as TestComponent;
       const getter = () => "";
 
-      const result = await validator("any" as never, component, getter);
+      const result = await validator("any", component, getter);
 
       expect(result).toBe(false);
     });
@@ -828,7 +832,9 @@ describe("settings-widgets.ts — widget utilities", () => {
 
       const configurator = linkSetting(getter, setter, callback);
 
-      expect(() => configurator(null as never)).toThrow();
+      expect(() => {
+        configurator(null);
+      }).toThrow();
     });
 
     it("composeSetters handles undefined return values", async () => {
@@ -853,11 +859,7 @@ describe("settings-widgets.ts — widget utilities", () => {
       const setter = vi.fn();
       const converter = setTextToNumber(setter, true);
 
-      const result = await converter(
-        "999999999999999999999",
-        {} as ValueComponent<string>,
-        () => "",
-      );
+      const result = await converter("999999999999999999999", {}, () => "");
 
       expect(result).toBe(false); // Too large for safe integer
     });
@@ -865,7 +867,9 @@ describe("settings-widgets.ts — widget utilities", () => {
     it("closeSetting handles detached elements", () => {
       const container = document.createElement("div");
 
-      expect(() => closeSetting(container)).not.toThrow();
+      expect(() => {
+        closeSetting(container);
+      }).not.toThrow();
     });
   });
 });

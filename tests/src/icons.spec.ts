@@ -34,7 +34,9 @@ describe("icons.ts — icon registration", () => {
 
       const unregister = addIcon("removable-icon", svgContent);
 
-      expect(() => unregister()).not.toThrow();
+      expect(() => {
+        unregister();
+      }).not.toThrow();
     });
 
     it("throws error for invalid SVG content", () => {
