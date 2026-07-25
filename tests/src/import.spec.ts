@@ -310,9 +310,10 @@ describe("import.ts — dynamic import utilities", () => {
 
   describe("Bundle type", () => {
     it("Bundle is a Map with correct types", () => {
-      const bundle: Bundle = new Map();
-      bundle.set("module1", () => ({ value: 1 }));
-      bundle.set("module2", () => ({ value: 2 }));
+      const bundle = new Map<string, () => unknown>([
+        ["module1", () => ({ value: 1 })],
+        ["module2", () => ({ value: 2 })],
+      ]) satisfies Bundle;
 
       expect(bundle.size).toBe(2);
       expect(bundle.has("module1")).toBe(true);
@@ -320,11 +321,11 @@ describe("import.ts — dynamic import utilities", () => {
     });
 
     it("Bundle factories return unknown", () => {
-      const bundle: Bundle = new Map<string, () => unknown>([
+      const bundle = new Map<string, () => unknown>([
         ["any-type", () => "string"],
         ["numbers", () => 42],
         ["objects", () => ({ key: "value" })],
-      ]);
+      ]) satisfies Bundle;
 
       expect(typeof dynamicRequireSync(bundle, "any-type")).toBe("string");
       expect(typeof dynamicRequireSync(bundle, "numbers")).toBe("number");
