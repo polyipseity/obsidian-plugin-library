@@ -66,8 +66,7 @@ interface $App {
   readonly plugins: Plugins;
   readonly setting: {
     readonly settingTabs: readonly (
-      | CommunityPluginsSettingTab
-      | UnknownSettingTab
+      CommunityPluginsSettingTab | UnknownSettingTab
     )[];
   };
 }
