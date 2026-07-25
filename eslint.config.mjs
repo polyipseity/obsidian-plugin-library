@@ -1,13 +1,12 @@
 // @ts-check
 import eslintJs from "@eslint/js";
-import eslintTs from "typescript-eslint";
-import eslintSvelte from "eslint-plugin-svelte";
 import eslintPrettier from "eslint-config-prettier/flat";
-import { defineConfig } from "eslint/config";
-import { includeIgnoreFile } from "@eslint/compat";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
+import eslintSvelte from "eslint-plugin-svelte";
+import { defineConfig, includeIgnoreFile } from "eslint/config";
 import globals from "globals"; // provide Node/browser globals for file-level overrides
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import eslintTs from "typescript-eslint";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
