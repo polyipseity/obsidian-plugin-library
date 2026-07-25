@@ -172,6 +172,7 @@ export function alternativeRegExp(strs: readonly string[]): RegExp {
 export function anyToError(obj: unknown): Error {
   if (obj instanceof Error) return obj;
   if (typeof obj === "object") return new Error(toJSONOrString(obj));
+  // eslint-disable-next-line @typescript-eslint/no-base-to-string -- We cannot control the `obj` type.
   return new Error(String(obj));
 }
 
@@ -378,6 +379,7 @@ function deepFreeze0<T>(value: T, freezing: WeakSet<object>): DeepReadonly<T> {
     for (const subkey of typedOwnKeys(value)) {
       const subvalue = value[subkey];
       if (isObject(subvalue) && !freezing.has(subvalue)) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- This is not intended to return a `Promise`.
         deepFreeze0(subvalue, freezing);
       }
     }
@@ -594,6 +596,7 @@ export function lazyProxy<T extends object>(initializer: () => T): T {
             functions.get(ret) ??
             (() => {
               function fn(this: unknown, ...args: readonly unknown[]): unknown {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- `new.target` might be `undefined`.
                 if (new.target) {
                   return Reflect.construct(
                     ret0,

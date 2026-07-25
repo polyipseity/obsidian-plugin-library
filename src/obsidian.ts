@@ -99,17 +99,16 @@ export abstract class ResourceComponent<T> extends Component {
     try {
       loading = this.load0();
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- We cannot control the `error` type.
       loading = Promise.reject(error);
     }
     (async (): Promise<void> => {
-      try {
-        const { promise, resolve } = await (this.#loader as PromisePromise<T>);
-        resolve(loading);
-        this.#value = await promise;
-      } catch (error) {
-        self.console.error(error);
-      }
-    })();
+      const { promise, resolve } = await (this.#loader as PromisePromise<T>);
+      resolve(loading);
+      this.#value = await promise;
+    })().catch((error: unknown) => {
+      self.console.error(error);
+    });
   }
 
   protected abstract load0(): AsyncOrSync<T>;
@@ -195,6 +194,7 @@ export class UpdatableUI {
               try {
                 if ("onChange" in comp && typeof comp.onChange === "function") {
                   try {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- We cannot control the `onChange` type.
                     comp.onChange(noop);
                   } catch (error) {
                     activeSelf(settingEl).console.error(error);
@@ -411,6 +411,7 @@ export async function awaitCSS(element: HTMLElement): Promise<void> {
         classList.remove(awaitCSS.CLASS);
         resolve();
       } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- We cannot control the `error` type.
         reject(error);
       } finally {
         obsr.disconnect();

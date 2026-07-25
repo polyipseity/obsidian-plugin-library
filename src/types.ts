@@ -55,6 +55,7 @@ export type Evaluate<T> = T extends (...args: infer A) => infer R
       : never
     : T;
 export type IsExact<T, U> =
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- This is the trick that makes `IsExact` works.
   (<G>() => G extends T ? 1 : -1) extends <G>() => G extends U ? 1 : -1
     ? true
     : false;

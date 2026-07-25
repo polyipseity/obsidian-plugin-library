@@ -1,10 +1,25 @@
+import deepEqual from "deep-equal";
+import { constant, isEmpty, isNil, throttle } from "lodash-es";
 import type { AsyncOrSync, DeepReadonly, DeepWritable } from "ts-essentials";
+import { type Fixed, type Fixer, markFixed } from "./fixers.js";
+import { SAVE_SETTINGS_WAIT } from "./internals/magic.js";
 import {
   DOUBLE_ACTION_WAIT,
   FileExtensions,
   JSON_STRINGIFY_SPACE,
   SI_PREFIX_SCALE,
 } from "./magic.js";
+import { DialogModal } from "./modals.js";
+import {
+  ResourceComponent,
+  addCommand,
+  cleanFrontmatterCache,
+  printError,
+  printMalformedData,
+} from "./obsidian.js";
+import type { PluginContext } from "./plugin.js";
+import { revealPrivate } from "./private.js";
+import { launderUnchecked, simplifyType } from "./types.js";
 import {
   EventEmitterLite,
   activeSelf,
@@ -15,21 +30,6 @@ import {
   deepFreeze,
   lazyInit,
 } from "./utils.js";
-import { type Fixed, type Fixer, markFixed } from "./fixers.js";
-import {
-  ResourceComponent,
-  addCommand,
-  cleanFrontmatterCache,
-  printError,
-  printMalformedData,
-} from "./obsidian.js";
-import { constant, isEmpty, isNil, throttle } from "lodash-es";
-import { launderUnchecked, simplifyType } from "./types.js";
-import { DialogModal } from "./modals.js";
-import type { PluginContext } from "./plugin.js";
-import { SAVE_SETTINGS_WAIT } from "./internals/magic.js";
-import deepEqual from "deep-equal";
-import { revealPrivate } from "./private.js";
 
 export abstract class AbstractSettingsManager<
   T extends AbstractSettingsManager.Type,
@@ -74,13 +74,11 @@ export abstract class AbstractSettingsManager<
   public override onload(): void {
     super.onload();
     (async (): Promise<void> => {
-      try {
-        await this.onLoaded;
-        await this.write();
-      } catch (error) {
-        self.console.error(error);
-      }
-    })();
+      await this.onLoaded;
+      await this.write();
+    })().catch((error: unknown) => {
+      self.console.error(error);
+    });
   }
 
   protected override async load0(): Promise<DeepReadonly<T>> {
@@ -309,18 +307,16 @@ export function registerSettingsCommands(context: PluginContext): void {
     callback() {
       const { lastEvent } = app;
       (async (): Promise<void> => {
-        try {
-          await activeSelf(lastEvent).navigator.clipboard.writeText(
-            JSON.stringify(settings.value, null, JSON_STRINGIFY_SPACE),
-          );
-        } catch (error) {
-          printError(
-            anyToError(error),
-            () => i18n.t("errors.error-exporting-settings"),
-            context,
-          );
-        }
-      })();
+        await activeSelf(lastEvent).navigator.clipboard.writeText(
+          JSON.stringify(settings.value, null, JSON_STRINGIFY_SPACE),
+        );
+      })().catch((error: unknown) => {
+        printError(
+          anyToError(error),
+          () => i18n.t("errors.error-exporting-settings"),
+          context,
+        );
+      });
     },
     icon: i18n.t("asset:commands.export-settings-clipboard-icon"),
     id: "export-settings.clipboard",
@@ -383,24 +379,22 @@ export function registerSettingsCommands(context: PluginContext): void {
     callback() {
       const { lastEvent } = app;
       (async (): Promise<void> => {
-        try {
-          await settings.read(async () => {
-            const ret: unknown = JSON.parse(
-              await activeSelf(lastEvent).navigator.clipboard.readText(),
-            );
-            return ret ?? {};
-          });
-          settings.write().catch((error: unknown) => {
-            activeSelf(lastEvent).console.error(error);
-          });
-        } catch (error) {
-          printError(
-            anyToError(error),
-            () => i18n.t("errors.error-importing-settings"),
-            context,
+        await settings.read(async () => {
+          const ret: unknown = JSON.parse(
+            await activeSelf(lastEvent).navigator.clipboard.readText(),
           );
-        }
-      })();
+          return ret ?? {};
+        });
+        settings.write().catch((error: unknown) => {
+          activeSelf(lastEvent).console.error(error);
+        });
+      })().catch((error: unknown) => {
+        printError(
+          anyToError(error),
+          () => i18n.t("errors.error-importing-settings"),
+          context,
+        );
+      });
     },
     icon: i18n.t("asset:commands.import-settings-clipboard-icon"),
     id: "import-settings.clipboard",
@@ -414,23 +408,21 @@ export function registerSettingsCommands(context: PluginContext): void {
       if (!checking) {
         const { lastEvent } = app;
         (async (): Promise<void> => {
-          try {
-            await settings.read(() =>
-              cleanFrontmatterCache(
-                metadataCache.getFileCache(file)?.frontmatter,
-              ),
-            );
-            settings.write().catch((error: unknown) => {
-              activeSelf(lastEvent).console.error(error);
-            });
-          } catch (error) {
-            printError(
-              anyToError(error),
-              () => i18n.t("errors.error-importing-settings"),
-              context,
-            );
-          }
-        })();
+          await settings.read(() =>
+            cleanFrontmatterCache(
+              metadataCache.getFileCache(file)?.frontmatter,
+            ),
+          );
+          settings.write().catch((error: unknown) => {
+            activeSelf(lastEvent).console.error(error);
+          });
+        })().catch((error: unknown) => {
+          printError(
+            anyToError(error),
+            () => i18n.t("errors.error-importing-settings"),
+            context,
+          );
+        });
       }
       return true;
     },

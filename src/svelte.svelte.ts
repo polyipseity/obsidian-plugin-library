@@ -12,6 +12,7 @@ export function svelteState<T>(props: T): T;
  *
  * @returns the stored value, or `undefined` if none has been set yet
  */
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- Intentional.
 export function svelteState<T>(): T | undefined;
 
 /**

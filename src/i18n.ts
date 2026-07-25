@@ -1,4 +1,3 @@
-import { EventEmitterLite, bracket } from "./utils.js";
 import {
   type FlatNamespace,
   type InitOptions,
@@ -8,11 +7,12 @@ import {
   createInstance,
   type i18n,
 } from "i18next";
-import type { AsyncOrSync } from "ts-essentials";
-import type { PluginContext } from "./plugin.js";
-import { ResourceComponent } from "./obsidian.js";
-import { locale } from "moment";
 import resourcesToBackend from "i18next-resources-to-backend";
+import { locale } from "moment";
+import type { AsyncOrSync } from "ts-essentials";
+import { ResourceComponent } from "./obsidian.js";
+import type { PluginContext } from "./plugin.js";
+import { EventEmitterLite, bracket } from "./utils.js";
 
 export type I18nFormatters = Readonly<
   Record<
@@ -140,27 +140,25 @@ export class LanguageManager extends ResourceComponent<i18n> {
   public override onload(): void {
     super.onload();
     (async (): Promise<void> => {
-      try {
-        const {
-            context: { settings },
-          } = this,
-          [i18n, { language }] = await Promise.all([
-            this.onLoaded,
-            settings.onLoaded,
-          ]);
-        if (this.autoChangeLanguage) {
-          this.register(
-            settings.onMutate(
-              (settings0) => settings0.language,
-              async (cur) => this.changeLanguage(cur),
-            ),
-          );
-        }
-        await i18n.changeLanguage(LanguageManager.interpretLanguage(language));
-      } catch (error) {
-        self.console.error(error);
+      const {
+          context: { settings },
+        } = this,
+        [i18n, { language }] = await Promise.all([
+          this.onLoaded,
+          settings.onLoaded,
+        ]);
+      if (this.autoChangeLanguage) {
+        this.register(
+          settings.onMutate(
+            (settings0) => settings0.language,
+            async (cur) => this.changeLanguage(cur),
+          ),
+        );
       }
-    })();
+      await i18n.changeLanguage(LanguageManager.interpretLanguage(language));
+    })().catch((error: unknown) => {
+      self.console.error(error);
+    });
   }
 
   protected override async load0(): Promise<i18n> {

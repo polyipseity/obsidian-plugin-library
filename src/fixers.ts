@@ -62,10 +62,10 @@ export function fixArray<
   return default1.map(primitiveOfE);
 }
 
-export function fixInSet<S, K extends keyof S, const Vs extends ReadonlyTuple>(
+export function fixInSet<S, const Vs extends ReadonlyTuple>(
   defaults: S,
   from: Unchecked<S>,
-  key: K,
+  key: keyof S,
   set: Vs,
 ): Vs[number] {
   const val = from[key];

@@ -1,3 +1,5 @@
+import type { Resource } from "i18next";
+import { merge } from "ts-deepmerge";
 import type {
   AsyncOrSync,
   AsyncOrSyncType,
@@ -6,16 +8,16 @@ import type {
   IsUnknown,
 } from "ts-essentials";
 import type {
+  I18nFormatters,
+  I18nNamespaces,
+  I18nResources,
+} from "../src/i18n.js";
+import type {
   DistributeKeys,
   DistributeValues,
   Evaluate,
   IsExact,
 } from "../src/types.js";
-import type {
-  I18nFormatters,
-  I18nNamespaces,
-  I18nResources,
-} from "../src/i18n.js";
 import {
   capitalize,
   deepFreeze,
@@ -23,9 +25,7 @@ import {
   typedKeys,
   uncapitalize,
 } from "../src/utils.js";
-import type { Resource } from "i18next";
 import type en from "./locales/en/translation.json";
-import { merge } from "ts-deepmerge";
 
 export type NormalizeLocale<T> = T extends Builtin
   ? T
@@ -90,6 +90,7 @@ export function mergeResources<const Ts extends readonly I18nResources[]>(
         const data: (() => AsyncOrSync<Resource>)[] = [];
         (ret0[ns] ??= Object.assign(
           async () =>
+            // eslint-disable-next-line @typescript-eslint/await-thenable -- Mixture of async and sync resources.
             merge(...(await Promise.all(data.map((datum) => datum())))),
           { data },
         )).data.push(resource);

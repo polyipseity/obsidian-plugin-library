@@ -94,12 +94,10 @@ class PresetSuggestModal<T> extends FuzzySuggestModal<
     item: NonNullable<ListModal.Options<T>["presets"]>[number],
   ): void {
     (async (): Promise<void> => {
-      try {
-        await this.callback(item.value);
-      } catch (error) {
-        activeSelf(this.contentEl).console.error(error);
-      }
-    })();
+      await this.callback(item.value);
+    })().catch((error: unknown) => {
+      activeSelf(this.contentEl).console.error(error);
+    });
   }
 }
 
@@ -699,7 +697,7 @@ export class EditDataModal<T extends object> extends Modal {
 
   protected replaceData(data: typeof this.data): void {
     clearProperties(this.data);
-
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- This is not intended to return a `Promise`.
     Object.assign(this.data, data);
   }
 
@@ -857,12 +855,10 @@ export class DialogModal extends Modal {
 
   public override close(): void {
     (async (): Promise<void> => {
-      try {
-        await this.cancel(this.#close);
-      } catch (error) {
-        activeSelf(this.containerEl).console.error(error);
-      }
-    })();
+      await this.cancel(this.#close);
+    })().catch((error: unknown) => {
+      activeSelf(this.containerEl).console.error(error);
+    });
   }
 
   protected async confirm(close: () => void): Promise<void> {

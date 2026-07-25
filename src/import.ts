@@ -10,12 +10,14 @@ export async function dynamicRequire<T>(
   return PLazy.from(() => dynamicRequireSync(...args));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- Intentional.
 export function dynamicRequireLazy<T extends object>(
   ...args: Parameters<typeof dynamicRequireSync>
 ): T {
   return lazyProxy(() => dynamicRequireSync(...args));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters -- Intentional.
 export function dynamicRequireSync<T>(
   bundle: Bundle,
   module: string,
