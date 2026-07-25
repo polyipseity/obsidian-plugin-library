@@ -2,7 +2,7 @@ import PLazy from "p-lazy";
 import { isNil } from "lodash-es";
 import { lazyProxy } from "./utils.js";
 
-export type Bundle = Map<string, () => unknown>;
+export type Bundle = ReadonlyMap<string, () => unknown>;
 
 export async function dynamicRequire<T>(
   ...args: Parameters<typeof dynamicRequireSync>
