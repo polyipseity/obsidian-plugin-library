@@ -1,7 +1,7 @@
 /**
  * Comprehensive tests for src/inject/index.ts — timing utilities using activeWindow
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   requestAnimationFrame,
   setInterval,

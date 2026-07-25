@@ -1,14 +1,13 @@
+import inspect, { type Options } from "browser-util-inspect";
 import {
-  type AnyObject,
-  type AsyncFunctionConstructor,
-  type Base64String,
-  type CodePoint,
-  type ReadonlyTuple,
-  contravariant,
-  correctType,
-  launderUnchecked,
-  simplifyType,
-} from "./types.js";
+  escapeRegExp,
+  identity,
+  isEmpty,
+  isNil,
+  isObject,
+  noop,
+  range,
+} from "lodash-es";
 import type {
   AsyncOrSync,
   DeepReadonly,
@@ -26,15 +25,16 @@ import {
   genericTypeofGuardE,
 } from "./typeof.js";
 import {
-  escapeRegExp,
-  identity,
-  isEmpty,
-  isNil,
-  isObject,
-  noop,
-  range,
-} from "lodash-es";
-import inspect, { type Options } from "browser-util-inspect";
+  type AnyObject,
+  type AsyncFunctionConstructor,
+  type Base64String,
+  type CodePoint,
+  type ReadonlyTuple,
+  contravariant,
+  correctType,
+  launderUnchecked,
+  simplifyType,
+} from "./types.js";
 
 import AsyncLock from "async-lock";
 import { MAX_LOCK_PENDING } from "./internals/magic.js";
