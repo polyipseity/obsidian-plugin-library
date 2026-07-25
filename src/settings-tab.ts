@@ -1,6 +1,19 @@
+import { identity, isEmpty } from "lodash-es";
+import { PluginSettingTab } from "obsidian";
+import type { DeepReadonly } from "ts-essentials";
+import type { Fixer } from "./fixers.js";
+import { DOMClasses } from "./magic.js";
 import { EditDataModal, ListModal } from "./modals.js";
 import { LambdaComponent, UpdatableUI } from "./obsidian.js";
+import type { PluginContext } from "./plugin.js";
+import {
+  linkSetting,
+  resetButton,
+  setTextToEnum,
+  setTextToNumber,
+} from "./settings-widgets.js";
 import { SettingsManager, StorageSettingsManager } from "./settings.js";
+import type { ReadonlyTuple } from "./types.js";
 import {
   activeSelf,
   cloneAsWritable,
@@ -9,19 +22,6 @@ import {
   deepFreeze,
   unexpected,
 } from "./utils.js";
-import { identity, isEmpty } from "lodash-es";
-import {
-  linkSetting,
-  resetButton,
-  setTextToEnum,
-  setTextToNumber,
-} from "./settings-widgets.js";
-import { DOMClasses } from "./magic.js";
-import type { DeepReadonly } from "ts-essentials";
-import type { Fixer } from "./fixers.js";
-import type { PluginContext } from "./plugin.js";
-import { PluginSettingTab } from "obsidian";
-import type { ReadonlyTuple } from "./types.js";
 
 export abstract class AdvancedSettingTab<
   S extends PluginContext.Settings,
@@ -75,12 +75,11 @@ export abstract class AdvancedSettingTab<
 
   protected newSectionWidget(
     text: () => DocumentFragment | string,
-
-    heading: 1 | 2 | 3 | 4 | 5 | 6 = 2,
+    heading: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" = "h2",
   ): void {
     const { containerEl, ui } = this;
     ui.new(
-      () => createChildElement(containerEl, `h${heading}`),
+      () => createChildElement(containerEl, heading),
       (ele) => {
         const text0 = text();
         ele.replaceChildren(
@@ -99,7 +98,7 @@ export abstract class AdvancedSettingTab<
 
   protected newTitleWidget(): void {
     const { context } = this;
-    this.newSectionWidget(() => context.displayName(), 1);
+    this.newSectionWidget(() => context.displayName(), "h1");
   }
 
   protected newDescriptionWidget(): void {
