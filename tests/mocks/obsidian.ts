@@ -4,6 +4,7 @@
  */
 
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
+import * as v from "valibot";
 
 // ===== Core Types =====
 
@@ -458,20 +459,10 @@ export class FileManager {
     let originalFmObj: Record<string, unknown> | null = null;
     let parseFailed = false;
     if (fmMatch) {
-      try {
-        const parsed = parseYaml(fmMatch[1] ?? "");
-        // Treat non-object YAML results (strings, arrays, etc.) as parse failures
-        if (
-          typeof parsed === "object" &&
-          parsed !== null &&
-          !Array.isArray(parsed)
-        ) {
-          originalFmObj = parsed;
-        } else {
-          parseFailed = true;
-          originalFmObj = null;
-        }
-      } catch {
+      const parsedResult = v.safeParse(v.record(v.string(), v.unknown()), parseYaml(fmMatch[1] ?? ""));
+      if (parsedResult.success) {
+        originalFmObj = parsedResult.output;
+      } else {
         parseFailed = true;
         originalFmObj = null;
       }
@@ -479,7 +470,7 @@ export class FileManager {
 
     // Start with a shallow clone of the original object (or empty when absent)
     const currentFm: Record<string, unknown> = originalFmObj
-      ? JSON.parse(JSON.stringify(originalFmObj))
+      ? structuredClone(originalFmObj)
       : {};
 
     // Call the provided processor (synchronous in real API)
@@ -742,11 +733,8 @@ export class MetadataCache extends Events {
     // Parse frontmatter
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
     if (frontmatterMatch) {
-      try {
-        metadata.frontmatter = parseYaml(frontmatterMatch[1] ?? "");
-      } catch {
-        metadata.frontmatter = {};
-      }
+      const parsed = v.safeParse(v.record(v.string(), v.unknown()), parseYaml(frontmatterMatch[1] ?? ""));
+      metadata.frontmatter = parsed.success ? parsed.output : {};
     }
 
     // Parse headings
@@ -1757,7 +1745,7 @@ export function requestUrl(param: RequestUrlParam): RequestUrlResponsePromise {
         })(),
       ),
       arrayBuffer,
-      json: JSON.parse(text),
+      json: v.parse(v.pipe(v.string(), v.parseJson()), text),
       text,
     };
   }) as RequestUrlResponsePromise;
@@ -1827,11 +1815,9 @@ export function loadPrism(): Promise<void> {
 export { parseYaml, stringifyYaml };
 
 export function parseFrontMatterEntry(entry: string): Record<string, unknown> {
-  try {
-    return parseYaml(entry);
-  } catch {
-    return {};
-  }
+  const parsed = v.safeParse(v.record(v.string(), v.unknown()), parseYaml(entry));
+  if (parsed.success) return parsed.output;
+  return {};
 }
 
 export function parseFrontMatterTags(
