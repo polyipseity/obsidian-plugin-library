@@ -31,7 +31,7 @@ export const PATHS = Object.freeze({
 /**
  *
  * @param  {...unknown} args
- * @returns {string}
+ * @returns {Promise<string>}
  */
 export async function execute(...args) {
   const process = execFileP(...args),
