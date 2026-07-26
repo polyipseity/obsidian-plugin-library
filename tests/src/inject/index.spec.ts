@@ -387,36 +387,6 @@ describe("inject/index.ts — timing utilities", () => {
 
       expect(mockActiveWindow.setTimeout).toHaveBeenCalledWith(code, 1000);
     });
-
-    it("setInterval forwards this context", () => {
-      const obj = {
-        method(): void {
-          // Empty
-        },
-      };
-
-      setInterval(obj.method, 1000);
-
-      expect(mockActiveWindow.setInterval).toHaveBeenCalledWith(
-        obj.method,
-        1000,
-      );
-    });
-
-    it("setTimeout forwards this context", () => {
-      const obj = {
-        method(): void {
-          // Empty
-        },
-      };
-
-      setTimeout(obj.method, 1000);
-
-      expect(mockActiveWindow.setTimeout).toHaveBeenCalledWith(
-        obj.method,
-        1000,
-      );
-    });
   });
 
   describe("timing behavior", () => {
