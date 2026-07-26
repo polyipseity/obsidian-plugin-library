@@ -39,6 +39,8 @@ import path from "path";
 // can override by passing an explicit `rootDir` argument to `main`.
 import { fileURLToPath } from "url";
 
+import * as v from "valibot";
+
 function makePaths(/** @type {string} */ rootDir) {
   // `rootDir`, if provided, should be the project root containing the
   // `assets` directory.  Otherwise we derive the repo root from the location
@@ -56,7 +58,7 @@ function makePaths(/** @type {string} */ rootDir) {
  * @returns {unknown}
  */
 function readJSON(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  return v.parse(v.pipe(v.string(), v.parseJson()), fs.readFileSync(filePath, "utf-8"));
 }
 
 /**
