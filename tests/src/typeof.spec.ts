@@ -230,6 +230,7 @@ describe("typeof.ts — type guards and utilities", () => {
       expect(primitiveOfE(123)).toBe(123);
       expect(primitiveOfE(true)).toBe(true);
       expect(primitiveOfE(null)).toBe(null);
+      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- undefined is a valid Primitive
       expect(primitiveOfE(undefined)).toBe(undefined);
     });
 

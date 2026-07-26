@@ -44,6 +44,7 @@ describe("svelteState helper", () => {
     // invoked with that value rather than being called with no arguments.
     mockState.mockReturnValue("ok");
 
+    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- svelteState<undefined> returns void, assigned intentionally
     const result = svelteState<undefined>(undefined);
     expect(mockState).toHaveBeenCalledWith(undefined);
     expect(result).toBe("ok");
