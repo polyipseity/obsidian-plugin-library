@@ -2,60 +2,60 @@
  * Comprehensive tests for src/utils.ts — utility functions
  * This file tests core utilities like EventEmitterLite, Functions, and various helper functions
  */
-import { describe, it, expect, vi, afterEach } from "vitest";
-import {
-  EventEmitterLite,
-  Functions,
-  alternativeRegExp,
-  anyToError,
-  assignExact,
-  asyncDebounce,
-  base64ToBytes,
-  base64ToString,
-  basename,
-  bigIntReplacer,
-  bracket,
-  bytesToBase64,
-  capitalize,
-  cartesianProduct,
-  clear,
-  clearProperties,
-  cloneAsFrozen,
-  cloneAsWritable,
-  consumeEvent,
-  copyOnWrite,
-  copyOnWriteAsync,
-  deepFreeze,
-  escapeJavaScriptString,
-  escapeQuerySelectorAttribute,
-  extname,
-  getKeyModifiers,
-  inSet,
-  insertAt,
-  isHomogenousArray,
-  isNonNil,
-  lazyInit,
-  mapFirstCodePoint,
-  multireplace,
-  promisePromise,
-  randomNotIn,
-  rangeCodePoint,
-  remove,
-  removeAt,
-  replaceAllRegex,
-  splitLines,
-  startCase,
-  stringToBase64,
-  toJSONOrString,
-  sleep2,
-  swap,
-  uncapitalize,
-  unexpected,
-  typedIn,
-  typedOwnKeys,
-} from "../../src/utils.js";
-import { codePoint } from "../../src/types.js";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { JSON_STRINGIFY_SPACE } from "../../src/magic.js";
+import { codePoint } from "../../src/types.js";
+import {
+    EventEmitterLite,
+    Functions,
+    alternativeRegExp,
+    anyToError,
+    assignExact,
+    asyncDebounce,
+    base64ToBytes,
+    base64ToString,
+    basename,
+    bigIntReplacer,
+    bracket,
+    bytesToBase64,
+    capitalize,
+    cartesianProduct,
+    clear,
+    clearProperties,
+    cloneAsFrozen,
+    cloneAsWritable,
+    consumeEvent,
+    copyOnWrite,
+    copyOnWriteAsync,
+    deepFreeze,
+    escapeJavaScriptString,
+    escapeQuerySelectorAttribute,
+    extname,
+    getKeyModifiers,
+    inSet,
+    insertAt,
+    isHomogenousArray,
+    isNonNil,
+    lazyInit,
+    mapFirstCodePoint,
+    multireplace,
+    promisePromise,
+    randomNotIn,
+    rangeCodePoint,
+    remove,
+    removeAt,
+    replaceAllRegex,
+    sleep2,
+    splitLines,
+    startCase,
+    stringToBase64,
+    swap,
+    toJSONOrString,
+    typedIn,
+    typedOwnKeys,
+    uncapitalize,
+    unexpected,
+} from "../../src/utils.js";
 
 describe("utils.ts — utility functions", () => {
   afterEach(() => {
@@ -262,6 +262,7 @@ describe("utils.ts — utility functions", () => {
       });
 
       it("handles errors in settled mode", async () => {
+        // eslint-disable-next-line @typescript-eslint/require-await -- test stub: satisfies async signature requirement
         const fn1 = vi.fn(async () => {
           throw new Error("Async error");
         });

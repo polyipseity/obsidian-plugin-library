@@ -1,17 +1,17 @@
 /**
  * Comprehensive tests for src/settings.ts — settings management
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  AbstractSettingsManager,
-  StorageSettingsManager,
-  SettingsManager,
-  registerSettingsCommands,
-} from "../../src/settings.js";
-import type { PluginContext } from "../../src/plugin.js";
+import type { DeepWritable } from "ts-essentials";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Fixer } from "../../src/fixers.js";
 import { markFixed } from "../../src/fixers.js";
-import type { DeepWritable } from "ts-essentials";
+import type { PluginContext } from "../../src/plugin.js";
+import {
+    AbstractSettingsManager,
+    SettingsManager,
+    StorageSettingsManager,
+    registerSettingsCommands,
+} from "../../src/settings.js";
 
 describe("settings.ts — settings management", () => {
   beforeEach(() => {
@@ -476,6 +476,7 @@ describe("settings.ts — settings management", () => {
     beforeEach(() => {
       mockContext = {
         saveData: vi.fn(),
+        // eslint-disable-next-line @typescript-eslint/require-await -- test stub: satisfies async signature requirement
         loadData: vi.fn(async () => ({ option: "loaded" })),
         language: {
           onLoaded: Promise.resolve(),
