@@ -847,10 +847,10 @@ describe("utils.ts — utility functions", () => {
 
   describe("isNonNil", () => {
     it("returns true for non-null/undefined values", () => {
-      expect(isNonNil("string")).toBe(true);
-      expect(isNonNil(0)).toBe(true);
-      expect(isNonNil(false)).toBe(true);
-      expect(isNonNil({})).toBe(true);
+      expect(isNonNil("string" satisfies unknown as unknown)).toBe(true);
+      expect(isNonNil(0 satisfies unknown as unknown)).toBe(true);
+      expect(isNonNil(false satisfies unknown as unknown)).toBe(true);
+      expect(isNonNil({} satisfies unknown as unknown)).toBe(true);
     });
 
     it("returns false for null and undefined", () => {

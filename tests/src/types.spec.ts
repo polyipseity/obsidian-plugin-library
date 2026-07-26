@@ -176,7 +176,7 @@ describe("types.ts — type utilities and helpers", () => {
 
   describe("opaqueOrDefault", () => {
     it("returns opaque value when conversion succeeds", () => {
-      const result = opaqueOrDefault(semVerString, "1.0.0", "default");
+      const result = opaqueOrDefault(semVerString, "1.0.0" satisfies string as string, "default");
       expect(result).toBe("1.0.0");
     });
 
@@ -184,7 +184,7 @@ describe("types.ts — type utilities and helpers", () => {
       const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
       const result = opaqueOrDefault(
         semVerString,
-        "invalid-version",
+        "invalid-version" satisfies string as string,
         "fallback",
       );
 
@@ -198,7 +198,7 @@ describe("types.ts — type utilities and helpers", () => {
 
     it("logs error on failure", () => {
       const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
-      opaqueOrDefault(semVerString, "bad", "default");
+      opaqueOrDefault(semVerString, "bad" satisfies string as string, "default");
 
       expect(debugSpy).toHaveBeenCalledWith(
         expect.objectContaining({ message: expect.stringContaining("bad") }),
@@ -215,8 +215,8 @@ describe("types.ts — type utilities and helpers", () => {
         return value as Base64String;
       };
 
-      expect(opaqueOrDefault(makeOpaque, "valid", "default")).toBe("valid");
-      expect(opaqueOrDefault(makeOpaque, "ab", "default")).toBe("default");
+      expect(opaqueOrDefault(makeOpaque, "valid" satisfies string as string, "default")).toBe("valid");
+      expect(opaqueOrDefault(makeOpaque, "ab" satisfies string as string, "default")).toBe("default");
 
       expect(debugSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -228,10 +228,10 @@ describe("types.ts — type utilities and helpers", () => {
     it("preserves type of default value", () => {
       const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
-      const result = opaqueOrDefault(semVerString, "bad", null);
+      const result = opaqueOrDefault(semVerString, "bad" satisfies string as string, null);
       expect(result).toBe(null);
 
-      const result2 = opaqueOrDefault(semVerString, "bad", 0);
+      const result2 = opaqueOrDefault(semVerString, "bad" satisfies string as string, 0);
       expect(result2).toBe(0);
 
       expect(debugSpy).toHaveBeenCalledTimes(2);

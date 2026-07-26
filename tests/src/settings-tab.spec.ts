@@ -183,7 +183,7 @@ describe("settings-tab.ts — settings tab", () => {
 
       public testNewSectionWidget(
         text: () => DocumentFragment | string,
-        heading?: 1 | 2 | 3 | 4 | 5 | 6,
+        heading?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
       ): void {
         this.newSectionWidget(text, heading);
       }
@@ -231,9 +231,9 @@ describe("settings-tab.ts — settings tab", () => {
     it("newSectionWidget accepts different heading levels", () => {
       const tab = new TestableSettingTab(mockContext);
 
-      tab.testNewSectionWidget(() => "H1 Section", 1);
-      tab.testNewSectionWidget(() => "H3 Section", 3);
-      tab.testNewSectionWidget(() => "H6 Section", 6);
+      tab.testNewSectionWidget(() => "H1 Section", "h1");
+      tab.testNewSectionWidget(() => "H3 Section", "h3");
+      tab.testNewSectionWidget(() => "H6 Section", "h6");
 
       expect(tab.containerEl.querySelector("h1")).toBeDefined();
       expect(tab.containerEl.querySelector("h3")).toBeDefined();
