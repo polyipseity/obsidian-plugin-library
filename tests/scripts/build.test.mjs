@@ -198,7 +198,7 @@ describe("scripts/build.mjs", () => {
     expect(esbuild.formatMessages).toHaveBeenCalled();
     // formatMessages should be called with warnings and kind 'warning'
     const calls = esbuild.formatMessages.mock.calls;
-    expect(calls.some((c) => c[1] && c[1].kind === "warning")).toBe(true);
+    expect(calls.some((c) => c[1].kind === "warning")).toBe(true);
 
     expect(warnSpy).toHaveBeenCalledWith("formatted warn");
   });

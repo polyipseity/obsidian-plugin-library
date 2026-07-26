@@ -500,7 +500,7 @@ export class FileManager {
     if (fmMatch && parseFailed && fmIsEmpty) return;
 
     // Otherwise serialize and write the updated frontmatter
-    const newFmRaw = stringifyYaml(currentFm ?? {}) ?? "";
+    const newFmRaw = stringifyYaml(currentFm);
     const newFrontMatter = `---\n${newFmRaw}\n---`;
     let newContent: string;
     if (fmMatch) {
@@ -774,7 +774,7 @@ export class MetadataCache extends Events {
     const linkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
     while ((match = linkRegex.exec(content)) !== null) {
       const linkText = match[1] ?? "";
-      const originalText = match[0] ?? "";
+      const originalText = match[0];
       const display = match[2]?.trim() ?? linkText.trim();
       links.push({
         link: linkText.trim(),
@@ -800,7 +800,7 @@ export class MetadataCache extends Events {
       const lines = content.slice(0, offset).split("\n");
       const line = lines.length - 1;
       const col = lines[lines.length - 1]?.length ?? 0;
-      const tagText = match[0] ?? "";
+      const tagText = match[0];
       tags.push({
         tag: tagText,
         position: {

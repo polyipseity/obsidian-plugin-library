@@ -235,10 +235,10 @@ describe("types.ts — type utilities and helpers", () => {
       expect(result2).toBe(0);
 
       expect(debugSpy).toHaveBeenCalledTimes(2);
-      expect(debugSpy.mock.calls?.[0]?.[0]).toEqual(
+      expect(debugSpy.mock.calls[0]?.[0]).toEqual(
         expect.objectContaining({ message: expect.stringContaining("bad") }),
       );
-      expect(debugSpy.mock.calls?.[1]?.[0]).toEqual(
+      expect(debugSpy.mock.calls[1]?.[0]).toEqual(
         expect.objectContaining({ message: expect.stringContaining("bad") }),
       );
     });
