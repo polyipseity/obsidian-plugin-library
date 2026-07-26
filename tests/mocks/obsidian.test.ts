@@ -2,20 +2,20 @@
  * Unit tests for the Obsidian runtime mock.
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-  reset,
-  setVaultFiles,
-  setRequestHandler,
-  setRequestResponse,
   getApp,
   getVault,
   makeEditor,
-  spyRequests,
   normalizePath,
-  stripHeading,
-  stringifyYaml,
   parseYaml,
+  reset,
+  setRequestHandler,
+  setRequestResponse,
+  setVaultFiles,
+  spyRequests,
+  stringifyYaml,
+  stripHeading,
   type RequestUrlResponse,
 } from "./obsidian.js";
 
@@ -300,6 +300,7 @@ describe("Obsidian Mock", () => {
     });
 
     it("supports override via setRequestHandler", async () => {
+      // eslint-disable-next-line @typescript-eslint/require-await -- test stub: satisfies async signature requirement
       setRequestHandler(async (): Promise<RequestUrlResponse> => {
         return {
           status: 201,
@@ -393,6 +394,7 @@ describe("Obsidian Mock", () => {
   });
 
   describe("MetadataCache", () => {
+    // eslint-disable-next-line @typescript-eslint/require-await -- test callback: no await needed, synchronous assertions only
     it("parses frontmatter from vault files", async () => {
       setVaultFiles({
         "note.md":
@@ -407,6 +409,7 @@ describe("Obsidian Mock", () => {
       });
     });
 
+    // eslint-disable-next-line @typescript-eslint/require-await -- test callback: no await needed, synchronous assertions only
     it("parses headings", async () => {
       setVaultFiles({
         "note.md": "# Heading 1\n\n## Heading 2\n\nText\n\n### Heading 3",
@@ -429,6 +432,7 @@ describe("Obsidian Mock", () => {
       });
     });
 
+    // eslint-disable-next-line @typescript-eslint/require-await -- test callback: no await needed, synchronous assertions only
     it("parses wikilinks", async () => {
       setVaultFiles({
         "note.md": "Link to [[other note]] and [[file|alias]]",
@@ -449,6 +453,7 @@ describe("Obsidian Mock", () => {
       });
     });
 
+    // eslint-disable-next-line @typescript-eslint/require-await -- test callback: no await needed, synchronous assertions only
     it("parses tags", async () => {
       setVaultFiles({
         "note.md": "Text with #tag1 and #tag2",

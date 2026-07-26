@@ -185,13 +185,16 @@ export class Events {
 export class Vault extends Events {
   adapter = {
     getName: (): string => "mock-adapter",
+    // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
     exists: async (path: string): Promise<boolean> =>
       state.files.has(normalizePath(path)),
+    // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
     read: async (path: string): Promise<string> => {
       const file = state.files.get(normalizePath(path));
       if (!file) throw new Error(`File not found: ${path}`);
       return file.content;
     },
+    // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
     write: async (path: string, data: string): Promise<void> => {
       const normalized = normalizePath(path);
       const existing = state.files.get(normalized);
@@ -250,6 +253,7 @@ export class Vault extends Events {
     return files;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async create(path: string, data: string): Promise<TFile> {
     const normalized = normalizePath(path);
     if (state.files.has(normalized)) {
@@ -265,6 +269,7 @@ export class Vault extends Events {
     return file;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async createFolder(path: string): Promise<TFolder> {
     return {
       path: normalizePath(path),
@@ -276,6 +281,7 @@ export class Vault extends Events {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async read(file: TFile | string): Promise<string> {
     const path = typeof file === "string" ? file : file.path;
     const normalized = normalizePath(path);
@@ -294,6 +300,7 @@ export class Vault extends Events {
     return encoder.encode(content).buffer;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async modify(file: TFile | string, data: string): Promise<void> {
     const path = typeof file === "string" ? file : file.path;
     const normalized = normalizePath(path);
@@ -307,6 +314,7 @@ export class Vault extends Events {
     this.trigger("modify", fileObj);
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async delete(file: TFile | string, _force?: boolean): Promise<void> {
     const path = typeof file === "string" ? file : file.path;
     const normalized = normalizePath(path);
@@ -318,6 +326,7 @@ export class Vault extends Events {
     this.trigger("delete", fileObj);
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async rename(file: TFile | string, newPath: string): Promise<void> {
     const oldPath = typeof file === "string" ? file : file.path;
     const normalizedOld = normalizePath(oldPath);
@@ -333,6 +342,7 @@ export class Vault extends Events {
     this.trigger("rename", newFile, oldPath);
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async copy(file: TFile | string, newPath: string): Promise<TFile> {
     const oldPath = typeof file === "string" ? file : file.path;
     const normalizedOld = normalizePath(oldPath);
@@ -420,6 +430,7 @@ export class FileManager {
     await this.vault.rename(file, newPath);
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   async generateMarkdownLink(
     file: TFile,
     _sourcePath: string,
@@ -1717,8 +1728,11 @@ export function requestUrl(param: RequestUrlParam): RequestUrlResponsePromise {
       const response =
         typeof stub.response === "function" ? stub.response() : stub.response;
       const promise = Promise.resolve(response) as RequestUrlResponsePromise;
+      // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
       promise.arrayBuffer = async () => response.arrayBuffer;
+      // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
       promise.json = async () => response.json;
+      // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
       promise.text = async () => response.text;
       return promise;
     }
@@ -1748,8 +1762,11 @@ export function requestUrl(param: RequestUrlParam): RequestUrlResponsePromise {
     };
   }) as RequestUrlResponsePromise;
 
+  // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
   promise.arrayBuffer = async () => promise.then((r) => r.arrayBuffer);
+  // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
   promise.json = async () => promise.then((r) => r.json);
+  // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
   promise.text = async () => promise.then((r) => r.text);
 
   return promise;
@@ -1758,6 +1775,7 @@ export function requestUrl(param: RequestUrlParam): RequestUrlResponsePromise {
 // ===== Rendering Helpers (No-ops) =====
 
 export const MarkdownRenderer = {
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   renderMarkdown: async (
     markdown: string,
     el: HTMLElement,
@@ -1768,6 +1786,7 @@ export const MarkdownRenderer = {
   },
   // Some environments/tests expect the newer `render(app, ...)` API —
   // provide a thin shim so both signatures work in tests.
+  // eslint-disable-next-line @typescript-eslint/require-await -- mock: interface requires async, implementation is synchronous
   render: async (
     _app: App,
     markdown: string,
