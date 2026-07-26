@@ -2,6 +2,13 @@ import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import PLazy from "p-lazy";
+import * as v from "valibot";
+
+const PackageJson = v.pipe(
+  v.string(),
+  v.parseJson(),
+  v.object({ name: v.string() }),
+);
 
 const execFileP = promisify(execFile),
   OUTDIR = "./dist";
@@ -17,7 +24,8 @@ export const PATHS = Object.freeze({
   }),
   PACKAGE_ID = PLazy.from(
     async () =>
-      JSON.parse(await readFile(PATHS.package, { encoding: "utf-8" })).name,
+      v.parse(PackageJson, await readFile(PATHS.package, { encoding: "utf-8" }))
+        .name,
   );
 
 /**
