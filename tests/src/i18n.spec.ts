@@ -1,11 +1,11 @@
 /**
  * Comprehensive tests for src/i18n.ts — internationalization utilities
  */
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   createI18n as createI18nBase,
-  type I18nResources,
   type I18nFormatters,
+  type I18nResources,
 } from "../../src/i18n.js";
 import { asUntypedI18n } from "../support/i18n-test-utils.js";
 
@@ -41,6 +41,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("creates i18n instance with resources", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             hello: "Hello",
             world: "World",
@@ -57,6 +58,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("loads translations from resources", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             greeting: "Hello, {{name}}!",
           }),
@@ -72,9 +74,11 @@ describe("i18n.ts — internationalization utilities", () => {
     it("supports multiple languages", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({ hello: "Hello" }),
         },
         fr: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({ hello: "Bonjour" }),
         },
       };
@@ -91,7 +95,9 @@ describe("i18n.ts — internationalization utilities", () => {
     it("supports multiple namespaces", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({ common: "Common text" }),
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           custom: async () => ({ special: "Special text" }),
         },
       };
@@ -106,6 +112,7 @@ describe("i18n.ts — internationalization utilities", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             "errors.missing-translation": "Missing: {{key}}",
           }),
@@ -123,6 +130,7 @@ describe("i18n.ts — internationalization utilities", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             "errors.missing-interpolation":
               "Missing interpolation {{name}} in {{text}}",
@@ -146,6 +154,7 @@ describe("i18n.ts — internationalization utilities", () => {
 
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             text: "{{value, uppercase}}",
           }),
@@ -161,6 +170,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("accepts custom initialization options", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({ key: "value" }),
         },
       };
@@ -181,6 +191,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("returns null for non-existent language/namespace combination", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({ key: "value" }),
         },
       };
@@ -209,6 +220,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("handles nested translation keys", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             nested: {
               deep: {
@@ -228,6 +240,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("preserves interpolation in translations", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             message: "User {{name}} has {{count}} items",
           }),
@@ -248,6 +261,7 @@ describe("i18n.ts — internationalization utilities", () => {
 
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             formatted: "{{text, bold}} and {{text2, italic}}",
           }),
@@ -263,6 +277,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("warns when formatter service is unavailable", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             "errors.no-formatter": "Formatter service unavailable",
           }),
@@ -291,6 +306,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("handles resource loading errors", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => {
             throw new Error("Loading failed");
           },
@@ -315,6 +331,7 @@ describe("i18n.ts — internationalization utilities", () => {
 
     it("I18nNamespaces type accepts async loaders", () => {
       const namespaces = {
+        // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
         translation: async () => ({ key: "value" }),
         custom: () => ({ key2: "value2" }),
       };
@@ -326,10 +343,13 @@ describe("i18n.ts — internationalization utilities", () => {
     it("I18nResources type maps languages to namespaces", () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({}),
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           custom: async () => ({}),
         },
         fr: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({}),
         },
       };
@@ -343,6 +363,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("handles language fallbacks", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({ key: "English" }),
         },
       };
@@ -364,6 +385,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("handles special characters in translations", async () => {
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             special: "Special: <>&\"'",
           }),
@@ -379,6 +401,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("handles Unicode in translations", async () => {
       const resources: I18nResources = {
         ja: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             greeting: "こんにちは、{{name}}さん！",
           }),
@@ -396,6 +419,7 @@ describe("i18n.ts — internationalization utilities", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const resources: I18nResources = {
         en: {
+          // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
           translation: async () => ({
             "errors.missing-interpolation": "Error with {{missing}}",
           }),
