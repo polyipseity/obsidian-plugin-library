@@ -1,7 +1,7 @@
-import PLazy from "p-lazy";
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { readFile } from "node:fs/promises";
+import { promisify } from "node:util";
+import PLazy from "p-lazy";
 
 const execFileP = promisify(execFile),
   OUTDIR = "./dist";
@@ -20,6 +20,11 @@ export const PATHS = Object.freeze({
       JSON.parse(await readFile(PATHS.package, { encoding: "utf-8" })).name,
   );
 
+/**
+ *
+ * @param  {...unknown} args
+ * @returns {string}
+ */
 export async function execute(...args) {
   const process = execFileP(...args),
     { stdout, stderr } = await process;

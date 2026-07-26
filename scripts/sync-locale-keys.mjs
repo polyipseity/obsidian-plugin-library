@@ -39,7 +39,7 @@ import path from "path";
 // can override by passing an explicit `rootDir` argument to `main`.
 import { fileURLToPath } from "url";
 
-function makePaths(rootDir) {
+function makePaths(/** @type {string} */ rootDir) {
   // `rootDir`, if provided, should be the project root containing the
   // `assets` directory.  Otherwise we derive the repo root from the location
   // of this script (which lives under `<repo>/scripts`).
@@ -50,10 +50,20 @@ function makePaths(rootDir) {
   return { localesDir, enPath };
 }
 
-function readJson(filePath) {
+/**
+ *
+ * @param {string} filePath
+ * @returns {unknown}
+ */
+function readJSON(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 }
 
+/**
+ *
+ * @param {string} filePath
+ * @param {unknown} obj
+ */
 function writeJson(filePath, obj) {
   // sort prior to serialization so disk output is deterministic
   const sorted = sortObject(obj);
@@ -63,10 +73,14 @@ function writeJson(filePath, obj) {
 /**
  * Recursively sorts the keys of an object.  Arrays and non-object values are
  * returned unchanged.  This is a pure function that returns a new object.
+ *
+ * @param {unknown} value
+ * @returns {unknown}
  */
 function sortObject(value) {
   if (Array.isArray(value)) {
-    return value.slice();
+    const /** @type {unknown[]} */ ret = value.slice();
+    return ret;
   }
   if (value && typeof value === "object") {
     const sorted = {};
@@ -82,6 +96,10 @@ function sortObject(value) {
  * Merge keys from `source` into `target` in place.  If a value is an object
  * (but not an array) we recurse; otherwise we copy the source value over the
  * target, overwriting whatever was there.
+ *
+ * @param {Record<string, unknown>} source
+ * @param {Record<string, unknown>} target
+ * @returns {Record<string, unknown>}
  */
 function merge(source, target) {
   // Add or merge keys from `source` into `target`, handling "variant"
@@ -91,7 +109,7 @@ function merge(source, target) {
   // remove any groups whose base prefix no longer exists in the source.
 
   // helper to determine the base portion of a key
-  const baseOf = (k) => k.split("_")[0];
+  const baseOf = (/** @type {string} */ k) => k.split("_")[0];
 
   // build set of existing bases in target
   const targetBases = new Set(Object.keys(target).map(baseOf));
@@ -142,7 +160,11 @@ function merge(source, target) {
   return target;
 }
 
-async function main(rootDir) {
+/**
+ *
+ * @param {string} rootDir
+ */
+function main(rootDir) {
   const { localesDir, enPath } = makePaths(rootDir);
 
   if (!fs.existsSync(enPath)) {
@@ -150,7 +172,7 @@ async function main(rootDir) {
     process.exit(1);
   }
 
-  const enData = readJson(enPath);
+  const enData = readJSON(enPath);
 
   for (const entry of fs.readdirSync(localesDir)) {
     const subdir = path.join(localesDir, entry);
@@ -160,7 +182,7 @@ async function main(rootDir) {
     const file = path.join(subdir, "translation.json");
     if (!fs.existsSync(file)) continue;
 
-    const data = readJson(file);
+    const data = readJSON(file);
     merge(enData, data);
     writeJson(file, data);
     console.log(`updated ${file}`);
@@ -179,9 +201,6 @@ export { main };
   const { fileURLToPath } = await import("url");
   const scriptFile = fileURLToPath(import.meta.url);
   if (process.argv[1] && path.resolve(process.argv[1]) === scriptFile) {
-    main().catch((err) => {
-      console.error(err);
-      process.exit(1);
-    });
+    main();
   }
 }

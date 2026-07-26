@@ -20,7 +20,7 @@ const ARGV_PRODUCTION = 2,
 
 async function tsc() {
   const bun = await which("bun", {});
-  return new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     spawn(
       bun,
       [
@@ -42,6 +42,7 @@ async function tsc() {
           resolve();
           return;
         }
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- Intentional to minimize strings.
         reject(code ?? signal);
       });
   });
@@ -77,6 +78,7 @@ async function esbuild() {
           },
         ],
       }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- JSDoc typings could be not parsed for some reason.
       esbuildCompress({
         compressors: [
           {
@@ -89,7 +91,7 @@ async function esbuild() {
         cache: true,
         compilerOptions: {
           css: "injected",
-          cssHash({ name }) {
+          cssHash(/** @type {{ readonly name: string }} */ { name }) {
             return cssEscape(
               `${PACKAGE_ID0}-svelte-${kebabCase(name)}`,
             ).replace(/\\./gu, "_");
@@ -155,48 +157,27 @@ async function esbuild() {
     const { errors, warnings, metafile } = await build.rebuild();
     await Promise.all([
       (async () => {
-        if (metafile) {
-          console.log(
-            await analyzeMetafile(metafile, {
-              color: true,
-              verbose: true,
-            }),
+        console.log(
+          await analyzeMetafile(metafile, { color: true, verbose: true }),
+        );
+        if (!isEmpty(warnings)) {
+          console.warn(
+            (
+              await formatMessages(warnings, { color: true, kind: "warning" })
+            ).join("\n"),
           );
         }
-        for await (const logging of [
-          {
-            data: warnings,
-            kind: "warning",
-            log: console.warn.bind(console),
-          },
-          {
-            data: errors,
-            kind: "error",
-            log: console.error.bind(console),
-          },
-        ]
-          .filter(({ data }) => !isEmpty(data))
-          .map(async ({ data, kind, log }) => {
-            const message = (
-              await formatMessages(data, {
-                color: true,
-                kind,
-              })
-            ).join("\n");
-            return () => {
-              log(message);
-            };
-          })) {
-          logging();
+        if (!isEmpty(errors)) {
+          console.error(
+            (await formatMessages(errors, { color: true, kind: "error" })).join(
+              "\n",
+            ),
+          );
         }
       })(),
-      ...(metafile
-        ? [
-            writeFile(PATHS.metafile, JSON.stringify(metafile, null, "  "), {
-              encoding: "utf-8",
-            }),
-          ]
-        : []),
+      writeFile(PATHS.metafile, JSON.stringify(metafile, null, "  "), {
+        encoding: "utf-8",
+      }),
     ]);
   } finally {
     await build.dispose();
