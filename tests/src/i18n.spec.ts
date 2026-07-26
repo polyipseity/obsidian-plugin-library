@@ -255,8 +255,8 @@ describe("i18n.ts — internationalization utilities", () => {
 
     it("handles multiple formatters", async () => {
       const formatters: I18nFormatters = {
-        bold: () => (value: unknown) => `**${value}**`,
-        italic: () => (value: unknown) => `*${value}*`,
+        bold: () => (value: unknown) => `**${String(value)}**`,
+        italic: () => (value: unknown) => `*${String(value)}*`,
       };
 
       const resources: I18nResources = {
@@ -322,7 +322,7 @@ describe("i18n.ts — internationalization utilities", () => {
     it("I18nFormatters type accepts formatter functions", () => {
       const formatters: I18nFormatters = {
         test: (lng?: string) => (value: unknown) => {
-          return `${lng}:${value}`;
+          return `${String(lng)}:${String(value)}`;
         },
       };
 

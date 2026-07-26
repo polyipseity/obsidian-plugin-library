@@ -240,7 +240,7 @@ describe("modals.ts — modal dialogs", () => {
       const data = ["item1"];
       const options = {
         namer: (item: string, index: number): string =>
-          `Item ${index}: ${item}`,
+          `Item ${String(index)}: ${item}`,
       };
 
       const modal = new ListModal(
@@ -423,7 +423,7 @@ describe("modals.ts — modal dialogs", () => {
 
     it("transforms value with forth function", () => {
       const transformer = {
-        forth: vi.fn((value: number) => `Value: ${value}`),
+        forth: vi.fn((value: number) => `Value: ${String(value)}`),
         back: (value: string): number =>
           parseInt(value.replace("Value: ", ""), 10),
       };
