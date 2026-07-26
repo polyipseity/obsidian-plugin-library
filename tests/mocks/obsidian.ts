@@ -3,8 +3,8 @@
  * Provides compile-time API surface parity with obsidian.d.ts and useful runtime behavior.
  */
 
-import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import * as v from "valibot";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
 // ===== Core Types =====
 
@@ -459,7 +459,10 @@ export class FileManager {
     let originalFmObj: Record<string, unknown> | null = null;
     let parseFailed = false;
     if (fmMatch) {
-      const parsedResult = v.safeParse(v.record(v.string(), v.unknown()), parseYaml(fmMatch[1] ?? ""));
+      const parsedResult = v.safeParse(
+        v.record(v.string(), v.unknown()),
+        parseYaml(fmMatch[1] ?? ""),
+      );
       if (parsedResult.success) {
         originalFmObj = parsedResult.output;
       } else {
@@ -733,7 +736,10 @@ export class MetadataCache extends Events {
     // Parse frontmatter
     const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
     if (frontmatterMatch) {
-      const parsed = v.safeParse(v.record(v.string(), v.unknown()), parseYaml(frontmatterMatch[1] ?? ""));
+      const parsed = v.safeParse(
+        v.record(v.string(), v.unknown()),
+        parseYaml(frontmatterMatch[1] ?? ""),
+      );
       metadata.frontmatter = parsed.success ? parsed.output : {};
     }
 
@@ -1750,11 +1756,10 @@ export function requestUrl(param: RequestUrlParam): RequestUrlResponsePromise {
     };
   }) as RequestUrlResponsePromise;
 
-  // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
   promise.arrayBuffer = async () => promise.then((r) => r.arrayBuffer);
-  // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
+
   promise.json = async () => promise.then((r) => r.json);
-  // eslint-disable-next-line @typescript-eslint/require-await -- test helper: returns promise to match consumer expectation
+
   promise.text = async () => promise.then((r) => r.text);
 
   return promise;
@@ -1815,7 +1820,10 @@ export function loadPrism(): Promise<void> {
 export { parseYaml, stringifyYaml };
 
 export function parseFrontMatterEntry(entry: string): Record<string, unknown> {
-  const parsed = v.safeParse(v.record(v.string(), v.unknown()), parseYaml(entry));
+  const parsed = v.safeParse(
+    v.record(v.string(), v.unknown()),
+    parseYaml(entry),
+  );
   if (parsed.success) return parsed.output;
   return {};
 }

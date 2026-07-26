@@ -3,8 +3,8 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import * as v from "valibot";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Integration tests for scripts/build.mjs — uses mocked esbuild
 // to verify top-level behaviour such as writing a metafile and
@@ -91,7 +91,8 @@ describe("scripts/build.mjs", () => {
     expect(logSpy).toHaveBeenCalledWith("ANALYSIS");
     expect(errSpy).toHaveBeenCalledWith("formatted error");
 
-    const mf = v.parse(v.pipe(v.string(), v.parseJson()),
+    const mf = v.parse(
+      v.pipe(v.string(), v.parseJson()),
       fs.readFileSync(path.join(project, "metafile.json"), "utf-8"),
     );
     expect(mf).toEqual(fakeMetafile);

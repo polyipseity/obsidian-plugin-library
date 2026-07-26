@@ -58,7 +58,10 @@ function makePaths(/** @type {string} */ rootDir) {
  * @returns {unknown}
  */
 function readJSON(filePath) {
-  return v.parse(v.pipe(v.string(), v.parseJson()), fs.readFileSync(filePath, "utf-8"));
+  return v.parse(
+    v.pipe(v.string(), v.parseJson()),
+    fs.readFileSync(filePath, "utf-8"),
+  );
 }
 
 /**
