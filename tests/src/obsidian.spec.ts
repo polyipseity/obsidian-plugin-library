@@ -769,7 +769,13 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         await Promise.resolve();
       });
 
-      ui.new(() => ({}), configure, null);
+      ui.new(
+        () => ({}),
+        () => {
+          void configure();
+        },
+        null,
+      );
 
       expect(configure).toHaveBeenCalled();
     });
@@ -781,7 +787,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         resolved = true;
       };
 
-      const component = new LambdaComponent(onLoad);
+      const component = new LambdaComponent(() => {
+        void onLoad();
+      });
 
       component.load();
       await new Promise((resolve) => setTimeout(resolve, 10));
