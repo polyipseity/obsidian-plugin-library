@@ -43,6 +43,7 @@ describe("settings-widgets.ts — widget utilities", () => {
 
       closeSetting(container);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(closeButton.click).toHaveBeenCalled();
 
       document.body.removeChild(modal);
@@ -93,6 +94,7 @@ describe("settings-widgets.ts — widget utilities", () => {
 
       closeSetting(container);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(closeButton.click).toHaveBeenCalled();
 
       document.body.removeChild(modal);

@@ -44,6 +44,7 @@ describe("patch.ts — patching utilities", () => {
 
       patchWindows(mockWorkspace, patcher);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockWorkspace.on).toHaveBeenCalledWith(
         "window-open",
         expect.any(Function),
@@ -98,6 +99,7 @@ describe("patch.ts — patching utilities", () => {
       windowOpenCallback?.(mockWindow);
 
       // Should register window-close listener
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockWorkspace.on).toHaveBeenCalledWith(
         "window-close",
         expect.any(Function),
@@ -129,6 +131,7 @@ describe("patch.ts — patching utilities", () => {
       const cleanup = patchWindows(mockWorkspace, patcher);
       cleanup();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockWorkspace.offref).toHaveBeenCalledWith(onRef);
     });
 
@@ -162,6 +165,7 @@ describe("patch.ts — patching utilities", () => {
       }
 
       // Cleanup should have been called
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockWorkspace.offref).toHaveBeenCalled();
     });
 

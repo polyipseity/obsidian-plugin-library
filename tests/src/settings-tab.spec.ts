@@ -110,6 +110,7 @@ describe("settings-tab.ts — settings tab", () => {
       // Allow promise to resolve
       await Promise.resolve();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.addChild).toHaveBeenCalled();
     });
 
@@ -202,6 +203,7 @@ describe("settings-tab.ts — settings tab", () => {
 
       tab.testOnLoad();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockLanguageManager.onChangeLanguage.listen).toHaveBeenCalled();
     });
 
@@ -522,6 +524,7 @@ describe("settings-tab.ts — settings tab", () => {
 
         const tab = new SubclassTab(mockContext);
 
+        // eslint-disable-next-line @typescript-eslint/unbound-method -- not calling the method, just checking it exists
         expect(tab.display).toBeDefined();
         expect(tab.containerEl).toBeDefined();
       });

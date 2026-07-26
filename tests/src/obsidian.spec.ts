@@ -893,6 +893,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       );
 
       // Verify register was called (for cleanup and language listener)
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
     });
 

@@ -313,6 +313,7 @@ describe("settings.ts — settings management", () => {
 
       await manager.write();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockStorage.setItem).toHaveBeenCalled();
     });
 
@@ -505,6 +506,7 @@ describe("settings.ts — settings management", () => {
       manager.load();
       await manager.onLoaded;
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.loadData).toHaveBeenCalled();
       expect(manager.value.option).toBe("loaded");
     });
@@ -521,6 +523,7 @@ describe("settings.ts — settings management", () => {
         vi.runAllTimersAsync(),
       ]);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.saveData).toHaveBeenCalled();
     });
 

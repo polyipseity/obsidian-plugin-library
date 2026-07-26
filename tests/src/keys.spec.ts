@@ -132,12 +132,14 @@ describe("keys.ts — hotkey management", () => {
     it("registers cleanup callback", () => {
       newHotkeyListener(mockContext);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
     });
 
     it("patches hotkey manager bake method", () => {
       newHotkeyListener(mockContext);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
     });
 
@@ -406,6 +408,7 @@ describe("keys.ts — hotkey management", () => {
     it("patches hotkey manager bake method", () => {
       newHotkeyListener(mockContext);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
     });
 
@@ -414,12 +417,14 @@ describe("keys.ts — hotkey management", () => {
 
       newHotkeyListener(mockContext);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
     });
 
     it("restores original bake method on cleanup", () => {
       newHotkeyListener(mockContext);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
 
       // Cleanup should be registered
@@ -434,6 +439,7 @@ describe("keys.ts — hotkey management", () => {
 
       newHotkeyListener(mockContext, ids);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
     });
 
@@ -447,6 +453,7 @@ describe("keys.ts — hotkey management", () => {
 
       newHotkeyListener(mockContext, ids);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockContext.register).toHaveBeenCalled();
     });
   });

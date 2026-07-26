@@ -223,6 +223,7 @@ describe("documentation.ts — Documentation view", () => {
       // @ts-expect-error: testing protected method
       await view.onOpen();
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockLanguageManager.onChangeLanguage.listen).toHaveBeenCalled();
 
       if (originalOnOpen) baseProto.onOpen = originalOnOpen;

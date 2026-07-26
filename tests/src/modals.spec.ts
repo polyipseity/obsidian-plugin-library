@@ -355,6 +355,7 @@ describe("modals.ts — modal dialogs", () => {
 
       inputter(mockSetting, true, { getter, setter });
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method -- expect() does not call the method, only references it
       expect(mockSetting.addTextArea).toHaveBeenCalled();
     });
 
