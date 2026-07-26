@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Unit spec for scripts/utils.mjs — prefer hermetic behavior and keep tests
 // deterministic. Some tests use quick node child processes to exercise
@@ -16,7 +16,7 @@ function mktemp() {
 }
 
 describe("scripts/utils.mjs", () => {
-  let origCwd;
+  let origCwd: string;
   beforeEach(() => {
     vi.resetModules();
     origCwd = process.cwd();
@@ -139,13 +139,16 @@ describe("scripts/utils.mjs", () => {
       // Mock util.promisify to return a function whose Promise has a .child prop
       vi.doMock("node:util", () => ({
         promisify: () => () => {
-          const p = new Promise((resolve) =>
-            // resolve asynchronously to mimic real execFile behavior
-            setImmediate(() => {
-              resolve({ stdout: "stdout", stderr: "stderr" });
-            }),
-          );
-          p.child = { exitCode: 5 };
+          const p: Promise<unknown> & { child: { readonly exitCode: number } } =
+            Object.assign(
+              new Promise((resolve) =>
+                // resolve asynchronously to mimic real execFile behavior
+                setImmediate(() => {
+                  resolve({ stdout: "stdout", stderr: "stderr" });
+                }),
+              ),
+              { child: { exitCode: 5 } },
+            );
           return p;
         },
       }));
