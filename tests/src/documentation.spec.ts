@@ -1,11 +1,11 @@
 /**
  * Comprehensive tests for src/documentation.ts — Documentation markdown view
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type { ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DocumentationMarkdownView } from "../../src/documentation.js";
-import type { PluginContext } from "../../src/plugin.js";
-import type { WorkspaceLeaf, ViewStateResult } from "obsidian";
 import type { LanguageManager } from "../../src/i18n.js";
+import type { PluginContext } from "../../src/plugin.js";
 
 describe("documentation.ts — Documentation view", () => {
   let mockContext: PluginContext;
@@ -40,7 +40,9 @@ describe("documentation.ts — Documentation view", () => {
     mockContext = {
       app: {
         workspace: {
-          onLayoutReady: vi.fn((callback) => callback()),
+          onLayoutReady: vi.fn((callback: () => void) => {
+            callback();
+          }),
           getLeaf: vi.fn(() => mockLeaf),
           requestUpdateLayout: vi.fn(),
         },

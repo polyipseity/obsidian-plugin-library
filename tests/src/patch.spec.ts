@@ -1,9 +1,9 @@
 /**
  * Comprehensive tests for src/patch.ts — plugin and window patching utilities
  */
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { patchWindows } from "../../src/patch.js";
 import type { Workspace } from "obsidian";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { patchWindows } from "../../src/patch.js";
 
 describe("patch.ts — patching utilities", () => {
   afterEach(() => {
@@ -330,7 +330,9 @@ describe("patch.ts — patching utilities", () => {
       expect(errorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           name: "TypeError",
-          message: expect.stringContaining("is not a function"),
+          message: expect.stringContaining(
+            "is not a function",
+          ) satisfies unknown as unknown,
         }),
       );
 

@@ -1,13 +1,13 @@
 /**
  * Comprehensive tests for src/import.ts — dynamic import utilities
  */
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
-  dynamicRequire,
-  dynamicRequireLazy,
-  dynamicRequireSync,
-  importable,
-  type Bundle,
+    dynamicRequire,
+    dynamicRequireLazy,
+    dynamicRequireSync,
+    importable,
+    type Bundle,
 } from "../../src/import.js";
 
 describe("import.ts — dynamic import utilities", () => {

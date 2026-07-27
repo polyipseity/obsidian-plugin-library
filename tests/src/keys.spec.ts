@@ -1,15 +1,15 @@
 /**
  * Comprehensive tests for src/keys.ts — hotkey management and filtering
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type {
+    HotkeyManager,
+    Keymap,
+    KeymapContext,
+    KeymapEventListener,
+} from "obsidian";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { newHotkeyListener } from "../../src/keys.js";
 import type { PluginContext } from "../../src/plugin.js";
-import type {
-  HotkeyManager,
-  KeymapEventListener,
-  KeymapContext,
-  Keymap,
-} from "obsidian";
 
 // Test-friendly mock type: exposes private-ish fields that the real HotkeyManager
 // keeps internal but our tests need to read/manipulate.
@@ -78,7 +78,7 @@ describe("keys.ts — hotkey management", () => {
     // Mock plugin context
     mockContext = {
       app: mockApp,
-      register: vi.fn((callback) => {
+      register: vi.fn((callback: () => unknown) => {
         // Optionally call the callback immediately for testing
         return callback;
       }),
@@ -428,7 +428,7 @@ describe("keys.ts — hotkey management", () => {
       expect(mockContext.register).toHaveBeenCalled();
 
       // Cleanup should be registered
-      const registeredCallback = (
+      const registeredCallback: unknown = (
         mockContext.register as ReturnType<typeof vi.fn>
       ).mock.calls[0]?.[0];
       expect(typeof registeredCallback).toBe("function");
@@ -506,9 +506,9 @@ describe("keys.ts — hotkey management", () => {
         key: null,
       } as unknown as KeymapContext;
 
-      expect(() =>
-        listener(null as unknown as KeyboardEvent, mockKeymapContext),
-      ).not.toThrow();
+      expect(() => {
+        listener(null as unknown as KeyboardEvent, mockKeymapContext);
+      }).not.toThrow();
     });
 
     it("handles null keymap context", () => {
@@ -516,9 +516,9 @@ describe("keys.ts — hotkey management", () => {
 
       const mockEvent = { repeat: false } as KeyboardEvent;
 
-      expect(() =>
-        listener(mockEvent, null as unknown as KeymapContext),
-      ).not.toThrow();
+      expect(() => {
+        listener(mockEvent, null as unknown as KeymapContext);
+      }).not.toThrow();
     });
 
     it("handles exception in command execution", () => {
@@ -545,7 +545,9 @@ describe("keys.ts — hotkey management", () => {
       } as unknown as KeymapContext;
 
       // revealPrivate should catch errors from private API calls — listener should not throw
-      expect(() => listener(mockEvent, mockKeymapContext)).not.toThrow();
+      expect(() => {
+        listener(mockEvent, mockKeymapContext);
+      }).not.toThrow();
       expect(mockApp.commands.executeCommand).toHaveBeenCalled();
 
       // ensure revealPrivate logged the expected private-API warning and the original error
