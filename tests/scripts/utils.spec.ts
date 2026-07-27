@@ -1,6 +1,6 @@
 // @vitest-environment node
 
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -9,10 +9,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 // deterministic. Some tests use quick node child processes to exercise
 // `execute` but the module is imported per-test to keep state isolated.
 
-function mktemp() {
-  return fs.mkdtempSync(
-    path.join(os.tmpdir(), "obsidian-plugin-template-test-"),
-  );
+async function mktemp() {
+  return fs.mkdtemp(path.join(os.tmpdir(), "obsidian-plugin-template-test-"));
 }
 
 describe("scripts/utils.mjs", () => {
@@ -54,9 +52,12 @@ describe("scripts/utils.mjs", () => {
   });
 
   it("PACKAGE_ID resolves to name from package.json", async () => {
-    const tmp = mktemp();
+    const tmp = await mktemp();
     process.chdir(tmp);
-    fs.writeFileSync("package.json", JSON.stringify({ name: "test-package" }));
+    await fs.writeFile(
+      "package.json",
+      JSON.stringify({ name: "test-package" }),
+    );
 
     const { PACKAGE_ID } = await import("../../scripts/utils.mjs");
     const name = await PACKAGE_ID;
@@ -65,11 +66,11 @@ describe("scripts/utils.mjs", () => {
 
   describe("scripts/utils.mjs PACKAGE_ID and execute edge cases", () => {
     it("PACKAGE_ID caches its value after first resolution", async () => {
-      const project = fs.mkdtempSync(
+      const project = await fs.mkdtemp(
         path.join(os.tmpdir(), "package-id-proj-"),
       );
       const packagePath = path.join(project, "package.json");
-      fs.writeFileSync(packagePath, JSON.stringify({ name: "first-name" }));
+      await fs.writeFile(packagePath, JSON.stringify({ name: "first-name" }));
 
       const cwd = process.cwd();
       try {
@@ -80,7 +81,10 @@ describe("scripts/utils.mjs", () => {
         const first = await PACKAGE_ID;
         expect(first).toBe("first-name");
 
-        fs.writeFileSync(packagePath, JSON.stringify({ name: "second-name" }));
+        await fs.writeFile(
+          packagePath,
+          JSON.stringify({ name: "second-name" }),
+        );
         const second = await PACKAGE_ID;
         expect(second).toBe("first-name");
       } finally {
