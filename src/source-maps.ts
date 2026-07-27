@@ -88,14 +88,16 @@ export function generateSourceMap(
     source = options?.source ?? (isEmpty(subSourceMap?.sources) ? "" : "."),
     content = [],
     deletions = new Set(
-      (options?.deletions ?? []).map(({ line, column }) => `${line}:${column}`),
+      (options?.deletions ?? []).map(
+        ({ line, column }) => `${String(line)}:${String(column)}`,
+      ),
     );
   for (const [line0, str] of Object.entries(splitLines(script))) {
     const line = Number(line0);
     let columnOffset = 0;
     for (const [column0, char] of Object.entries(str)) {
       const column = Number(column0);
-      if (deletions.has(`${1 + line}:${column}`)) {
+      if (deletions.has(`${String(1 + line)}:${String(column)}`)) {
         --columnOffset;
         continue;
       }
