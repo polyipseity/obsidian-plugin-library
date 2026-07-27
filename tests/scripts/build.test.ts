@@ -22,6 +22,22 @@ function createSpawnMock() {
   });
 }
 
+/** Set up a temporary project directory with package.json and mock tsc invocations. */
+function setupProject(project: string): void {
+  fs.writeFileSync(
+    path.join(project, "package.json"),
+    JSON.stringify({ name: "test-package" }),
+  );
+  vi.doMock("which", () => ({
+    __esModule: true,
+    default: vi.fn().mockResolvedValue("bunx"),
+  }));
+  vi.doMock("node:child_process", () => ({
+    execFile: vi.fn(),
+    spawn: createSpawnMock(),
+  }));
+}
+
 describe("scripts/build.mjs", () => {
   let cwd: string;
   beforeEach(() => {
@@ -52,21 +68,7 @@ describe("scripts/build.mjs", () => {
       }),
     }));
 
-    // Ensure PACKAGE_ID can be resolved by build.mjs on import
-    fs.writeFileSync(
-      path.join(project, "package.json"),
-      JSON.stringify({ name: "test-package" }),
-    );
-
-    // Mock tsc invocation (which + spawn) to avoid running real tsc during import
-    vi.doMock("which", () => ({
-      __esModule: true,
-      default: vi.fn().mockResolvedValue("bunx"),
-    }));
-    vi.doMock("node:child_process", () => ({
-      execFile: vi.fn(),
-      spawn: createSpawnMock(),
-    }));
+    setupProject(project);
 
     const cwd = process.cwd();
     process.chdir(project);
@@ -111,21 +113,7 @@ describe("scripts/build.mjs", () => {
     const project = fs.mkdtempSync(path.join(os.tmpdir(), "build-proj-"));
     process.chdir(project);
 
-    // Ensure PACKAGE_ID can be resolved by build.mjs on import
-    fs.writeFileSync(
-      path.join(project, "package.json"),
-      JSON.stringify({ name: "test-package" }),
-    );
-
-    // Mock tsc invocation (which + spawn) to avoid running real tsc during import
-    vi.doMock("which", () => ({
-      __esModule: true,
-      default: vi.fn().mockResolvedValue("bunx"),
-    }));
-    vi.doMock("node:child_process", () => ({
-      execFile: vi.fn(),
-      spawn: createSpawnMock(),
-    }));
+    setupProject(project);
 
     const watch = vi.fn();
     const context = vi.fn().mockResolvedValue({ watch, dispose: vi.fn() });
@@ -169,21 +157,7 @@ describe("scripts/build.mjs", () => {
       context,
     }));
 
-    // Ensure PACKAGE_ID can be resolved by build.mjs on import
-    fs.writeFileSync(
-      path.join(project, "package.json"),
-      JSON.stringify({ name: "test-package" }),
-    );
-
-    // Mock tsc invocation (which + spawn) to avoid running real tsc during import
-    vi.doMock("which", () => ({
-      __esModule: true,
-      default: vi.fn().mockResolvedValue("bunx"),
-    }));
-    vi.doMock("node:child_process", () => ({
-      execFile: vi.fn(),
-      spawn: createSpawnMock(),
-    }));
+    setupProject(project);
 
     process.chdir(project);
 
@@ -205,21 +179,7 @@ describe("scripts/build.mjs", () => {
     fs.mkdirSync(dist, { recursive: true });
     fs.writeFileSync(path.join(dist, "old.txt"), "stale");
 
-    // Ensure PACKAGE_ID can be resolved by build.mjs on import
-    fs.writeFileSync(
-      path.join(project, "package.json"),
-      JSON.stringify({ name: "test-package" }),
-    );
-
-    // Mock tsc invocation (which + spawn)
-    vi.doMock("which", () => ({
-      __esModule: true,
-      default: vi.fn().mockResolvedValue("bunx"),
-    }));
-    vi.doMock("node:child_process", () => ({
-      execFile: vi.fn(),
-      spawn: createSpawnMock(),
-    }));
+    setupProject(project);
 
     const fakeMetafile = { inputs: { "a.js": {} } };
     const context = vi.fn().mockResolvedValue({
@@ -250,11 +210,7 @@ describe("scripts/build.mjs", () => {
   it("logs a warning and continues when removing previous build files fails", async () => {
     const project = fs.mkdtempSync(path.join(os.tmpdir(), "build-proj-"));
 
-    // Ensure PACKAGE_ID can be resolved by build.mjs on import
-    fs.writeFileSync(
-      path.join(project, "package.json"),
-      JSON.stringify({ name: "test-package" }),
-    );
+    setupProject(project);
 
     // Mock rm to fail while preserving other fs/promises functions (readFile is used by utils.PACKAGE_ID)
     vi.doMock("node:fs/promises", async (importOriginal) => {
@@ -263,16 +219,6 @@ describe("scripts/build.mjs", () => {
         rm: vi.fn().mockRejectedValue(new Error("boom")),
       });
     });
-
-    // Mock tsc invocation (which + spawn)
-    vi.doMock("which", () => ({
-      __esModule: true,
-      default: vi.fn().mockResolvedValue("bunx"),
-    }));
-    vi.doMock("node:child_process", () => ({
-      execFile: vi.fn(),
-      spawn: createSpawnMock(),
-    }));
 
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
