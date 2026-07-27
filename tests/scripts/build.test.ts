@@ -247,7 +247,7 @@ describe("scripts/build.mjs", () => {
 
     expect(warnSpy).toHaveBeenCalledWith(
       "Failed to remove previous build output, proceeding anyway:",
-      expect.objectContaining({ message: "boom" }),
+      expect.any(Error),
     );
   });
 });

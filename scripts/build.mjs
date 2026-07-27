@@ -186,7 +186,19 @@ async function esbuild() {
 
 // remove previous build output before starting a new build
 try {
-  await rm(PATHS.outDir, { force: true, recursive: true });
+  const results = await Promise.allSettled([
+    rm(PATHS.outDir, { force: true, recursive: true }),
+  ]);
+  const rejectedReasons = results
+    .filter((r) => r.status === "rejected")
+    .map((r) => r.reason);
+  if (rejectedReasons.length) {
+    // throw all errors together so callers can inspect each failure
+    throw new AggregateError(
+      rejectedReasons,
+      "Failed to remove previous build output (one or more errors)",
+    );
+  }
 } catch (err) {
   console.warn(
     "Failed to remove previous build output, proceeding anyway:",
