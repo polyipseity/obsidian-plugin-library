@@ -2,10 +2,10 @@
  * Comprehensive tests for src/keys.ts — hotkey management and filtering
  */
 import type {
-    HotkeyManager,
-    Keymap,
-    KeymapContext,
-    KeymapEventListener,
+  HotkeyManager,
+  Keymap,
+  KeymapContext,
+  KeymapEventListener,
 } from "obsidian";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { newHotkeyListener } from "../../src/keys.js";
