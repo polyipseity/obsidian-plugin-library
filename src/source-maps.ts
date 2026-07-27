@@ -1,19 +1,19 @@
 import {
+  TraceMap,
+  originalPositionFor,
+  sourceContentFor,
+} from "@jridgewell/trace-mapping";
+import { fromObject, fromSource } from "convert-source-map";
+import { isEmpty } from "lodash-es";
+import {
   type Mapping,
   type Position,
   SourceMapGenerator,
   type StartOfSourceMap,
 } from "source-map";
-import {
-  TraceMap,
-  originalPositionFor,
-  sourceContentFor,
-} from "@jridgewell/trace-mapping";
-import { assignExact, splitLines } from "./utils.js";
-import { fromObject, fromSource } from "convert-source-map";
-import type { AsyncFunctionConstructor } from "./types.js";
 import { FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT } from "./internals/magic.js";
-import { isEmpty } from "lodash-es";
+import type { AsyncFunctionConstructor } from "./types.js";
+import { assignExact, splitLines } from "./utils.js";
 
 export function attachFunctionSourceMap(
   ...args: Parameters<typeof generateFunctionSourceMap>
