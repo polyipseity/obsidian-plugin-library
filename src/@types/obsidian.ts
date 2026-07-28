@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 declare module "obsidian" {
   interface App extends Private<$App, PrivateKey> {}
   interface BakedHotkey extends Private<$BakedHotkey, PrivateKey> {}
@@ -14,6 +13,7 @@ declare module "obsidian" {
   interface Plugins extends Private<$Plugins, PrivateKey> {}
   namespace Plugins {
     type Map<I extends string> = I extends keyof Mapping ? Mapping[I] : Plugin;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Mapping {}
   }
   interface Scope {
@@ -71,6 +71,7 @@ interface $App {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface $BakedHotkey {}
 
 interface $Commands {

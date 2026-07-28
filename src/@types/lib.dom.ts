@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* These are intentional brand marker augmentations — no members needed. */
-
 import type { RevealPrivateExempt } from "../private.js";
 
 declare global {

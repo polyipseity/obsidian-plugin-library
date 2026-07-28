@@ -17,7 +17,6 @@ export interface ErrorRule {
 }
 
 type Rules0 = readonly Rule[];
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Rules extends Rules0 {}
 export namespace Rules {
   export function parse(
