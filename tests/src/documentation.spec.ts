@@ -218,7 +218,10 @@ describe("documentation.ts — Documentation view", () => {
     it("registers language change listener on open", async () => {
       const view = new DocumentationMarkdownView(mockContext, mockLeaf);
 
-      const baseProto = Object.getPrototypeOf(Object.getPrototypeOf(view));
+      // There is no good way to type `Object.getPrototypeOf` apart from an assertion.
+      const baseProto = Object.getPrototypeOf(Object.getPrototypeOf(view)) as {
+        onOpen?: () => Promise<void>;
+      };
       const originalOnOpen = baseProto.onOpen;
       baseProto.onOpen = async () => {};
 

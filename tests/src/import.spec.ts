@@ -230,8 +230,8 @@ describe("import.ts — dynamic import utilities", () => {
 
       expect(result).toBe(false);
       expect(debugSpy).toHaveBeenCalled();
-      const err = debugSpy.mock.calls[0]?.[0];
-      expect(err).toBeInstanceOf(Error);
+      const err: unknown = debugSpy.mock.calls[0]?.[0];
+      if (!(err instanceof Error)) throw new Error("Expected Error argument");
       expect(err.message).toBe("nil-module");
 
       debugSpy.mockRestore();
@@ -252,8 +252,8 @@ describe("import.ts — dynamic import utilities", () => {
 
       expect(result).toBe(false);
       expect(debugSpy).toHaveBeenCalled();
-      const err = debugSpy.mock.calls[0]?.[0];
-      expect(err).toBeInstanceOf(Error);
+      const err: unknown = debugSpy.mock.calls[0]?.[0];
+      if (!(err instanceof Error)) throw new Error("Expected Error argument");
       expect(err.message).toBe("Module load error");
 
       debugSpy.mockRestore();
@@ -270,8 +270,8 @@ describe("import.ts — dynamic import utilities", () => {
 
       expect(result).toBe(false);
       expect(debugSpy).toHaveBeenCalled();
-      const err = debugSpy.mock.calls[0]?.[0];
-      expect(err).toBeInstanceOf(Error);
+      const err: unknown = debugSpy.mock.calls[0]?.[0];
+      if (!(err instanceof Error)) throw new Error("Expected Error argument");
       expect(err.message).toBe("Module not found");
 
       debugSpy.mockRestore();
@@ -290,8 +290,8 @@ describe("import.ts — dynamic import utilities", () => {
 
       expect(() => importable(bundle, "throw-module")).not.toThrow();
       expect(debugSpy).toHaveBeenCalled();
-      const err = debugSpy.mock.calls[0]?.[0];
-      expect(err).toBeInstanceOf(Error);
+      const err: unknown = debugSpy.mock.calls[0]?.[0];
+      if (!(err instanceof Error)) throw new Error("Expected Error argument");
       expect(err.message).toBe("Critical error");
 
       debugSpy.mockRestore();

@@ -91,6 +91,7 @@ describe("scripts/build.mjs", () => {
     if (!contextResult) throw new Error("esbuild.context was not called");
     if (contextResult.type !== "return")
       throw new Error("esbuild.context did not return successfully");
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- They are test spies.
     const { rebuild: rebuildSpy, dispose: disposeSpy } =
       await contextResult.value;
 

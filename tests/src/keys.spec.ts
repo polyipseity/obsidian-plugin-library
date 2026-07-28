@@ -198,7 +198,10 @@ describe("keys.ts — hotkey management", () => {
         modifiers: null,
         key: null,
       } as unknown as KeymapContext;
-      const result = listener(mockEvent, mockKeymapContext); // ensure hotkeyManager.bake is invoked and listener returns boolean when possible
+      const result: unknown = listener(mockEvent, mockKeymapContext);
+      if (typeof result !== "boolean" && typeof result !== "undefined") {
+        throw new Error("Expected hotkey listener to return boolean or undefined");
+      }
       expect(mockApp.hotkeyManager.bake).toHaveBeenCalled();
       // bakedHotkeys on the hotkey manager should remain defined
       expect(mockApp.hotkeyManager.bakedHotkeys).toBeDefined();
