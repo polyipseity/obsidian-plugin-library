@@ -38,17 +38,6 @@ export default defineConfig([
     files: FILE_GLOBS,
   },
   {
-    files: ["**/*.svelte", "**/*.svelte.js", "**/*.svelte.ts"],
-    languageOptions: {
-      parserOptions: {
-        extraFileExtensions: [".svelte"], // Add support for additional file extensions, such as .svelte
-        parser: eslintTs.parser,
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-  {
     languageOptions: {
       parserOptions: {
         projectService: {
@@ -73,6 +62,17 @@ export default defineConfig([
           varsIgnorePattern: "^_",
         },
       ],
+    },
+  },
+  {
+    files: ["**/*.svelte", "**/*.svelte.js", "**/*.svelte.ts"],
+    languageOptions: {
+      parserOptions: {
+        extraFileExtensions: [".svelte"], // Add support for additional file extensions, such as .svelte
+        parser: eslintTs.parser,
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
   // Scripts run on Node.js — provide Node globals so `console` is defined
