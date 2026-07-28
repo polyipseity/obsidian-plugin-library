@@ -4,10 +4,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PluginContext } from "../../src/plugin.js";
 import {
-    revealPrivate,
-    revealPrivateAsync,
-    type HasPrivate,
-    type PrivateKeys,
+  revealPrivate,
+  revealPrivateAsync,
+  type HasPrivate,
+  type PrivateKeys,
 } from "../../src/private.js";
 
 describe("private.ts — private API access", () => {

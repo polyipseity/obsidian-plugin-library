@@ -7,10 +7,10 @@ import type { Fixer } from "../../src/fixers.js";
 import { markFixed } from "../../src/fixers.js";
 import type { PluginContext } from "../../src/plugin.js";
 import {
-    AbstractSettingsManager,
-    SettingsManager,
-    StorageSettingsManager,
-    registerSettingsCommands,
+  AbstractSettingsManager,
+  SettingsManager,
+  StorageSettingsManager,
+  registerSettingsCommands,
 } from "../../src/settings.js";
 
 describe("settings.ts — settings management", () => {

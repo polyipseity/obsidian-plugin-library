@@ -79,7 +79,8 @@ describe("tests/support/i18n-test-utils — asUntypedI18n (support)", () => {
     const untyped = asUntypedI18n(inst);
 
     // compile-time assertion: should be assignable
-    const acceptsStringKey: (k: string, opts?: unknown) => string = (k, opts) => untyped.t(k, opts);
+    const acceptsStringKey: (k: string, opts?: unknown) => string = (k, opts) =>
+      untyped.t(k, opts);
 
     const result = acceptsStringKey("i:am:just:a:string");
     expect(typeof result).toBe("string");

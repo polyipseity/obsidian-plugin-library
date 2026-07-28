@@ -411,7 +411,7 @@ export async function awaitCSS(element: HTMLElement): Promise<void> {
         classList.remove(awaitCSS.CLASS);
         resolve();
       } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- We cannot control the `error` type.
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors -- We cannot control the `error` type.
         reject(error);
       } finally {
         obsr.disconnect();
