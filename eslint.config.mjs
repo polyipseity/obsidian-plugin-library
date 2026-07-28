@@ -30,6 +30,9 @@ export default defineConfig([
   eslintJs.configs.recommended,
   ...eslintTs.configs.strictTypeChecked,
   ...eslintSvelte.configs["flat/recommended"],
+  eslintPrettier,
+  // Disable formatting-related rules that may conflict with Prettier
+  ...eslintSvelte.configs["flat/prettier"],
   includeIgnoreFile(path.join(__dirname, ".gitignore")),
   {
     files: FILE_GLOBS,
@@ -81,7 +84,4 @@ export default defineConfig([
       },
     },
   },
-  // Disable formatting-related rules that may conflict with Prettier
-  eslintPrettier,
-  ...eslintSvelte.configs["flat/prettier"],
 ]);
