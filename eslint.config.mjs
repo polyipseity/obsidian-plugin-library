@@ -5,11 +5,7 @@ import eslintSvelte from "eslint-plugin-svelte";
 import { defineConfig, includeIgnoreFile } from "eslint/config";
 import globals from "globals"; // provide Node/browser globals for file-level overrides
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import eslintTs from "typescript-eslint";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export const FILE_GLOBS = [
   "**/*.cjs",
@@ -33,7 +29,7 @@ export default defineConfig([
   eslintPrettier,
   // Disable formatting-related rules that may conflict with Prettier
   ...eslintSvelte.configs["flat/prettier"],
-  includeIgnoreFile(path.join(__dirname, ".gitignore")),
+  includeIgnoreFile(path.join(import.meta.dirname, ".gitignore")),
   {
     files: FILE_GLOBS,
   },
