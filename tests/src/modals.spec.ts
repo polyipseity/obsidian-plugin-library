@@ -1,14 +1,14 @@
 /**
  * Comprehensive tests for src/modals.ts — modal dialogs and UI components
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type { Setting } from "obsidian";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { LanguageManager } from "../../src/i18n.js";
 import {
   getDefaultSuggestModalInstructions,
   ListModal,
 } from "../../src/modals.js";
 import type { PluginContext } from "../../src/plugin.js";
-import type { LanguageManager } from "../../src/i18n.js";
-import type { Setting } from "obsidian";
 
 describe("modals.ts — modal dialogs", () => {
   let mockContext: PluginContext;
@@ -344,14 +344,19 @@ describe("modals.ts — modal dialogs", () => {
       };
 
       const mockSetting = {
-        addTextArea: vi.fn((callback) => {
+        addTextArea: vi.fn((callback: (component: unknown) => Setting) => {
           callback(mockTextArea);
           return mockSetting;
         }),
       } as unknown as Setting;
 
-      const getter = vi.fn(() => "test");
-      const setter = vi.fn();
+      const getter = vi.fn<() => string>(() => "test");
+      const setter =
+        vi.fn<
+          (
+            updater: (item: string, index: number, data: string[]) => unknown,
+          ) => unknown
+        >();
 
       inputter(mockSetting, true, { getter, setter });
 
@@ -376,14 +381,19 @@ describe("modals.ts — modal dialogs", () => {
       };
 
       const mockSetting = {
-        addTextArea: vi.fn((callback) => {
+        addTextArea: vi.fn((callback: (component: unknown) => Setting) => {
           callback(mockTextArea);
           return mockSetting;
         }),
       } as unknown as Setting;
 
-      const getter = vi.fn(() => "test");
-      const setter = vi.fn();
+      const getter = vi.fn<() => string>(() => "test");
+      const setter =
+        vi.fn<
+          (
+            updater: (item: string, index: number, data: string[]) => unknown,
+          ) => unknown
+        >();
 
       inputter(mockSetting, false, { getter, setter });
 
@@ -407,7 +417,7 @@ describe("modals.ts — modal dialogs", () => {
       };
 
       const mockSetting = {
-        addTextArea: vi.fn((callback) => {
+        addTextArea: vi.fn((callback: (component: unknown) => Setting) => {
           callback(mockTextArea);
           return mockSetting;
         }),
@@ -439,14 +449,19 @@ describe("modals.ts — modal dialogs", () => {
       };
 
       const mockSetting = {
-        addTextArea: vi.fn((callback) => {
+        addTextArea: vi.fn((callback: (component: unknown) => Setting) => {
           callback(mockTextArea);
           return mockSetting;
         }),
       } as unknown as Setting;
 
-      const getter = vi.fn(() => 42);
-      const setter = vi.fn();
+      const getter = vi.fn<() => number>(() => 42);
+      const setter =
+        vi.fn<
+          (
+            updater: (item: number, index: number, data: number[]) => unknown,
+          ) => unknown
+        >();
 
       inputter(mockSetting, true, { getter, setter });
 
@@ -467,22 +482,26 @@ describe("modals.ts — modal dialogs", () => {
         inputEl: document.createElement("input"),
         setValue: vi.fn().mockReturnThis(),
         setDisabled: vi.fn().mockReturnThis(),
-        onChange: vi.fn((cb) => {
+        onChange: vi.fn((cb: (value: string) => unknown) => {
           onChangeCallback = cb;
           return mockTextArea;
         }),
       };
 
       const mockSetting = {
-        addTextArea: vi.fn((callback) => {
+        addTextArea: vi.fn((callback: (component: unknown) => Setting) => {
           callback(mockTextArea);
           return mockSetting;
         }),
       } as unknown as Setting;
 
-      const getter = vi.fn(() => 10);
+      const getter = vi.fn<() => number>(() => 10);
       // mock `setter` should execute the provided updater so `transformer.back` runs
-      const setter = vi.fn((updater) => updater(undefined, 0, [undefined]));
+      const setter = vi.fn<
+        (
+          updater: (item: number, index: number, data: number[]) => unknown,
+        ) => unknown
+      >((updater) => updater(0, 0, [0]));
 
       inputter(mockSetting, true, { getter, setter });
 
@@ -500,13 +519,18 @@ describe("modals.ts — modal dialogs", () => {
         back: (value: string): string => value,
       };
 
-      const customInput = vi.fn();
+      const customInput = vi.fn<() => void>();
 
       const inputter = ListModal.stringInputter(transformer);
 
       const mockSetting = {} as Setting;
-      const getter = vi.fn(() => "test");
-      const setter = vi.fn();
+      const getter = vi.fn<() => string>(() => "test");
+      const setter =
+        vi.fn<
+          (
+            updater: (item: string, index: number, data: string[]) => unknown,
+          ) => unknown
+        >();
 
       inputter(mockSetting, true, { getter, setter }, customInput);
 

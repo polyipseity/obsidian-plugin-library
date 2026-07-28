@@ -140,13 +140,13 @@ describe("settings-widgets.ts — widget utilities", () => {
     });
 
     it("calls setter and callback on change", async () => {
-      const getter = vi.fn(() => "initial");
-      const setter = vi.fn();
-      const callback = vi.fn();
+      const getter = vi.fn<() => string>(() => "initial");
+      const setter = vi.fn<(value: string) => unknown>();
+      const callback = vi.fn<() => unknown>();
 
       let changeHandler: ((value: string) => unknown) | undefined;
       const setValue = vi.fn().mockReturnThis();
-      const onChange = vi.fn((handler) => {
+      const onChange = vi.fn((handler: (value: string) => unknown) => {
         changeHandler = handler;
         return {} as TestComponent;
       });
@@ -174,7 +174,7 @@ describe("settings-widgets.ts — widget utilities", () => {
 
       let changeHandler: ((value: string) => unknown) | undefined;
       const setValue = vi.fn().mockReturnThis();
-      const onChange = vi.fn((handler) => {
+      const onChange = vi.fn((handler: (value: string) => unknown) => {
         changeHandler = handler;
         return {} as TestComponent;
       });
@@ -243,7 +243,7 @@ describe("settings-widgets.ts — widget utilities", () => {
 
       let changeHandler: ((value: string) => unknown) | undefined;
       const setValue = vi.fn().mockReturnThis();
-      const onChange = vi.fn((handler) => {
+      const onChange = vi.fn((handler: (value: string) => unknown) => {
         changeHandler = handler;
         return {} as TestComponent;
       });
@@ -602,7 +602,7 @@ describe("settings-widgets.ts — widget utilities", () => {
       let clickHandler: (() => unknown) | undefined;
       const setIcon = vi.fn().mockReturnThis();
       const setTooltip = vi.fn().mockReturnThis();
-      const onClick = vi.fn((handler) => {
+      const onClick = vi.fn((handler: () => unknown) => {
         clickHandler = handler;
         return {} as TestButtonComponent;
       });
@@ -631,7 +631,7 @@ describe("settings-widgets.ts — widget utilities", () => {
       let clickHandler: (() => unknown) | undefined;
       const setIcon = vi.fn().mockReturnThis();
       const setTooltip = vi.fn().mockReturnThis();
-      const onClick = vi.fn((handler) => {
+      const onClick = vi.fn((handler: () => unknown) => {
         clickHandler = handler;
         return {} as TestButtonComponent;
       });
@@ -783,7 +783,7 @@ describe("settings-widgets.ts — widget utilities", () => {
       const addOption = vi.fn().mockReturnThis();
       const addOptions = vi.fn().mockReturnThis();
       const setValue = vi.fn().mockReturnThis();
-      const onChange = vi.fn((handler) => {
+      const onChange = vi.fn((handler: (value: string) => unknown) => {
         changeHandler = handler;
         return {} as TestDropdownComponent;
       });

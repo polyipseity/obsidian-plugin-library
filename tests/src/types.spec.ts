@@ -1,23 +1,23 @@
 /**
  * Comprehensive tests for src/types.ts — type utilities and helpers
  */
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  codePoint,
   contravariant,
   correctType,
   deopaque,
   launderUnchecked,
+  NULL_SEM_VER_STRING,
   opaqueOrDefault,
-  codePoint,
   semVerString,
   simplifyType,
-  NULL_SEM_VER_STRING,
   type AnyObject,
-  type ReadonlyTuple,
-  type Unchecked,
-  type CodePoint,
-  type SemVerString,
   type Base64String,
+  type CodePoint,
+  type ReadonlyTuple,
+  type SemVerString,
+  type Unchecked,
 } from "../../src/types.js";
 
 describe("types.ts — type utilities and helpers", () => {
@@ -160,7 +160,10 @@ describe("types.ts — type utilities and helpers", () => {
     });
 
     it("copies enumerable properties only", () => {
-      const obj = Object.create(null);
+      const obj = Object.create(null) satisfies Record<
+        string,
+        unknown
+      > as Record<string, unknown>;
       obj.visible = "yes";
       Object.defineProperty(obj, "hidden", {
         value: "no",
@@ -194,7 +197,7 @@ describe("types.ts — type utilities and helpers", () => {
 
       expect(result).toBe("fallback");
       expect(debugSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expect.objectContaining<Record<string, unknown>>({
           message: expect.stringContaining("invalid-version"),
         }),
       );
@@ -209,7 +212,9 @@ describe("types.ts — type utilities and helpers", () => {
       );
 
       expect(debugSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ message: expect.stringContaining("bad") }),
+        expect.objectContaining<Record<string, unknown>>({
+          message: expect.stringContaining("bad"),
+        }),
       );
     });
 
@@ -235,7 +240,7 @@ describe("types.ts — type utilities and helpers", () => {
       ).toBe("default");
 
       expect(debugSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expect.objectContaining<Record<string, unknown>>({
           message: expect.stringContaining("Too short"),
         }),
       );
@@ -260,10 +265,14 @@ describe("types.ts — type utilities and helpers", () => {
 
       expect(debugSpy).toHaveBeenCalledTimes(2);
       expect(debugSpy.mock.calls[0]?.[0]).toEqual(
-        expect.objectContaining({ message: expect.stringContaining("bad") }),
+        expect.objectContaining<Record<string, unknown>>({
+          message: expect.stringContaining("bad"),
+        }),
       );
       expect(debugSpy.mock.calls[1]?.[0]).toEqual(
-        expect.objectContaining({ message: expect.stringContaining("bad") }),
+        expect.objectContaining<Record<string, unknown>>({
+          message: expect.stringContaining("bad"),
+        }),
       );
     });
   });
@@ -460,7 +469,7 @@ describe("types.ts — type utilities and helpers", () => {
       expect(result).toBe("fallback");
 
       expect(debugSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+        expect.objectContaining<Record<string, unknown>>({
           message: expect.stringContaining("Always fails"),
         }),
       );
