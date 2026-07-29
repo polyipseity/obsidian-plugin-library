@@ -23,7 +23,7 @@ declare global {
   }
 
   interface ObjectConstructor {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- type augmentation for Function
     freeze<const T extends Function>(f: T): T;
 
     freeze<

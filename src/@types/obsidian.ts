@@ -13,7 +13,7 @@ declare module "obsidian" {
   interface Plugins extends Private<$Plugins, PrivateKey> {}
   namespace Plugins {
     type Map<I extends string> = I extends keyof Mapping ? Mapping[I] : Plugin;
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- interface extension point
     interface Mapping {}
   }
   interface Scope {
@@ -23,7 +23,7 @@ declare module "obsidian" {
       func: KeymapEventListener,
     ): KeymapEventHandler;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- type parameter used for declaration augmentation
   interface SuggestModal<T> {
     setInstructions(instructions: readonly Instruction[]): void;
   }
@@ -71,7 +71,7 @@ interface $App {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- interface extension point
 interface $BakedHotkey {}
 
 interface $Commands {
