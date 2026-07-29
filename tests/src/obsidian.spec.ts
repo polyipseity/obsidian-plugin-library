@@ -116,7 +116,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
     it("uses 'this' context in callbacks", () => {
       let capturedThis: unknown;
       const onLoad = function fn(this: LambdaComponent): void {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        // eslint-disable-next-line @typescript-eslint/no-this-alias -- capture this for test verification
         capturedThis = this;
       };
       const component = new LambdaComponent(onLoad);

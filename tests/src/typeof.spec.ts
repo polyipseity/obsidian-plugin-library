@@ -96,7 +96,7 @@ describe("typeof.ts — type guards and utilities", () => {
       const value: unknown = (): void => {};
       expect(genericTypeofGuard(["function"], value)).toBe(true);
       expect(genericTypeofGuard(["function"], function named() {})).toBe(true);
-      // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+      // eslint-disable-next-line @typescript-eslint/no-extraneous-class -- class used for typeof guard test
       expect(genericTypeofGuard(["function"], class Test {})).toBe(true);
     });
 

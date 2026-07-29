@@ -187,11 +187,11 @@ describe("import.ts — dynamic import utilities", () => {
       );
 
       // Accessing the property multiple times should only call factory once
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- accessed for side effect
       lazyModule.counter;
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- accessed for side effect
       lazyModule.counter;
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- accessed for side effect
       lazyModule.counter;
 
       expect(factory).toHaveBeenCalledTimes(1);

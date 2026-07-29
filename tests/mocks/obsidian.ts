@@ -387,7 +387,7 @@ export class Vault extends Events {
 
   on(
     name: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- EventRef callback signature
     callback: (...args: any[]) => unknown,
     ctx?: unknown,
   ): EventRef {

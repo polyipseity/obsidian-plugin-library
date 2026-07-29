@@ -235,12 +235,12 @@ describe("settings.ts — settings management", () => {
           storageData[key] = value;
         }),
         removeItem: vi.fn((key: string) => {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- mock: localStorage.removeItem behavior
           delete storageData[key];
-        }),
+        },
         clear: vi.fn(() => {
           Object.keys(storageData).forEach((key) => {
-            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- mock: localStorage.clear behavior
             delete storageData[key];
           });
         }),
