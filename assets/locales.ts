@@ -29,7 +29,7 @@ import type en from "./locales/en/translation.json";
 
 export type NormalizeLocale<T> = T extends Builtin
   ? T
-  : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  : // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- interface extension point
     T extends {}
     ? {
         [

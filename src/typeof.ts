@@ -12,7 +12,7 @@ export type InverseTypeofMap<T> = T extends string
           ? "symbol"
           : T extends undefined
             ? "undefined"
-            : // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+            : // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- typeof check for Function
               T extends Function
               ? "function"
               : T extends never
@@ -25,7 +25,7 @@ export interface TypeofMap {
   boolean: boolean;
   symbol: symbol;
   undefined: undefined;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- typeof map for Function
   function: Function;
   object: object | null;
 }

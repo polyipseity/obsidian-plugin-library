@@ -2,7 +2,7 @@ import type { AsyncOrSync, Builtin, UnionToIntersection } from "ts-essentials";
 import type { PluginContext } from "./plugin.js";
 import type { DistributeValues } from "./types.js";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- extension point for private keys
 export interface PrivateKeys {
   // Empty for interface extension.
 }
