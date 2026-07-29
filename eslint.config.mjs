@@ -1,6 +1,7 @@
 // @ts-check
 import eslintJs from "@eslint/js";
 import eslintPrettier from "eslint-config-prettier/flat";
+import eslintObsidianMd from "eslint-plugin-obsidianmd";
 import eslintSvelte from "eslint-plugin-svelte";
 import { defineConfig, includeIgnoreFile } from "eslint/config";
 import globals from "globals"; // provide Node/browser globals for file-level overrides
@@ -29,6 +30,17 @@ export default defineConfig([
   eslintPrettier,
   // Disable formatting-related rules that may conflict with Prettier
   ...eslintSvelte.configs["flat/prettier"],
+  // Obsidian
+  ...eslintObsidianMd.configs.recommendedWithLocalesEn.filter(
+    (config) => !config.name?.endsWith("typescript-eslint/base"),
+  ),
+  // Disable all Svelte rules for `package.json` to avoid crashes (JSON parser has no parserServices)
+  {
+    files: ["package.json"],
+    rules: Object.fromEntries(
+      Object.keys(eslintSvelte.rules).map((key) => [`svelte/${key}`, "off"]),
+    ),
+  },
   includeIgnoreFile(path.join(import.meta.dirname, ".gitignore")),
   {
     files: FILE_GLOBS,
