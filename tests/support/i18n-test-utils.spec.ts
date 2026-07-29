@@ -28,9 +28,7 @@ describe("tests/support/i18n-test-utils — asUntypedI18n (support)", () => {
 
   it("returns the same runtime instance and preserves behavior", async () => {
     const resources: I18nResources = {
-      // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
       en: { translation: async () => ({ hello: "Hello" }) },
-      // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
       fr: { translation: async () => ({ hello: "Bonjour" }) },
     };
 
@@ -51,7 +49,6 @@ describe("tests/support/i18n-test-utils — asUntypedI18n (support)", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const resources: I18nResources = {
-      // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
       en: { translation: async () => ({ exist: "present" }) },
     };
 
@@ -71,7 +68,6 @@ describe("tests/support/i18n-test-utils — asUntypedI18n (support)", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const resources: I18nResources = {
-      // eslint-disable-next-line @typescript-eslint/require-await -- mock: i18n resource loader must return Promise per I18nResources type
       en: { translation: async () => ({ ok: "value" }) },
     };
 
