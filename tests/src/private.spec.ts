@@ -204,7 +204,6 @@ describe("private.ts — private API access", () => {
           await Promise.resolve();
           return revealed.value;
         },
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => "fallback",
       );
 
@@ -222,7 +221,6 @@ describe("private.ts — private API access", () => {
           await new Promise((resolve) => setTimeout(resolve, 10));
           return revealed.count * 3;
         },
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => 0,
       );
 
@@ -239,11 +237,9 @@ describe("private.ts — private API access", () => {
       const result = await revealPrivateAsync(
         context,
         [obj],
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => {
           throw new Error("Async error");
         },
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async (error) => {
           expect(error).toBeInstanceOf(Error);
           return "async-fallback";
@@ -267,11 +263,9 @@ describe("private.ts — private API access", () => {
       await revealPrivateAsync(
         context,
         [obj],
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => {
           throw new Error("Async API error");
         },
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => null,
       );
 
@@ -294,7 +288,6 @@ describe("private.ts — private API access", () => {
           await Promise.resolve();
           return r1.x * r2.y;
         },
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => 0,
       );
 
@@ -311,7 +304,6 @@ describe("private.ts — private API access", () => {
       const syncResult = await revealPrivateAsync(
         context,
         [obj],
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => {
           throw new Error("Error");
         },
@@ -331,7 +323,6 @@ describe("private.ts — private API access", () => {
       const asyncResult = await revealPrivateAsync(
         context,
         [obj],
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => {
           throw new Error("Error");
         },
@@ -352,11 +343,9 @@ describe("private.ts — private API access", () => {
 
     it("does not call fallback when async function succeeds", async () => {
       const context = createMockContext();
-      // eslint-disable-next-line @typescript-eslint/require-await -- test stub: satisfies async signature requirement
       const fallback = vi.fn(async () => "fallback");
       const obj = makeHasPrivate({});
 
-      // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
       await revealPrivateAsync(context, [obj], async () => "success", fallback);
 
       expect(fallback).not.toHaveBeenCalled();
@@ -373,7 +362,6 @@ describe("private.ts — private API access", () => {
         [obj],
 
         async () => Promise.reject(new Error("Rejected")),
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => "handled",
       );
 
@@ -395,11 +383,9 @@ describe("private.ts — private API access", () => {
       await revealPrivateAsync(
         context,
         [obj],
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => {
           throw testError;
         },
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async (error) => {
           expect(error).toBe(testError);
         },
@@ -462,11 +448,9 @@ describe("private.ts — private API access", () => {
       const result = await revealPrivateAsync(
         context,
         [obj],
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => {
           throw new Error("Sync throw in async");
         },
-        // eslint-disable-next-line @typescript-eslint/require-await -- test callback: satisfies async function parameter type
         async () => "recovered",
       );
 
