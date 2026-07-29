@@ -255,7 +255,7 @@ describe("settings-tab.ts — settings tab", () => {
 
       const fragment = document.createDocumentFragment();
       const span = document.createElement("span");
-      span.textContent = "Fragment Content";
+      span.textContent = "Fragment content";
       fragment.appendChild(span);
 
       tab.testNewSectionWidget(() => fragment);

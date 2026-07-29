@@ -199,7 +199,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       component.load();
 
       // The error is caught and logged, not re-thrown
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => window.setTimeout(resolve, 10));
 
       expect(consoleError).toHaveBeenCalled();
 
@@ -436,7 +436,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
     it("clears element textContent on destroy", () => {
       const mockUI = new UpdatableUI();
       const element = document.createElement("div");
-      element.textContent = "initial";
+      element.textContent = "Initial";
 
       statusUI(mockUI, element);
       mockUI.destroy();
@@ -792,7 +792,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       });
 
       component.load();
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => window.setTimeout(resolve, 10));
 
       expect(resolved).toBe(true);
     });

@@ -104,7 +104,7 @@ describe("utils.ts — utility functions", () => {
       const emitter = new EventEmitterLite<[string]>();
       let resolved = false;
       const asyncListener = vi.fn(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise((resolve) => window.setTimeout(resolve, 10));
         resolved = true;
       });
 
@@ -245,11 +245,11 @@ describe("utils.ts — utility functions", () => {
       it("waits for all promises in non-settled mode", async () => {
         let order = "";
         const fn1 = vi.fn(async () => {
-          await new Promise((resolve) => setTimeout(resolve, 10));
+          await new Promise((resolve) => window.setTimeout(resolve, 10));
           order += "1";
         });
         const fn2 = vi.fn(async () => {
-          await new Promise((resolve) => setTimeout(resolve, 5));
+          await new Promise((resolve) => window.setTimeout(resolve, 5));
           order += "2";
         });
         const functions = new Functions({ async: true }, fn1, fn2);
@@ -392,7 +392,7 @@ describe("utils.ts — utility functions", () => {
     it("resolves all pending promises together", async () => {
       let resolveCount = 0;
       const debounced = asyncDebounce((resolve: (value: number) => void) => {
-        setTimeout(() => {
+        window.setTimeout(() => {
           resolveCount++;
           resolve(resolveCount);
         }, 10);

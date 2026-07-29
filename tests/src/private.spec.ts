@@ -218,7 +218,7 @@ describe("private.ts — private API access", () => {
         context,
         [obj],
         async (revealed) => {
-          await new Promise((resolve) => setTimeout(resolve, 10));
+          await new Promise((resolve) => window.setTimeout(resolve, 10));
           return revealed.count * 3;
         },
         async () => 0,
