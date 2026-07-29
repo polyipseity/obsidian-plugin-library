@@ -70,8 +70,8 @@ export function contravariant<T>(value: readonly T[]): readonly T[] {
   return value;
 }
 
-export function correctType(value: Window): Window & typeof globalThis {
-  return value as Window & typeof globalThis;
+export function correctType(value: Window): typeof window {
+  return value as typeof window;
 }
 
 export function deopaque<T>(value: T): Deopaque<T> {

@@ -232,7 +232,7 @@ export function asyncDebounce<A extends readonly unknown[], R>(
 }
 
 export function asyncFunction(
-  self0: typeof globalThis,
+  self0: typeof window,
 ): AsyncFunctionConstructor {
   return self0.eval("(async()=>{}).constructor") as AsyncFunctionConstructor;
 }
@@ -907,7 +907,7 @@ export function toJSONOrString(
 
 export function activeSelf(
   reference?: Element | UIEvent | null,
-): Window & typeof globalThis {
+): typeof window {
   if (reference) {
     if ("ownerDocument" in reference) {
       const {

@@ -1048,7 +1048,7 @@ describe("utils.ts — utility functions", () => {
   describe("sleep2", () => {
     it("sleeps for specified time", async () => {
       vi.useFakeTimers();
-      const promise = sleep2(globalThis, 0.1);
+      const promise = sleep2(window, 0.1);
       vi.advanceTimersByTime(100);
       await promise;
       vi.useRealTimers();
