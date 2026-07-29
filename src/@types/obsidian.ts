@@ -81,17 +81,17 @@ interface $Commands {
 
 interface $CommunityPluginsSettingTab extends SettingTab {
   readonly id: "community-plugins";
-  readonly installedPlugins: {
-    readonly groupEl: HTMLElement;
-    readonly listEl: HTMLElement;
-  };
+  readonly installedPlugins?:
+    | {
+        readonly groupEl?: HTMLElement | undefined;
+        readonly listEl?: HTMLElement | undefined;
+      }
+    | undefined;
   /**
    * @deprecated Outdated private API.
    */
-  readonly renderInstalledPlugin: (
-    manifest: PluginManifest,
-    element: HTMLElement,
-  ) => void;
+  readonly renderInstalledPlugin?:
+    ((manifest: PluginManifest, element: HTMLElement) => void) | undefined;
 }
 
 interface $DataAdapter {
