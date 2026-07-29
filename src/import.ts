@@ -1,6 +1,9 @@
-import PLazy from "p-lazy";
 import { isNil } from "lodash-es";
+import PLazy from "p-lazy";
 import { lazyProxy } from "./utils.js";
+
+// We require using plain `require` here so that bundlers can rewrite `require` if needed.
+declare const require: typeof window.require;
 
 export type Bundle = ReadonlyMap<string, () => unknown>;
 

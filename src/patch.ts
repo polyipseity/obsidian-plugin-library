@@ -1,11 +1,11 @@
-import { Functions, remove } from "./utils.js";
-import type { Plugins, Workspace } from "obsidian";
 import { constant, noop } from "lodash-es";
+import { around } from "monkey-around";
+import type { Plugins, Workspace } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";
 import type { PluginContext } from "./plugin.js";
-import { around } from "monkey-around";
-import { correctType } from "./types.js";
 import { revealPrivateAsync } from "./private.js";
+import { correctType } from "./types.js";
+import { Functions, remove } from "./utils.js";
 
 export async function patchPlugin<const I extends string>(
   context: PluginContext,
@@ -26,7 +26,7 @@ export async function patchPlugin<const I extends string>(
                 this: typeof plugins,
                 ...args: Parameters<typeof next<I2>>
               ): ReturnType<typeof next<I2>> {
-                return (async (): Promise<typeof ret> => {
+                return (async () => {
                   const ret = await next.bind(this)(...args);
                   try {
                     const [id2] = args;
@@ -80,9 +80,7 @@ export async function patchPlugin<const I extends string>(
 
 export function patchWindows(
   workspace: Workspace,
-  patcher: (
-    self0: Window & typeof globalThis,
-  ) => (self0: Window & typeof globalThis) => void,
+  patcher: (self0: typeof window) => (self0: typeof window) => void,
 ): () => void {
   const ret = new Functions({ async: false, settled: true });
   try {

@@ -41,8 +41,12 @@ import type {
   FileSystem,
   Hotkey,
   HotkeyManager,
+  Instruction,
   Keymap,
   KeymapContext,
+  KeymapEventHandler,
+  KeymapEventListener,
+  Modifier,
   PluginManifest,
   Plugins,
   SettingTab,
@@ -50,6 +54,10 @@ import type {
   UserEvent,
 } from "obsidian";
 import type { Private, RevealPrivate } from "../private.js";
+
+// @ts-expect-error 6196 -- TypeScript bug failing to recognize that they are used.
+type _TS_6196 =
+  Instruction | KeymapEventHandler | KeymapEventListener | Modifier;
 
 declare const PRIVATE_KEY: unique symbol;
 type PrivateKey = typeof PRIVATE_KEY;

@@ -387,6 +387,7 @@ export class Vault extends Events {
 
   on(
     name: string,
+    // eslint-disable-next-line eslint-comments/no-restricted-disable -- What is the point of this?
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- EventRef callback signature
     callback: (...args: any[]) => unknown,
     ctx?: unknown,
@@ -1133,7 +1134,7 @@ export class Component {
       this.callbacks = [];
       this.eventRefs = [];
       this.intervals.forEach((id) => {
-        clearInterval(id);
+        window.clearInterval(id);
       });
       this.intervals = [];
       this.children.forEach((child) => {
@@ -1588,13 +1589,13 @@ export class Notice {
   private message: string | DocumentFragment;
   private duration: number;
   private hidden = false;
-  private hideTimeout: NodeJS.Timeout | null = null;
+  private hideTimeout: number | null = null;
 
   constructor(message: string | DocumentFragment, duration = 5000) {
     this.message = message;
     this.duration = duration;
     if (duration > 0) {
-      this.hideTimeout = setTimeout(() => {
+      this.hideTimeout = window.setTimeout(() => {
         this.hide();
       }, duration);
     }
@@ -1617,7 +1618,7 @@ export class Notice {
     if (!this.hidden) {
       this.hidden = true;
       if (this.hideTimeout) {
-        clearTimeout(this.hideTimeout);
+        window.clearTimeout(this.hideTimeout);
         this.hideTimeout = null;
       }
     }
@@ -1649,15 +1650,15 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   wait: number,
   immediate = false,
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout | null = null;
+  let timeout: number | null = null;
   return function (this: unknown, ...args: Parameters<T>): void {
     const later = (): void => {
       timeout = null;
       if (!immediate) func.apply(this, args);
     };
     const callNow = immediate && !timeout;
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    if (timeout) window.clearTimeout(timeout);
+    timeout = window.setTimeout(later, wait);
     if (callNow) func.apply(this, args);
   };
 }
