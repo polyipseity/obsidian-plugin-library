@@ -262,7 +262,6 @@ describe("utils.ts — utility functions", () => {
       });
 
       it("handles errors in settled mode", async () => {
-        // eslint-disable-next-line @typescript-eslint/require-await -- test stub: satisfies async signature requirement
         const fn1 = vi.fn(async () => {
           throw new Error("Async error");
         });

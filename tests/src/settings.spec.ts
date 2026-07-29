@@ -477,7 +477,6 @@ describe("settings.ts — settings management", () => {
     beforeEach(() => {
       mockContext = {
         saveData: vi.fn(),
-        // eslint-disable-next-line @typescript-eslint/require-await -- test stub: satisfies async signature requirement
         loadData: vi.fn(async () => ({ option: "loaded" })),
         language: {
           onLoaded: Promise.resolve(),
