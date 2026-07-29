@@ -158,7 +158,7 @@ function merge(source, target) {
   for (const key of Object.keys(target)) {
     const base = baseOf(key);
     if (!sourceBases.has(base)) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- clean up translated keys not in source
       delete target[key];
     }
   }
