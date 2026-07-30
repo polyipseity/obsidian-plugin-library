@@ -6,5 +6,7 @@ export namespace InternalDOMClasses {
   const NAMESPACE = "obsidian-plugin-library";
   export const AWAIT_CSS = `${NAMESPACE}:await-css`,
     HIDE_STATUS_BAR = `${NAMESPACE}:hide-status-bar`,
-    ICON = `${NAMESPACE}:icon`;
+    ICON = `${NAMESPACE}:icon`,
+    LIST_SPACER = `${NAMESPACE}:list-spacer`,
+    SUBSETTINGS = `${NAMESPACE}:subsettings`;
 }

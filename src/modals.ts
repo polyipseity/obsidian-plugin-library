@@ -10,6 +10,7 @@ import {
 } from "obsidian";
 import type { DeepReadonly, DeepWritable, Writable } from "ts-essentials";
 import type { Fixer } from "./fixers.js";
+import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, JSON_STRINGIFY_SPACE, SI_PREFIX_SCALE } from "./magic.js";
 import {
   type StatusUI,
@@ -186,7 +187,7 @@ export class ListModal<T> extends Modal {
       input(setting, (element, text) => {
         text.setDisabled(!editable);
         if (!refs) {
-          element.style.visibility = "hidden";
+          element.classList.add(InternalDOMClasses.LIST_SPACER);
           return;
         }
         text.setValue(transformer.forth(refs.getter())).onChange((value) =>
@@ -212,7 +213,7 @@ export class ListModal<T> extends Modal {
         .setTooltip(i18n.t("components.list.remove"))
         .setIcon(i18n.t("asset:components.list.remove-icon"));
       if (!refs) {
-        button.buttonEl.style.visibility = "hidden";
+        button.buttonEl.classList.add(InternalDOMClasses.LIST_SPACER);
         return;
       }
       const { index, data } = refs;
@@ -238,7 +239,7 @@ export class ListModal<T> extends Modal {
         .setTooltip(i18n.t("components.list.move-up"))
         .setIcon(i18n.t("asset:components.list.move-up-icon"));
       if (!refs) {
-        button.extraSettingsEl.style.visibility = "hidden";
+        button.extraSettingsEl.classList.add(InternalDOMClasses.LIST_SPACER);
         return;
       }
       const { index, data } = refs;
@@ -267,7 +268,7 @@ export class ListModal<T> extends Modal {
         .setTooltip(i18n.t("components.list.move-down"))
         .setIcon(i18n.t("asset:components.list.move-down-icon"));
       if (!refs) {
-        button.extraSettingsEl.style.visibility = "hidden";
+        button.extraSettingsEl.classList.add(InternalDOMClasses.LIST_SPACER);
         return;
       }
       const { index, data } = refs;

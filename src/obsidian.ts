@@ -626,7 +626,7 @@ export function useSubsettings(element: HTMLElement): HTMLElement {
   if (element.firstChild) {
     createChildElement(ret, "div");
   }
-  ret.style.paddingBottom = "var(--size-4-4)";
+  ret.classList.add(InternalDOMClasses.SUBSETTINGS);
   return ret;
 }
 
