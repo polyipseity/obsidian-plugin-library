@@ -1852,7 +1852,13 @@ export function getIcon(iconId: string): string | null {
 
 export function setIcon(el: HTMLElement, iconId: string): void {
   const svg = state.icons.get(iconId);
-  if (svg) el.innerHTML = svg;
+  if (svg) {
+    const svgEl = new DOMParser().parseFromString(
+      svg,
+      "image/svg+xml",
+    ).documentElement;
+    el.replaceChildren(svgEl);
+  }
 }
 
 export function removeIcon(iconId: string): void {

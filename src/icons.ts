@@ -1,18 +1,14 @@
+import { createElement } from "lucide";
 import { type Plugin, addIcon as addIcon0, removeIcon } from "obsidian";
 import { InternalDOMClasses } from "./internals/magic.js";
-import { createElement } from "lucide";
 
 export function addIcon(id: string, content: string): () => void {
-  const template = self.document.createElement("template");
-  template.innerHTML = content;
-  const {
-    content: { firstElementChild: svg },
-  } = template;
-  if (!svg) {
-    throw new Error(content);
-  }
-  svg.classList.add(addIcon.CLASS);
-  addIcon0(id, svg.outerHTML);
+  const svgEl = new DOMParser().parseFromString(
+    content,
+    "image/svg+xml",
+  ).documentElement;
+  svgEl.classList.add(addIcon.CLASS);
+  addIcon0(id, svgEl.outerHTML);
   return () => {
     removeIcon(id);
   };
