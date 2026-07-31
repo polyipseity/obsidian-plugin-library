@@ -1,8 +1,7 @@
 import { throttle } from "es-toolkit/function";
-import { isEqual, isNil } from "es-toolkit/predicate";
+import { isEmptyObject, isEqual, isNil } from "es-toolkit/predicate";
 import type { AsyncOrSync, DeepReadonly, DeepWritable } from "ts-essentials";
 import { type Fixed, type Fixer, markFixed } from "./fixers.js";
-import { isEmpty } from "./internals/helpers.js";
 import { SAVE_SETTINGS_WAIT } from "./internals/magic.js";
 import {
   DOUBLE_ACTION_WAIT,
@@ -353,7 +352,7 @@ export function registerSettingsCommands(context: PluginContext): void {
                 );
               });
           };
-        if (isEmpty(cachedFm)) {
+        if (isEmptyObject(cachedFm)) {
           process();
         } else {
           new DialogModal(context, {

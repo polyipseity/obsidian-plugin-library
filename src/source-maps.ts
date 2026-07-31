@@ -10,7 +10,6 @@ import {
   SourceMapGenerator,
   type StartOfSourceMap,
 } from "source-map";
-import { isEmpty } from "./internals/helpers.js";
 import { FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT } from "./internals/magic.js";
 import type { AsyncFunctionConstructor } from "./types.js";
 import { assignExact, splitLines } from "./utils.js";
@@ -85,7 +84,8 @@ export function generateSourceMap(
     /* @__PURE__ */ self.console.debug(error);
   }
   const generator = new SourceMapGenerator(genOpts),
-    source = options?.source ?? (isEmpty(subSourceMap?.sources) ? "" : "."),
+    source =
+      options?.source ?? ((subSourceMap?.sources.length ?? 0) === 0 ? "" : "."),
     content = [],
     deletions = new Set(
       (options?.deletions ?? []).map(

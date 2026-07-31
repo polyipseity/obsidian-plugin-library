@@ -32,7 +32,7 @@ import {
 } from "./types.js";
 
 import AsyncLock from "async-lock";
-import { isEmpty, isObject } from "./internals/helpers.js";
+import { isObject } from "./internals/helpers.js";
 import { MAX_LOCK_PENDING } from "./internals/magic.js";
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift";
@@ -154,7 +154,7 @@ export async function acquireConditionally<T>(
 }
 
 export function alternativeRegExp(strs: readonly string[]): RegExp {
-  return isEmpty(strs)
+  return strs.length === 0
     ? NEVER_REGEX_G
     : new RegExp(
         [...strs]
@@ -686,7 +686,7 @@ export function logFormat(
   options: Options,
   ...args: readonly unknown[]
 ): string {
-  if (isEmpty(args)) {
+  if (args.length === 0) {
     return "";
   }
   const stringify0 = (param: unknown): string => {
