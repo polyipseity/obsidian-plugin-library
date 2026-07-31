@@ -1,5 +1,92 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
+## 2.0.0
+
+### Major Changes
+
+- 7e74c8c: Breaking type changes in `fixInSet` and `newSectionWidget`
+
+  - Remove the `K extends keyof S` type parameter from `fixInSet`; the key
+    argument is now typed as `keyof S`
+  - Change the `heading` parameter of `AdvancedSettingTab.newSectionWidget` from
+    numbers `1`-`6` to string literals `"h1"`-`"h6"`
+
+  These are type-level breaking changes; update explicit type arguments on
+  `fixInSet` and numeric heading arguments on `newSectionWidget`.
+
+### Minor Changes
+
+- 16e75ac: Add installedPlugins type and deprecate renderInstalledPlugin in Obsidian types
+
+  - Add `installedPlugins` property to `$CommunityPluginsSettingTab` interface
+  - Deprecate `renderInstalledPlugin` method as outdated private API
+  - Improves type coverage for Obsidian's community plugins setting tab
+
+- 57c19f3: Enhanced addRibbonIcon API to return element reference and reload callback
+
+  - Return object with `elementRef` and `reload` function from addRibbonIcon
+  - Allows consumers to access the ribbon element and trigger reloads on language changes
+  - Improves refactor of ribbon function into named function for better maintainability
+  - Register language change listener that triggers reload to update UI on language changes
+
+- 08a29cd: Add `RevealPrivateExempt` brand interface to `RevealPrivate`
+
+  `RevealPrivate<T>` now excludes types implementing the new `RevealPrivateExempt` brand interface, in addition to `Builtin`. DOM types (`Document`, `HTMLElement`, `Node`, `Element`, `Event`, `Window`, `NodeList`, `StyleSheet`) are pre-augmented with the brand via a global declaration file, preventing deep TypeScript recursion errors at call sites using these types.
+
+- 04fc45f: Refactor ListModal preset UI and improve type safety
+
+  - Replace dropdown-based preset selection with FuzzySuggestModal for better UX
+  - Make inputter callback signature optional via refs parameter for alignment UI
+  - Add helper methods for button creation to reduce code duplication
+  - Remove unused presetPlaceholder option
+  - Update tests to match new API signatures
+
+- 729949b: Re-export `lib.dom` ambient types from the package entry point
+
+  - Rename `@types/dom.d.ts` to `@types/lib.dom.ts` and export its types from
+    `src/index.ts`
+
+### Patch Changes
+
+- eca4ec2: Change JSON_STRINGIFY_SPACE default indent from tabs to 2 spaces
+
+  - Update `JSON_STRINGIFY_SPACE` constant to use 2-space indentation instead of tabs
+  - Ensures consistent JSON output formatting across the library
+  - Updates related tests to verify 2-space indentation behavior
+
+- becd0a7: Make `$CommunityPluginsSettingTab` properties optional
+
+  - `installedPlugins` and `renderInstalledPlugin` may not always be present;
+    mark them optional to match the actual Obsidian API
+
+- beaa33c: Make `Bundle` type use `ReadonlyMap` for readonly-by-default conformance
+- 90f5ca6: Fix source-map generation for numeric template expressions
+
+  - Wrap numeric expressions in template strings with `String()` so generated
+    source maps map correctly back to original sources
+
+- 08a28bc: Enforce readonly-by-default rule across function signatures
+
+  - Change `Map<string, string>` parameters and return types to `ReadonlyMap<string, string>` where mutation is not required
+  - Change `Set<string>` parameter to `ReadonlySet<string>` where mutation is not required
+  - Change `T[]` parameter in `ListModal.Options.callback` to `readonly T[]`
+  - Change `Hotkey[]` local variable type to `readonly Hotkey[]`
+
+- 097e7de: Fix import ordering and add padding to useSubsettings output
+
+  - Reorganize imports in src/obsidian.ts to follow project conventions
+  - Add bottom padding to useSubsettings() return element for improved spacing
+
+- 06f4bfb: Update dependencies
+
+  - Replace `lodash-es` and `deep-equal` with `es-toolkit`
+  - Move `valibot` from devDependencies to dependencies
+
+- 053b088: Throw on invalid or empty SVG content in `addIcon`
+
+  - `addIcon` now throws a `TypeError` when given malformed or empty SVG content
+    instead of silently adding a broken icon
+
 ## 1.36.1
 
 ### Patch Changes
