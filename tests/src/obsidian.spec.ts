@@ -992,6 +992,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         addRibbonIcon: vi.fn(() => mockElement),
       } as unknown as PluginContext;
 
+      const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
       const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
 
       const result = testFunc(
@@ -1004,6 +1007,8 @@ describe("obsidian.ts — Obsidian API utilities", () => {
 
       expect(result).toBeDefined();
       expect(result.elementRef).toBe(mockElement);
+      expect(debugSpy).toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalled();
     });
 
     it("reload function is no-op in fallback path", async () => {
@@ -1020,6 +1025,9 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         addRibbonIcon: vi.fn(() => mockElement),
       } as unknown as PluginContext;
 
+      const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
       const { addRibbonIcon: testFunc } = await import("../../src/obsidian.js");
 
       const result = testFunc(
@@ -1034,6 +1042,8 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       expect(() => {
         result.reload();
       }).not.toThrow();
+      expect(debugSpy).toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalled();
     });
   });
 });
