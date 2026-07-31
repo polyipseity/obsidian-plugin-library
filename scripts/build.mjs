@@ -4,7 +4,7 @@ import esbuildCompress from "esbuild-compress";
 import { nodeExternalsPlugin } from "esbuild-node-externals";
 import { copy } from "esbuild-plugin-copy";
 import esbuildSvelte from "esbuild-svelte";
-import { isEmpty, kebabCase } from "lodash-es";
+import { kebabCase } from "es-toolkit/string";
 import { spawn } from "node:child_process";
 import { rm, writeFile } from "node:fs/promises";
 import { argv } from "node:process";
@@ -160,14 +160,14 @@ async function esbuild() {
         console.log(
           await analyzeMetafile(metafile, { color: true, verbose: true }),
         );
-        if (!isEmpty(warnings)) {
+        if (warnings.length !== 0) {
           console.warn(
             (
               await formatMessages(warnings, { color: true, kind: "warning" })
             ).join("\n"),
           );
         }
-        if (!isEmpty(errors)) {
+        if (errors.length !== 0) {
           console.error(
             (await formatMessages(errors, { color: true, kind: "error" })).join(
               "\n",
