@@ -112,6 +112,8 @@ export default defineConfig([
       "depend/ban-dependencies": allowDependencies(
         // `moment` is exempted from `depend/ban-dependencies` — this library legitimately depends on it for locale detection, as a library cannot rely on Obsidian's runtime global.
         "moment",
+        // `rimraf` is exempted from `depend/ban-dependencies` — the `clean` script relies on it for cross-platform recursive directory removal. The module-replacements alternatives are cumbersome: the native `fs.rm` replacement requires remembering `{ recursive: true, force: true }` (plus retry emulation on Windows) and `fs.rmdir` is deprecated, while `premove` has minimal activity.
+        "rimraf",
       ),
     },
   },
