@@ -9,7 +9,6 @@
   import { slide } from "svelte/transition";
   import type { DeepWritable } from "ts-essentials";
   import { consumeEvent, getKeyModifiers } from "../utils.js";
-  import { isEmpty } from "../internals/helpers.js";
 
   export const DIRECTIONS = ["next", "previous"] as const;
   export type Direction = (typeof DIRECTIONS)[number];
@@ -129,11 +128,11 @@
       bind:value={params.findText}
       bind:this={inputElement}
       onkeydown={(event) => {
-        if (event.key === "Escape" && isEmpty(getKeyModifiers(event))) {
+        if (event.key === "Escape" && getKeyModifiers(event).length === 0) {
           onClose();
           consumeEvent(event);
         }
-        if (event.key === "Enter" && isEmpty(getKeyModifiers(event))) {
+        if (event.key === "Enter" && getKeyModifiers(event).length === 0) {
           onFind("next", params);
           consumeEvent(event);
         }
