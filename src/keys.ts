@@ -1,10 +1,14 @@
-import type { Hotkey, HotkeyManager, KeymapEventListener } from "obsidian";
+import type {
+  Hotkey,
+  HotkeyManager,
+  KeymapContext,
+  KeymapEventListener,
+} from "obsidian";
 import { noop } from "es-toolkit/function";
 import type { PluginContext } from "./plugin.js";
 import { around } from "monkey-around";
 import { cloneAsWritable } from "./utils.js";
 import { revealPrivate } from "./private.js";
-import { constant } from "./internals/helpers.js";
 
 export function newHotkeyListener(
   context: PluginContext,
@@ -84,7 +88,7 @@ export function newHotkeyListener(
         }),
       );
 
-      return (evt, ctx) => {
+      return (evt: KeyboardEvent, ctx: KeymapContext) => {
         revealPrivate(
           context,
           [app, keymap],
@@ -111,6 +115,6 @@ export function newHotkeyListener(
         );
       };
     },
-    constant(noop),
+    () => noop,
   );
 }

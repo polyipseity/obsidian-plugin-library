@@ -10,7 +10,6 @@ import {
 } from "obsidian";
 import type { DeepReadonly, DeepWritable, Writable } from "ts-essentials";
 import type { Fixer } from "./fixers.js";
-import { constant } from "./internals/helpers.js";
 import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, JSON_STRINGIFY_SPACE, SI_PREFIX_SCALE } from "./magic.js";
 import {
@@ -306,7 +305,7 @@ export class ListModal<T> extends Modal {
     );
     if (title) {
       modalUI.new(
-        constant(titleEl),
+        () => titleEl,
         (ele) => {
           ele.textContent = title();
         },
@@ -517,9 +516,13 @@ export class EditDataModal<T extends object> extends Modal {
           const ret = createChildElement(contentEl, "div", (ele) => {
             ele.classList.add(DOMClasses.MOD_WARNING);
           });
-          ui.new(constant(ret), null, (ele) => {
-            ele.remove();
-          });
+          ui.new(
+            () => ret,
+            null,
+            (ele) => {
+              ele.remove();
+            },
+          );
           return ret;
         })(),
       ),
@@ -544,7 +547,7 @@ export class EditDataModal<T extends object> extends Modal {
       });
     if (title) {
       modalUI.new(
-        constant(titleEl),
+        () => titleEl,
         (ele) => {
           ele.textContent = title();
         },
@@ -775,7 +778,7 @@ export class DialogModal extends Modal {
     );
     if (title) {
       modalUI.new(
-        constant(titleEl),
+        () => titleEl,
         (ele) => {
           ele.textContent = title();
         },

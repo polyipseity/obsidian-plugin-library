@@ -21,7 +21,6 @@ import {
   type ViewStateResult,
 } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";
-import { constant } from "./internals/helpers.js";
 import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
 import type { PluginContext } from "./plugin.js";
@@ -292,9 +291,13 @@ export class UpdatableUI {
 }
 
 export function statusUI(ui: UpdatableUI, element: HTMLElement): StatusUI {
-  ui.new(constant(element), noop, () => {
-    element.textContent = null;
-  });
+  ui.new(
+    () => element,
+    noop,
+    () => {
+      element.textContent = null;
+    },
+  );
   return deepFreeze({
     report(status?: unknown) {
       element.textContent = status === void 0 ? null : toJSONOrString(status);
@@ -580,7 +583,7 @@ export async function saveFileAs(
         }
         return false;
       },
-      constant(false),
+      () => false,
     )
   ) {
     return;

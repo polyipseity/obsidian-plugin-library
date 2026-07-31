@@ -2,7 +2,7 @@ import { throttle } from "es-toolkit/function";
 import { isEqual, isNil } from "es-toolkit/predicate";
 import type { AsyncOrSync, DeepReadonly, DeepWritable } from "ts-essentials";
 import { type Fixed, type Fixer, markFixed } from "./fixers.js";
-import { constant, isEmpty } from "./internals/helpers.js";
+import { isEmpty } from "./internals/helpers.js";
 import { SAVE_SETTINGS_WAIT } from "./internals/magic.js";
 import {
   DOUBLE_ACTION_WAIT,
@@ -133,7 +133,7 @@ export class StorageSettingsManager<
       context,
       [app],
       (app2) => `${app2.appId}.${id}.${StorageSettingsManager.KEY}`,
-      constant(null),
+      () => null,
     );
   });
 

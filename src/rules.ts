@@ -1,7 +1,6 @@
 import { ALWAYS_REGEX, NEVER_REGEX } from "./magic.js";
 import { identity } from "es-toolkit/function";
 import { escapeRegExp } from "es-toolkit/string";
-import { constant } from "./internals/helpers.js";
 import type { DeepReadonly } from "ts-essentials";
 import { EventEmitterLite } from "./utils.js";
 import { ListModal } from "./modals.js";
@@ -121,7 +120,7 @@ export function rulesList(
   return new ListModal(
     context,
     ListModal.stringInputter<string>({ back: identity, forth: identity }),
-    constant(""),
+    () => "",
     data,
     {
       description: () => i18n.t("components.rules-list.description"),
