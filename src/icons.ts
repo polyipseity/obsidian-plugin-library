@@ -3,10 +3,16 @@ import { type Plugin, addIcon as addIcon0, removeIcon } from "obsidian";
 import { InternalDOMClasses } from "./internals/magic.js";
 
 export function addIcon(id: string, content: string): () => void {
-  const svgEl = new DOMParser().parseFromString(
-    content,
-    "image/svg+xml",
-  ).documentElement;
+  const doc = new DOMParser().parseFromString(content, "image/svg+xml");
+  // `parsererror` marks an XML parse error; tolerate malformed input that
+  // still yields an svg root (e.g. `<svg>incomplete`).
+  if (
+    doc.querySelector("parsererror") !== null &&
+    doc.documentElement.tagName !== "svg"
+  ) {
+    throw new TypeError(content);
+  }
+  const svgEl = doc.documentElement;
   svgEl.classList.add(addIcon.CLASS);
   addIcon0(id, svgEl.outerHTML);
   return () => {
