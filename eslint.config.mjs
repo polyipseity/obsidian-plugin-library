@@ -106,4 +106,38 @@ export default defineConfig([
       "obsidianmd/ui/sentence-case-json": "off",
     },
   },
+  {
+    files: ["package.json"],
+    rules: {
+      "depend/ban-dependencies": allowDependencies(
+        // `moment` is exempted from `depend/ban-dependencies` — this library legitimately depends on it for locale detection, as a library cannot rely on Obsidian's runtime global.
+        "moment",
+      ),
+    },
+  },
 ]);
+
+/**
+ * Derive the `depend/ban-dependencies` rule for `package.json` from the upstream obsidianmd config, allowing the given dependencies in addition to the upstream defaults.
+ * @param {...string} dependencies - Dependencies to allow.
+ */
+function allowDependencies(...dependencies) {
+  let rule = eslintObsidianMd.configs.recommendedWithLocalesEn.find(
+    (config) =>
+      config.files?.includes("package.json") &&
+      config.rules?.["depend/ban-dependencies"],
+  )?.rules?.["depend/ban-dependencies"];
+  if (typeof rule === "undefined") {
+    return rule;
+  }
+  rule = Array.isArray(rule) ? [...rule] : [rule];
+  const /** @type {Record<string, unknown>} */ ruleConfig =
+      typeof rule[1] === "object" ? { ...rule[1] } : {};
+  const ruleConfigAllowed = Array.isArray(ruleConfig.allowed)
+    ? ruleConfig.allowed.slice()
+    : [];
+  ruleConfigAllowed.push(...dependencies);
+  ruleConfig.allowed = ruleConfigAllowed;
+  rule[1] = ruleConfig;
+  return rule;
+}
