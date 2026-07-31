@@ -8,6 +8,8 @@ import {
   type i18n,
 } from "i18next";
 import resourcesToBackend from "i18next-resources-to-backend";
+// eslint-disable-next-line eslint-comments/no-restricted-disable -- See below.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- This is the library itself, not an Obsidian plugin; `moment` is a direct dependency.
 import { locale } from "moment";
 import type { AsyncOrSync } from "ts-essentials";
 import { ResourceComponent } from "./obsidian.js";

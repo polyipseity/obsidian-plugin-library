@@ -18,6 +18,24 @@ __[Repository] · [Changelog] · [Other things] · [Installation](#installation)
 
 This is NOT an installable plugin.
 
+## Usage
+
+This library depends on `moment` and `i18next`, which Obsidian already bundles. When building your plugin, remap this import to Obsidian's global to avoid bundling duplicates. With esbuild (the default for Obsidian plugins):
+
+```js
+import { esbuildPluginGlobals } from "esbuild-plugin-globals";
+
+// In your esbuild config:
+plugins: [
+  esbuildPluginGlobals({
+    i18next: "i18next",
+    moment: "moment",
+  }),
+]
+```
+
+For other build tools, set up equivalent aliases to the global `moment` and `i18next` object provided by Obsidian.
+
 ## Contributing
 
 Contributions are welcome!
