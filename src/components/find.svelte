@@ -3,12 +3,13 @@
 <script lang="ts" module>
   // exported types and constants for library consumers
   import { type i18n, default as i18next } from "i18next";
-  import { isEmpty, noop } from "lodash-es";
+  import { noop } from "es-toolkit/function";
   import { setIcon } from "obsidian";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import type { DeepWritable } from "ts-essentials";
   import { consumeEvent, getKeyModifiers } from "../utils.js";
+  import { isEmpty } from "../internals/helpers.js";
 
   export const DIRECTIONS = ["next", "previous"] as const;
   export type Direction = (typeof DIRECTIONS)[number];

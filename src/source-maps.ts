@@ -4,13 +4,13 @@ import {
   sourceContentFor,
 } from "@jridgewell/trace-mapping";
 import { fromObject, fromSource } from "convert-source-map";
-import { isEmpty } from "lodash-es";
 import {
   type Mapping,
   type Position,
   SourceMapGenerator,
   type StartOfSourceMap,
 } from "source-map";
+import { isEmpty } from "./internals/helpers.js";
 import { FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT } from "./internals/magic.js";
 import type { AsyncFunctionConstructor } from "./types.js";
 import { assignExact, splitLines } from "./utils.js";

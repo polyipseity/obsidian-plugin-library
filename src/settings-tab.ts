@@ -1,7 +1,8 @@
-import { identity, isEmpty } from "lodash-es";
+import { identity } from "es-toolkit/function";
 import { PluginSettingTab } from "obsidian";
 import type { DeepReadonly } from "ts-essentials";
 import type { Fixer } from "./fixers.js";
+import { isEmpty } from "./internals/helpers.js";
 import { DOMClasses } from "./magic.js";
 import { EditDataModal, ListModal } from "./modals.js";
 import { LambdaComponent, UpdatableUI } from "./obsidian.js";

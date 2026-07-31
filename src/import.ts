@@ -1,4 +1,4 @@
-import { isNil } from "lodash-es";
+import { isNil } from "es-toolkit/predicate";
 import PLazy from "p-lazy";
 import { lazyProxy } from "./utils.js";
 

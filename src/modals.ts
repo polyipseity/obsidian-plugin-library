@@ -1,4 +1,4 @@
-import { constant, noop } from "lodash-es";
+import { noop } from "es-toolkit/function";
 import {
   App,
   type ButtonComponent,
@@ -10,6 +10,7 @@ import {
 } from "obsidian";
 import type { DeepReadonly, DeepWritable, Writable } from "ts-essentials";
 import type { Fixer } from "./fixers.js";
+import { constant } from "./internals/helpers.js";
 import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, JSON_STRINGIFY_SPACE, SI_PREFIX_SCALE } from "./magic.js";
 import {
