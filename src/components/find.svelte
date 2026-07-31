@@ -3,12 +3,12 @@
 <script lang="ts" module>
   // exported types and constants for library consumers
   import { type i18n, default as i18next } from "i18next";
+  import { isEmpty, noop } from "lodash-es";
+  import { setIcon } from "obsidian";
+  import { onMount } from "svelte";
+  import { slide } from "svelte/transition";
   import type { DeepWritable } from "ts-essentials";
   import { consumeEvent, getKeyModifiers } from "../utils.js";
-  import { isEmpty, noop } from "lodash-es";
-  import { onMount } from "svelte";
-  import { setIcon } from "obsidian";
-  import { slide } from "svelte/transition";
 
   export const DIRECTIONS = ["next", "previous"] as const;
   export type Direction = (typeof DIRECTIONS)[number];
@@ -35,7 +35,9 @@
     params?: DeepWritable<Params>;
     results?: string;
     onClose?: () => unknown;
+    // eslint-disable-next-line no-unused-vars -- Callback parameters are consumed by the caller, not referenced in this file
     onFind?: (direction: Direction, params: Params) => unknown;
+    // eslint-disable-next-line no-unused-vars -- Callback parameters are consumed by the caller, not referenced in this file
     onParamsChanged?: (params: Params) => unknown;
     initialFocus?: boolean;
   }
