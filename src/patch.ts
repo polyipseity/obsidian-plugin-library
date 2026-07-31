@@ -1,4 +1,5 @@
-import { constant, noop } from "lodash-es";
+import { noop } from "es-toolkit/function";
+import { constant } from "./internals/helpers.js";
 import { around } from "monkey-around";
 import type { Plugins, Workspace } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";

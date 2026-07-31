@@ -1,7 +1,8 @@
-import deepEqual from "deep-equal";
-import { constant, isEmpty, isNil, throttle } from "lodash-es";
+import { throttle } from "es-toolkit/function";
+import { isEqual, isNil } from "es-toolkit/predicate";
 import type { AsyncOrSync, DeepReadonly, DeepWritable } from "ts-essentials";
 import { type Fixed, type Fixer, markFixed } from "./fixers.js";
+import { constant, isEmpty } from "./internals/helpers.js";
 import { SAVE_SETTINGS_WAIT } from "./internals/magic.js";
 import {
   DOUBLE_ACTION_WAIT,
@@ -65,7 +66,7 @@ export abstract class AbstractSettingsManager<
         cur = accessor(settings),
         prev0 = prev;
       prev = cur;
-      if (!deepEqual(cur, prev0, { strict: true })) {
+      if (!isEqual(cur, prev0)) {
         await callback(cur, prev0, settings);
       }
     });
@@ -334,7 +335,7 @@ export function registerSettingsCommands(context: PluginContext): void {
           process = (): void => {
             fileManager
               .processFrontMatter(file, (fm: object) => {
-                if (!deepEqual(fm, cachedFm, { strict: true })) {
+                if (!isEqual(fm, cachedFm)) {
                   throw new Error(i18n.t("errors.retry-outdated-frontmatter"));
                 }
                 clearProperties(fm);

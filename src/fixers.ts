@@ -6,8 +6,8 @@ import {
 } from "./typeof.js";
 import type { ReadonlyTuple, Unchecked } from "./types.js";
 import { inSet, isHomogenousArray, lazyInit } from "./utils.js";
+import { isEqual } from "es-toolkit/predicate";
 import type { DeepWritable } from "ts-essentials";
-import deepEqual from "deep-equal";
 
 export interface Fixed<T> {
   readonly value: DeepWritable<T>;
@@ -19,9 +19,7 @@ export function markFixed<T>(
   unchecked: unknown,
   fixed: DeepWritable<T>,
 ): Fixed<T> {
-  const validator = lazyInit(() =>
-    deepEqual(unchecked, fixed, { strict: true }),
-  );
+  const validator = lazyInit(() => isEqual(unchecked, fixed));
   return Object.freeze({
     get valid() {
       return validator();

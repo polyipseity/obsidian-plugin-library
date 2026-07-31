@@ -1,13 +1,7 @@
 import inspect, { type Options } from "browser-util-inspect";
-import {
-  escapeRegExp,
-  identity,
-  isEmpty,
-  isNil,
-  isObject,
-  noop,
-  range,
-} from "lodash-es";
+import { identity, noop } from "es-toolkit/function";
+import { isNil } from "es-toolkit/predicate";
+import { escapeRegExp } from "es-toolkit/string";
 import type {
   AsyncOrSync,
   DeepReadonly,
@@ -37,6 +31,7 @@ import {
 } from "./types.js";
 
 import AsyncLock from "async-lock";
+import { isEmpty, isObject, range } from "./internals/helpers.js";
 import { MAX_LOCK_PENDING } from "./internals/magic.js";
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift";

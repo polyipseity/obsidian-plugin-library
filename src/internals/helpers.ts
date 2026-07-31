@@ -32,7 +32,7 @@ export function isEmpty(value: unknown): boolean {
 /**
  * Check if `value` is an object or a function, matching `lodash.isObject` semantics: `null` is not an object.
  */
-export function isObject(value: unknown): boolean {
+export function isObject(value: unknown): value is object {
   return (
     value !== null && (typeof value === "object" || typeof value === "function")
   );

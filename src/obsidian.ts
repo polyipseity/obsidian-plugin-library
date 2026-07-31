@@ -1,6 +1,7 @@
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import { noop } from "es-toolkit/function";
+import { cloneDeep } from "es-toolkit/object";
 import { saveAs } from "file-saver";
-import { cloneDeep, constant, noop } from "lodash-es";
 import { around } from "monkey-around";
 import {
   AbstractTextComponent,
@@ -20,6 +21,7 @@ import {
   type ViewStateResult,
 } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";
+import { constant } from "./internals/helpers.js";
 import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
 import type { PluginContext } from "./plugin.js";
