@@ -10,7 +10,7 @@
     "async-lock": "^1.4.1",
     "browser-util-inspect": "^0.2.0",
     "convert-source-map": "^2.0.0",
-    "es-toolkit": "1.50.0",
+    "es-toolkit": "^1.50.0",
     "espree": "^11.1.0",
     "file-saver": "^2.0.5",
     "i18next": "^26.1.0",
