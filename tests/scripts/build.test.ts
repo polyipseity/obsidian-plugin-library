@@ -137,6 +137,7 @@ describe("scripts/build.mjs", () => {
 
   it("logs warnings when rebuild returns warnings and no metafile", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "log").mockImplementation(() => {});
 
     const project = await fs.mkdtemp(path.join(os.tmpdir(), "build-proj-"));
     const fakeWarning = { text: "warn" };
@@ -199,6 +200,7 @@ describe("scripts/build.mjs", () => {
       context,
     }));
 
+    vi.spyOn(console, "log").mockImplementation(() => {});
     const cwd = process.cwd();
     process.chdir(project);
     try {
@@ -229,6 +231,7 @@ describe("scripts/build.mjs", () => {
     });
 
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    vi.spyOn(console, "log").mockImplementation(() => {});
 
     const fakeMetafile = { inputs: { "a.js": {} } };
     const context = vi.fn().mockResolvedValue({
