@@ -961,6 +961,11 @@ describe("utils.ts — utility functions", () => {
       expect(result).toEqual(["a", "b", "c"]);
     });
 
+    it("generates descending range of code points", () => {
+      const result = rangeCodePoint(codePoint("d"), codePoint("a"));
+      expect(result).toEqual(["d", "c", "b"]);
+    });
+
     it("is frozen", () => {
       const result = rangeCodePoint(codePoint("a"), codePoint("c"));
       expect(Object.isFrozen(result)).toBe(true);

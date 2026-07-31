@@ -1,5 +1,6 @@
 import inspect, { type Options } from "browser-util-inspect";
 import { identity, noop } from "es-toolkit/function";
+import { range } from "es-toolkit/math";
 import { isNil } from "es-toolkit/predicate";
 import { escapeRegExp } from "es-toolkit/string";
 import type {
@@ -31,7 +32,7 @@ import {
 } from "./types.js";
 
 import AsyncLock from "async-lock";
-import { isEmpty, isObject, range } from "./internals/helpers.js";
+import { isEmpty, isObject } from "./internals/helpers.js";
 import { MAX_LOCK_PENDING } from "./internals/magic.js";
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift";
@@ -846,8 +847,11 @@ export function rangeCodePoint(
   end?: CodePoint,
   step?: number,
 ): readonly string[] {
+  const start0 = start.codePointAt(0),
+    end0 = end?.codePointAt(0),
+    step0 = step ?? (end0 === undefined ? 1 : start0 <= end0 ? 1 : -1);
   return deepFreeze(
-    range(start.codePointAt(0), end?.codePointAt(0), step).map((cp) =>
+    range(end0 === undefined ? 0 : start0, end0 ?? start0, step0).map((cp) =>
       String.fromCodePoint(cp),
     ),
   );
