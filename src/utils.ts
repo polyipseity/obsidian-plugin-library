@@ -1,7 +1,7 @@
 import inspect, { type Options } from "browser-util-inspect";
 import { identity, noop } from "es-toolkit/function";
 import { range } from "es-toolkit/math";
-import { isNil } from "es-toolkit/predicate";
+import { isNil, isPrimitive } from "es-toolkit/predicate";
 import { escapeRegExp } from "es-toolkit/string";
 import type {
   AsyncOrSync,
@@ -32,7 +32,6 @@ import {
 } from "./types.js";
 
 import AsyncLock from "async-lock";
-import { isObject } from "./internals/helpers.js";
 import { MAX_LOCK_PENDING } from "./internals/magic.js";
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift";
@@ -374,8 +373,11 @@ function deepFreeze0<T>(value: T, freezing: WeakSet<object>): DeepReadonly<T> {
     freezing.add(value);
     for (const subkey of typedOwnKeys(value)) {
       const subvalue = value[subkey];
-      if (isObject(subvalue) && !freezing.has(subvalue)) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises -- This is not intended to return a `Promise`.
+      if (
+        subvalue !== null &&
+        (typeof subvalue === "object" || typeof subvalue === "function") &&
+        !freezing.has(subvalue)
+      ) {
         deepFreeze0(subvalue, freezing);
       }
     }
@@ -467,7 +469,10 @@ export function instanceOf<T extends Node | UIEvent>(
   self0: unknown,
   type: Newable<T>,
 ): self0 is T {
-  if (!isObject(self0)) {
+  if (
+    self0 === null ||
+    (typeof self0 !== "object" && typeof self0 !== "function")
+  ) {
     return false;
   }
   if (self0 instanceof type) {
@@ -482,7 +487,7 @@ export function instanceOf<T extends Node | UIEvent>(
       "ownerDocument" in self0
         ? launderUnchecked<AnyObject>(self0.ownerDocument)["defaultView"]
         : launderUnchecked<AnyObject>(self0)["view"],
-    typeWin: unknown = isObject(win) ? Reflect.get(win, name) : null;
+    typeWin: unknown = !isPrimitive(win) ? Reflect.get(win, name) : null;
   if (typeof typeWin === "function" && self0 instanceof typeWin) {
     return true;
   }
@@ -548,7 +553,7 @@ export function lazyProxy<T extends object>(initializer: () => T): T {
           argArray,
           newTarget === target ? target0 : newTarget,
         );
-        if (isObject(ret)) {
+        if (!isPrimitive(ret)) {
           return ret;
         }
         throw new TypeError(String(ret));
