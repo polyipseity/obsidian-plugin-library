@@ -231,9 +231,7 @@ export function asyncDebounce<A extends readonly unknown[], R>(
     });
 }
 
-export function asyncFunction(
-  self0: typeof window,
-): AsyncFunctionConstructor {
+export function asyncFunction(self0: typeof window): AsyncFunctionConstructor {
   return self0.eval("(async()=>{}).constructor") as AsyncFunctionConstructor;
 }
 
@@ -365,6 +363,8 @@ export function createDocumentFragment(
   self0: Document,
   callback: (fragment: DocumentFragment) => void,
 ): DocumentFragment {
+  // eslint-disable-next-line eslint-comments/no-restricted-disable -- Need to suppress prefer-create-el (see below)
+  // eslint-disable-next-line obsidianmd/prefer-create-el -- Function accepts Document, not Window, so createFragment() is unavailable; callers pass element.ownerDocument naturally
   const ret = self0.createDocumentFragment();
   callback(ret);
   return ret;
