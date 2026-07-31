@@ -10,6 +10,12 @@ import {
 } from "../../src/source-maps.js";
 import type { AsyncFunctionConstructor } from "../../src/types.js";
 
+// A literal `//# sourceMappingURL=` line in this file would be matched by vite's
+// sourcemap extraction (convert-source-map.fromSource on the raw file), which
+// base64-decodes the payload and warns when it fails to parse. Assemble the
+// comment at runtime instead.
+const SOURCE_MAP_COMMENT = "//# sourceMappingURL=";
+
 describe("source-maps.ts — source map generation", () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -129,11 +135,12 @@ const z = 3;`;
     });
 
     it("handles script with existing source map comment", () => {
-      // Deliberately break the source map comment to avoid triggering source map parsing in the test environment
+      // Assemble the comment at runtime (see SOURCE_MAP_COMMENT above) so the
+      // raw file contains no literal sourceMappingURL line for vite to parse.
       const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
       const script = `const x = 1;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
+${SOURCE_MAP_COMMENT}data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
 
       // Should not throw and should log debug information (mocked to avoid printing stacktrace)
       expect(() => generateSourceMap(script)).not.toThrow();
@@ -364,9 +371,10 @@ const z = 3;`;
     it("handles invalid source map in script gracefully", () => {
       const debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
 
-      // Deliberately break the source map comment to avoid triggering source map parsing in the test environment
+      // Assemble the comment at runtime (see SOURCE_MAP_COMMENT above) so the
+      // raw file contains no literal sourceMappingURL line for vite to parse.
       const script = `const x = 1;
-//# sourceMappingURL=data:application/json;base64,invalid!!!`;
+${SOURCE_MAP_COMMENT}data:application/json;base64,invalid!!!`;
 
       expect(() => generateSourceMap(script)).not.toThrow();
       expect(debugSpy).toHaveBeenCalled();
