@@ -80,7 +80,8 @@ describe("rules.ts — rule parsing and testing", () => {
       expect(rules[0]).toHaveProperty("type", "error");
       expect(rules[0]).toHaveProperty("value");
 
-      expect(debugSpy).toHaveBeenCalled();
+      // src/rules.ts logs the `new RegExp` SyntaxError via console.debug.
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(SyntaxError));
     });
 
     it("escapes literal strings by default", () => {
@@ -419,7 +420,8 @@ describe("rules.ts — rule parsing and testing", () => {
 
       expect(rules[0]).toBeDefined();
       expect(rules[0]).toHaveProperty("type", "error");
-      expect(debugSpy).toHaveBeenCalled();
+      // src/rules.ts logs the `new RegExp` SyntaxError via console.debug.
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(SyntaxError));
     });
   });
 });
