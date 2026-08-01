@@ -144,7 +144,7 @@ ${SOURCE_MAP_COMMENT}data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
 
       // Should not throw and should log debug information (mocked to avoid printing stacktrace)
       expect(() => generateSourceMap(script)).not.toThrow();
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
     });
 
     it("handles Unicode characters", () => {
@@ -377,7 +377,7 @@ ${SOURCE_MAP_COMMENT}data:application/json;base64,eyJ2ZXJzaW9uIjozfQ==`;
 ${SOURCE_MAP_COMMENT}data:application/json;base64,invalid!!!`;
 
       expect(() => generateSourceMap(script)).not.toThrow();
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
     });
 
     it("handles deletion at first position", () => {
@@ -427,7 +427,11 @@ ${SOURCE_MAP_COMMENT}data:application/json;base64,invalid!!!`;
       generateFunctionSourceMap(BrokenCtor, script);
 
       // verify logging happened and avoid printing to the terminal
-      expect(errorSpy).toHaveBeenCalled();
+      expect(errorSpy).toHaveBeenCalledWith(
+        "LoremIpsum",
+        expect.stringContaining("function broken"),
+        BrokenCtor,
+      );
     });
   });
 
