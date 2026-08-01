@@ -20,7 +20,9 @@ export interface RevealPrivateExempt {
   readonly __reveal_private_exempt?: never;
 }
 type RevealPrivate0<T> = Omit<T, PrivateKeys$> &
-  UnionToIntersection<DistributeValues<T, PrivateKeys$>>;
+  (DistributeValues<T, PrivateKeys$> extends never
+    ? unknown
+    : UnionToIntersection<DistributeValues<T, PrivateKeys$>>);
 export type RevealPrivate<T> =
   T extends Exclude<Builtin, Error>
     ? T
