@@ -115,7 +115,7 @@ describe("i18n.ts — internationalization utilities", () => {
       const i18n = await createI18n(resources);
       const result = i18n.t("nonexistent.key");
 
-      expect(warnSpy).toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledWith("Missing: nonexistent.key");
       expect(result).toBeTruthy(); // Should return key or default
     });
 
@@ -135,7 +135,9 @@ describe("i18n.ts — internationalization utilities", () => {
       // Call without providing required interpolation
       i18n.t("test");
 
-      expect(warnSpy).toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledWith(
+        "Missing interpolation name in Hello {{name}}",
+      );
     });
 
     it("applies custom formatters", async () => {
@@ -406,7 +408,11 @@ describe("i18n.ts — internationalization utilities", () => {
       // This should trigger the reentrant protection
       i18n.t("test.{{value}}");
 
-      expect(warnSpy).toHaveBeenCalled();
+      // Reentrant branch logs `console.warn(value, text)` (see src/i18n.ts)
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.any(Array),
+        "Error with {{missing}}",
+      );
     });
   });
 });
