@@ -178,8 +178,13 @@ describe("keys.ts — hotkey management", () => {
       expect(typeof listener).toBe("function");
 
       // restore spies (afterEach will also restore, but keep explicit expectation)
-      expect(debugSpy).toHaveBeenCalled();
-      expect(warnSpy).toHaveBeenCalled();
+      // revealPrivate (src/private.ts) logs the caught TypeError and the
+      // translation-keyed warning (mock `t` returns the key as-is).
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(TypeError));
+      expect(warnSpy).toHaveBeenCalledWith(
+        "errors.private-API-changed",
+        expect.any(Error),
+      );
     });
   });
 
@@ -556,7 +561,7 @@ describe("keys.ts — hotkey management", () => {
       expect(mockApp.commands.executeCommand).toHaveBeenCalled();
 
       // ensure revealPrivate logged the expected private-API warning and the original error
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "errors.private-API-changed",
         expect.any(Error),
