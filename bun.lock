@@ -27,7 +27,7 @@
         "source-map": "^0.7.6",
         "svelte": "^5.38.0",
         "ts-deepmerge": "^8.0.0",
-        "ts-essentials": "^10.1.1",
+        "ts-essentials": "^10.2.1",
         "valibot": "^1.4.2",
       },
       "devDependencies": {
