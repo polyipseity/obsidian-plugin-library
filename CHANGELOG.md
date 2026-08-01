@@ -1,5 +1,18 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
+## 2.0.1
+
+### Patch Changes
+
+- 38de0b1: Fix `RevealPrivate` collapsing un-branded shapes when `ts-essentials` >= 10.2.0 is installed
+
+  - `UnionToIntersection<never>` changed from `unknown` to `never` in
+    `ts-essentials` 10.2.0, which made `RevealPrivate` collapse shapes without
+    private key brands to `never` (surfacing as `Type '{}'` at consumer call
+    sites)
+  - Intersect with `unknown` instead when no private keys match, restoring the
+    previous behavior on both old and new `ts-essentials` versions
+
 ## 2.0.0
 
 ### Major Changes
