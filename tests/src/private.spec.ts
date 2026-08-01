@@ -80,7 +80,7 @@ describe("private.ts — private API access", () => {
       );
 
       expect(result).toBe("fallback-value");
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalled();
     });
 
@@ -99,7 +99,7 @@ describe("private.ts — private API access", () => {
         () => null,
       );
 
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(Error),
@@ -185,7 +185,7 @@ describe("private.ts — private API access", () => {
         },
       );
 
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(testError);
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         testError,
@@ -248,7 +248,7 @@ describe("private.ts — private API access", () => {
       );
 
       expect(result).toBe("async-fallback");
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(Error),
@@ -270,7 +270,7 @@ describe("private.ts — private API access", () => {
         async () => null,
       );
 
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(Error),
@@ -312,7 +312,7 @@ describe("private.ts — private API access", () => {
       );
 
       expect(syncResult).toBe("sync-fallback");
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(Error),
@@ -335,7 +335,7 @@ describe("private.ts — private API access", () => {
       );
 
       expect(asyncResult).toBe("async-fallback");
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(Error),
@@ -367,7 +367,7 @@ describe("private.ts — private API access", () => {
       );
 
       expect(result).toBe("handled");
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(Error),
@@ -392,7 +392,7 @@ describe("private.ts — private API access", () => {
         },
       );
 
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(testError);
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         testError,
@@ -450,7 +450,7 @@ describe("private.ts — private API access", () => {
       );
 
       expect(result).toBe("handled-null");
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(TypeError));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(TypeError),
@@ -473,7 +473,7 @@ describe("private.ts — private API access", () => {
       );
 
       expect(result).toBe("recovered");
-      expect(debugSpy).toHaveBeenCalled();
+      expect(debugSpy).toHaveBeenCalledWith(expect.any(Error));
       expect(warnSpy).toHaveBeenCalledWith(
         "translated:errors.private-API-changed",
         expect.any(Error),
