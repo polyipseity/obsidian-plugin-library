@@ -8,6 +8,7 @@ import {
   revealPrivateAsync,
   type HasPrivate,
   type PrivateKeys,
+  type RevealPrivate,
 } from "../../src/private.js";
 
 describe("private.ts — private API access", () => {
@@ -412,6 +413,23 @@ describe("private.ts — private API access", () => {
       // Compile-time type check
       const obj = makeHasPrivate({});
       expect(obj).toBeDefined();
+    });
+
+    it("RevealPrivate does not collapse un-branded shapes", () => {
+      // Compile-time type check: an un-branded shape (no `Private<$X, PrivateKey>`
+      // brand) must keep its properties after `RevealPrivate`. Regression for
+      // ts-essentials >= 10.2.0, where `UnionToIntersection<never>` became `never`
+      // and collapsed `RevealPrivate0` to `{}`.
+      interface PlainSetting {
+        readonly settingTabs: readonly unknown[];
+      }
+      interface Host {
+        readonly setting: PlainSetting;
+      }
+      type Revealed = RevealPrivate<Host>;
+      const revealed = { setting: { settingTabs: [] } } as unknown as Revealed;
+      const _typeCheck: readonly unknown[] = revealed.setting.settingTabs;
+      expect(_typeCheck).toEqual([]);
     });
   });
 
