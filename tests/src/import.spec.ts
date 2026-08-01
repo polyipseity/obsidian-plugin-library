@@ -365,6 +365,9 @@ describe("import.ts — dynamic import utilities", () => {
 
       expect(result).toBe(false);
       expect(debugSpy).toHaveBeenCalled();
+      const err: unknown = debugSpy.mock.calls[0]?.[0];
+      if (!(err instanceof Error)) throw new Error("Expected Error argument");
+      expect(err.message).toBe("Test error");
     });
   });
 });
