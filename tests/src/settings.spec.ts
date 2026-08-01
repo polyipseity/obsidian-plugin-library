@@ -352,6 +352,9 @@ describe("settings.ts — settings management", () => {
 
       expect(manager.value.count).toBe(0);
 
+      // src/settings.ts `read0()` logs the JSON.parse SyntaxError via console.debug.
+      expect(consoleDebug).toHaveBeenCalledWith(expect.any(SyntaxError));
+
       consoleDebug.mockRestore();
     });
 
