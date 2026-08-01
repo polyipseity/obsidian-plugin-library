@@ -93,6 +93,10 @@ describe("obsidian.ts — Obsidian API utilities", () => {
         component.load();
       }).toThrow("Load error");
 
+      // The mocked Obsidian `Component` does not catch or log `onload` errors,
+      // so `console.error` must remain silent here.
+      expect(consoleError).not.toHaveBeenCalled();
+
       consoleError.mockRestore();
     });
 
@@ -109,6 +113,10 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       expect(() => {
         component.unload();
       }).toThrow("Unload error");
+
+      // The mocked Obsidian `Component` does not catch or log `onunload` errors,
+      // so `console.error` must remain silent here.
+      expect(consoleError).not.toHaveBeenCalled();
 
       consoleError.mockRestore();
     });
