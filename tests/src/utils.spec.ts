@@ -185,7 +185,7 @@ describe("utils.ts — utility functions", () => {
 
         expect(fn1).toHaveBeenCalled();
         expect(fn2).toHaveBeenCalled();
-        expect(errorSpy).toHaveBeenCalled();
+        expect(errorSpy).toHaveBeenCalledWith(expect.any(Error));
       });
 
       it("propagates errors in non-settled mode", () => {
