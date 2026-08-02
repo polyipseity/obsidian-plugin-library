@@ -60,7 +60,8 @@ export type IsExact<T, U> =
     ? true
     : false;
 export type ReadonlyTuple<Type = unknown> =
-  readonly [] | readonly [Type, ...Type[]];
+  | readonly []
+  | readonly [Type, ...Type[]];
 export type SemVerString = Opaque<string, (typeof LibraryUUIDs)["UUID1"]>;
 export type Unchecked<T> = { readonly [_ in keyof T]?: unknown };
 

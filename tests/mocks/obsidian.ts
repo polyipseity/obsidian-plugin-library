@@ -110,7 +110,8 @@ const state: {
   editors: Editor[];
   icons: Map<string, string>;
   requestHandler:
-    ((param: RequestUrlParam) => Promise<RequestUrlResponse>) | null;
+    | ((param: RequestUrlParam) => Promise<RequestUrlResponse>)
+    | null;
   requestStubs: {
     matcher: string | RegExp;
     response: RequestUrlResponse | (() => RequestUrlResponse);

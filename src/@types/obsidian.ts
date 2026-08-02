@@ -57,7 +57,10 @@ import type { Private, RevealPrivate } from "../private.js";
 
 // @ts-expect-error 6196 -- TypeScript bug failing to recognize that they are used.
 type _TS_6196 =
-  Instruction | KeymapEventHandler | KeymapEventListener | Modifier;
+  | Instruction
+  | KeymapEventHandler
+  | KeymapEventListener
+  | Modifier;
 
 declare const PRIVATE_KEY: unique symbol;
 type PrivateKey = typeof PRIVATE_KEY;
@@ -74,7 +77,8 @@ interface $App {
   readonly plugins: Plugins;
   readonly setting: {
     readonly settingTabs: readonly (
-      CommunityPluginsSettingTab | UnknownSettingTab
+      | CommunityPluginsSettingTab
+      | UnknownSettingTab
     )[];
   };
 }
@@ -99,7 +103,8 @@ interface $CommunityPluginsSettingTab extends SettingTab {
    * @deprecated Outdated private API.
    */
   readonly renderInstalledPlugin?:
-    ((manifest: PluginManifest, element: HTMLElement) => void) | undefined;
+    | ((manifest: PluginManifest, element: HTMLElement) => void)
+    | undefined;
 }
 
 interface $DataAdapter {
