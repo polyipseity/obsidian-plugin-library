@@ -1,4 +1,8 @@
 import inspect, { type Options } from "browser-util-inspect";
+import DOMPurify, {
+  type Config as DOMPurifyConfig,
+  type WindowLike,
+} from "dompurify";
 import { identity, noop } from "es-toolkit/function";
 import { range } from "es-toolkit/math";
 import { isNil, isPrimitive } from "es-toolkit/predicate";
@@ -363,6 +367,29 @@ export function createDocumentFragment(
   const ret = self0.createDocumentFragment();
   callback(ret);
   return ret;
+}
+
+export function sanitizeHTML(
+  root: WindowLike,
+  html: string,
+  config?: Readonly<DOMPurifyConfig>,
+): string {
+  return DOMPurify(root).sanitize(html, config);
+}
+
+export function setSanitizedInnerHTML<T extends Element>(
+  element: T,
+  html: string,
+  config?: Readonly<DOMPurifyConfig>,
+): T {
+  const win = activeSelf(element);
+  // Note there is a risk that DOMPurify and DOMParser may not agree on how to parse HTML, but this is the best we can do without creating a temporary element and using innerHTML.
+  const parsed = new win.DOMParser().parseFromString(
+    sanitizeHTML(win, html, config),
+    "text/html",
+  );
+  element.replaceChildren(...parsed.body.childNodes);
+  return element;
 }
 
 export function deepFreeze<const T>(value: T): DeepReadonly<T> {
