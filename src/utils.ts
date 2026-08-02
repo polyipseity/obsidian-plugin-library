@@ -442,9 +442,9 @@ export function typedOwnKeys<T extends object>(
 
 export function typedKeys<T extends readonly (string | number | symbol)[]>() {
   return <
-    O extends (keyof O extends T[number]
+    O extends keyof O extends T[number]
       ? Readonly<Record<T[number], unknown>>
-      : never),
+      : never,
   >(
     obj: O,
   ): Readonly<T> => deepFreeze(Object.keys(obj)) as T;
@@ -910,10 +910,16 @@ export function toJSONOrString(
 }
 
 export function activeSelf(
-  reference?: Element | UIEvent | null,
+  reference?: Document | Element | UIEvent | null,
 ): typeof window {
   if (reference) {
-    if ("ownerDocument" in reference) {
+    if ("defaultView" in reference) {
+      const { defaultView } = reference;
+      if (defaultView) {
+        return defaultView;
+      }
+    }
+    if ("ownerDocument" in reference && reference.ownerDocument !== null) {
       const {
         ownerDocument: { defaultView },
       } = reference;
