@@ -32,9 +32,9 @@ export type NormalizeLocale<T> = T extends Builtin
   : // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- interface extension point
     T extends {}
     ? {
-        [K in keyof T as K extends `${infer K0}_${string}`
-          ? K0
-          : K]: NormalizeLocale<T[K]>;
+        [
+          K in keyof T as K extends `${infer K0}_${string}` ? K0 : K
+        ]: NormalizeLocale<T[K]>;
       }
     : IsUnknown<T> extends true
       ? unknown

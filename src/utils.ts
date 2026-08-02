@@ -442,9 +442,9 @@ export function typedOwnKeys<T extends object>(
 
 export function typedKeys<T extends readonly (string | number | symbol)[]>() {
   return <
-    O extends keyof O extends T[number]
+    O extends (keyof O extends T[number]
       ? Readonly<Record<T[number], unknown>>
-      : never,
+      : never),
   >(
     obj: O,
   ): Readonly<T> => deepFreeze(Object.keys(obj)) as T;

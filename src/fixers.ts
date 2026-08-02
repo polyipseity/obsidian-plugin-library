@@ -41,7 +41,7 @@ export function fixTyped<S, K extends keyof S>(
 export function fixArray<
   S,
   K extends keyof S,
-  V extends S[K] extends readonly (infer V0)[] ? V0 : never,
+  V extends (S[K] extends readonly (infer V0)[] ? V0 : never),
 >(
   defaults: S,
   from: Unchecked<S>,
