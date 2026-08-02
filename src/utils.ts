@@ -487,7 +487,7 @@ export function instanceOf<T extends Node | UIEvent>(
       "ownerDocument" in self0
         ? launderUnchecked<AnyObject>(self0.ownerDocument)["defaultView"]
         : launderUnchecked<AnyObject>(self0)["view"],
-    typeWin: unknown = !isPrimitive(win) ? Reflect.get(win, name) : null;
+    typeWin: unknown = isPrimitive(win) ? null : Reflect.get(win, name);
   if (typeof typeWin === "function" && self0 instanceof typeWin) {
     return true;
   }
@@ -553,10 +553,10 @@ export function lazyProxy<T extends object>(initializer: () => T): T {
           argArray,
           newTarget === target ? target0 : newTarget,
         );
-        if (!isPrimitive(ret)) {
-          return ret;
+        if (isPrimitive(ret)) {
+          throw new TypeError(String(ret));
         }
-        throw new TypeError(String(ret));
+        return ret;
       },
       defineProperty(target, property, attributes): boolean {
         if (
