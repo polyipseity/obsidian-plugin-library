@@ -1,5 +1,19 @@
 # @polyipseity/obsidian-plugin-library <!-- markdownlint-disable-file MD024 -->
 
+## 2.1.0
+
+### Minor Changes
+
+- cc94088: Support `Document` references in `activeSelf`
+
+  - Accept a `Document` in addition to `Element` and `UIEvent` as the `reference` argument, resolving the window from the document's `defaultView`
+  - Guard against a null `ownerDocument` so documents no longer crash when passed as `reference`
+
+- 990eb66: Add sanitized `innerHTML` utilities
+
+  - Add `sanitizeHTML(root, html, config?)` that sanitizes an HTML string with DOMPurify against an explicit window-like root
+  - Add `setSanitizedInnerHTML(element, html, config?)` that replaces an element's content with the sanitized HTML, parsed via DOMParser from the element's window, and returns the element, for safely rendering descriptions with `escapeValue: false`
+
 ## 2.0.1
 
 ### Patch Changes
