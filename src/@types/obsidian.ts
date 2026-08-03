@@ -53,7 +53,7 @@ import type {
   UnknownSettingTab,
   UserEvent,
 } from "obsidian";
-import type { Private, RevealPrivate } from "../private.js";
+import type { Private } from "../private.js";
 
 // @ts-expect-error 6196 -- TypeScript bug failing to recognize that they are used.
 type _TS_6196 =
@@ -79,8 +79,10 @@ interface $App {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- interface extension point
-interface $BakedHotkey {}
+interface $BakedHotkey {
+  readonly key: string;
+  readonly modifiers: readonly Modifier[];
+}
 
 interface $Commands {
   readonly executeCommand: (command: Command, event?: UserEvent) => boolean;
@@ -125,10 +127,7 @@ interface $HotkeyManager {
 
 interface $Keymap {
   readonly constructor: typeof Keymap & {
-    readonly isMatch: (
-      key: RevealPrivate<BakedHotkey>,
-      ctx: KeymapContext,
-    ) => boolean;
+    readonly isMatch: (key: BakedHotkey, ctx: KeymapContext) => boolean;
   };
 }
 

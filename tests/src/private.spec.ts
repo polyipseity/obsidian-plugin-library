@@ -548,10 +548,9 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // TODO: RED until Phase 2 ($BakedHotkey augmentation). The current empty
-    // $BakedHotkey collapses the reveal to {}; the augmentation must declare
-    // the public members.
-    it.skip("reveals BakedHotkey members", () => {
+    // Regression lock: BakedHotkey's public members are declared in
+    // $BakedHotkey, so the reveal exposes them without a workaround.
+    it("reveals BakedHotkey members", () => {
       type _H1 = Expect<
         Equalish<RevealPrivate<BakedHotkey, BakedHotkey>["key"], string>
       >;
