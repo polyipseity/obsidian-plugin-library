@@ -27,7 +27,7 @@ describe("private.ts — private API access", () => {
   // Test helper: construct a value that satisfies the library's internal `HasPrivate` type.
   // Centralises the unavoidable assertion so individual tests remain readable.
   function makeHasPrivate<const T extends object>(value: T): T & HasPrivate {
-    return value as unknown as T & HasPrivate;
+    return value;
   }
 
   describe("revealPrivate", () => {
