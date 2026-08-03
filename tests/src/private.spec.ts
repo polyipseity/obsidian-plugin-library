@@ -2,6 +2,7 @@
  * Comprehensive tests for src/private.ts — private API access utilities
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { App, BakedHotkey, Keymap } from "obsidian";
 import type { PluginContext } from "../../src/plugin.js";
 import {
   revealPrivate,
@@ -9,7 +10,32 @@ import {
   type HasPrivate,
   type PrivateKeys,
   type RevealPrivate,
+  type RevealPrivateExempt,
 } from "../../src/private.js";
+
+// Compile-time assertion helpers (see docs/reveal-private.md).
+// `Equalish` is mutual assignability: order-insensitive, used for engine-output
+// assertions. `IsEqualExact` is the deferred-instantiation trick: order-sensitive,
+// used for whitelist gate semantics. `Expect<T extends true> = T` fails to compile
+// when the asserted condition is false.
+type Expect<T extends true> = T;
+type Equalish<A, B> = [A] extends [B]
+  ? [B] extends [A]
+    ? true
+    : false
+  : false;
+type IsEqualExact<A, B> = [A] extends [B]
+  ? [B] extends [A]
+    ? _IsEqual<A, B>
+    : false
+  : false;
+type _IsEqual<A, B> =
+  (<G>() => G extends (A & G) | G ? 1 : 2) extends <G>() => G extends
+    (B & G) | G
+    ? 1
+    : 2
+    ? true
+    : false;
 
 describe("private.ts — private API access", () => {
   // Create a mock plugin context
@@ -430,6 +456,143 @@ describe("private.ts — private API access", () => {
       const revealed = { setting: { settingTabs: [] } } as unknown as Revealed;
       const _typeCheck: readonly unknown[] = revealed.setting.settingTabs;
       expect(_typeCheck).toEqual([]);
+    });
+
+    it("reveals an exactly-whitelisted type", () => {
+      // Regression lock: App whitelisted by exact match reveals $App.appId.
+      type _A1 = Expect<Equalish<RevealPrivate<App, App>["appId"], string>>;
+      const _typeCheck: _A1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    // TODO: RED until Phase 1 (exact whitelist). A subtype of a filter member
+    // must NOT be expanded — only exact matches are.
+    it.skip("does not expand a subtype of a filter member", () => {
+      type _A2 = Expect<
+        Equalish<
+          "appId" extends keyof RevealPrivate<App, { readonly keymap: Keymap }>
+            ? true
+            : false,
+          false
+        >
+      >;
+      const _typeCheck: _A2 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    // TODO: RED until Phase 1 (tuple-aware expansion). Tuples must keep their
+    // element positions and readonlyness instead of widening to arrays.
+    it.skip("preserves tuple structure", () => {
+      type _C1 = Expect<
+        Equalish<RevealPrivate<readonly [App, string], App>[1], string>
+      >;
+      const _typeCheck: _C1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    // TODO: RED until Phase 1 (function expansion). Functions are structural
+    // containers: parameters and return type must be processed.
+    it.skip("expands function parameters and return type", () => {
+      type _D1 = Expect<
+        Equalish<
+          Parameters<RevealPrivate<(x: App) => App, App>>[0]["appId"],
+          string
+        >
+      >;
+      const _typeCheck: _D1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    // TODO: RED until Phase 1 (Promise expansion).
+    it.skip("expands promise resolution types", () => {
+      type _E1 = Expect<
+        Equalish<
+          RevealPrivate<Promise<App>, App> extends Promise<infer U>
+            ? U["appId"]
+            : never,
+          string
+        >
+      >;
+      const _typeCheck: _E1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    // TODO: RED until Phase 1 (Map/Set arms).
+    it.skip("expands map value types", () => {
+      type _F1 = Expect<
+        Equalish<
+          RevealPrivate<ReadonlyMap<App, App>, App> extends ReadonlyMap<
+            infer K,
+            infer V
+          >
+            ? [K["appId"], V["appId"]]
+            : never,
+          [string, string]
+        >
+      >;
+      const _typeCheck: _F1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    it("passes builtins through unchanged", () => {
+      type _G1 = Expect<
+        Equalish<
+          RevealPrivate<string | number | boolean | Date>,
+          string | number | boolean | Date
+        >
+      >;
+      const _typeCheck: _G1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    // TODO: RED until Phase 2 ($BakedHotkey augmentation). The current empty
+    // $BakedHotkey collapses the reveal to {}; the augmentation must declare
+    // the public members.
+    it.skip("reveals BakedHotkey members", () => {
+      type _H1 = Expect<
+        Equalish<RevealPrivate<BakedHotkey, BakedHotkey>["key"], string>
+      >;
+      const _typeCheck: _H1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    // TODO: RED until Phase 1 (required-property exempt marker). Record<string,
+    // unknown> must not match the weak exempt marker.
+    it.skip("exempt marker is a required property", () => {
+      type _I1 = Expect<
+        Equalish<
+          Readonly<Record<string, unknown>> extends RevealPrivateExempt
+            ? true
+            : false,
+          false
+        >
+      >;
+      const _typeCheck: _I1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    it("reveal is idempotent", () => {
+      type _J1 = Expect<
+        Equalish<
+          RevealPrivate<RevealPrivate<App, App>, App>,
+          RevealPrivate<App, App>
+        >
+      >;
+      const _typeCheck: _J1 = true;
+      expect(_typeCheck).toBe(true);
+    });
+
+    it("matches filter members exactly, not subtypes or supertypes", () => {
+      // Gate semantics of WhitelistMatch, engine-independent regression locks.
+      type _K1 = Expect<Equalish<IsEqualExact<App, App>, true>>;
+      type _K2 = Expect<
+        Equalish<IsEqualExact<App, { readonly keymap: Keymap }>, false>
+      >;
+      type _K3 = Expect<
+        Equalish<IsEqualExact<{ readonly keymap: Keymap }, App>, false>
+      >;
+      const _typeCheck: [_K1, _K2, _K3] = [true, true, true];
+      expect(_typeCheck).toEqual([true, true, true]);
     });
   });
 
