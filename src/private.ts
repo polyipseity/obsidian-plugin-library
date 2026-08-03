@@ -23,6 +23,10 @@ export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = {
  * Prefer the whitelist `Filter` over this marker: it is only for types that
  * cannot be structurally represented. The marker is a required property so
  * index-signature objects (weak types) do not accidentally match it.
+ *
+ * @deprecated Prefer the whitelist `Filter` parameter. Builtin exceptions are
+ *   handled by the gate directly; the marker is only for types that cannot be
+ *   structurally represented.
  */
 export interface RevealPrivateExempt {
   readonly __reveal_private_exempt: true;
@@ -61,14 +65,15 @@ type WhitelistMatch<T, Filter> = [unknown] extends [Filter]
     : false;
 /**
  * The exemption gate: types that pass through `RevealPrivate` unchanged.
- * `RevealPrivateExempt` is an explicit opt-out; the other members are
- * `Exclude<Builtin, Error | Function>` (primitives, `Date`, `RegExp`), spelled
- * out directly to avoid the banned `Function` type. Functions are deliberately
- * not exempt: they are structural containers whose parameters and return type
- * must be processed by the filter.
+ * The first member mirrors the deprecated `RevealPrivateExempt` marker
+ * structurally (required property, so index-signature objects do not match);
+ * the others are `Exclude<Builtin, Error | Function>` (primitives, `Date`,
+ * `RegExp`), spelled out directly to avoid the banned `Function` type.
+ * Functions are deliberately not exempt: they are structural containers whose
+ * parameters and return type must be processed by the filter.
  */
 type RevealPrivateExemptBuiltin =
-  RevealPrivateExempt | Primitive | Date | RegExp;
+  { readonly __reveal_private_exempt: true } | Primitive | Date | RegExp;
 /**
  * The public members of `T` merged with its private shape (the `$X` brand
  * value). String-indexed types skip the brand merge: their index signature
@@ -210,6 +215,13 @@ function revealPrivateInternal<
     return fallback(error);
   }
 }
+/**
+ * Calls `func` with `args` where each arg's private members are revealed.
+ *
+ * @deprecated Prefer {@link revealPrivateFilter} with an explicit whitelist.
+ *   Without a filter, every type is expanded aggressively; the filter keeps
+ *   the reveal finite and scoped to exactly whitelisted types.
+ */
 export function revealPrivate<
   const As extends readonly HasPrivate[],
   Result,
@@ -290,6 +302,12 @@ async function revealPrivateAsyncInternal<
     return fallback(error);
   }
 }
+/**
+ * Async variant of {@link revealPrivate}.
+ *
+ * @deprecated Prefer {@link revealPrivateAsyncFilter} with an explicit
+ *   whitelist.
+ */
 export async function revealPrivateAsync<
   const As extends readonly HasPrivate[],
   Result,
