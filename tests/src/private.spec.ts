@@ -17,7 +17,7 @@ import {
   type RevealPrivate,
 } from "../../src/private.js";
 
-// Compile-time assertion helpers (see docs/reveal-private.md).
+// Compile-time assertion helpers (see .agents/instructions/reveal-private.instructions.md).
 // `Equalish` is mutual assignability: order-insensitive, used for engine-output
 // assertions. `IsEqualExact` is the deferred-instantiation trick: order-sensitive,
 // used for whitelist gate semantics. `Expect<T extends true> = T` fails to compile

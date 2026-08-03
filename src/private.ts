@@ -97,9 +97,32 @@ type MergePrivateShape<T> = string extends keyof T
 /**
  * Removes the private brand of `T` and reveals its members.
  *
- * `Filter` decides which object types are eagerly expanded: only types exactly
- * equal to a filter member are expanded; everything else is traversed lazily.
- * The default `unknown` filter matches everything (aggressive mode).
+ * Evaluation order:
+ * 1. **Depth guard** — past `MaxRevealDepth` (8), return `T` unchanged
+ *    (terminates on cyclic types).
+ * 2. **Builtin gate** — exempt types pass through unchanged: the
+ *    `RevealPrivateExempt` marker shape and `Exclude<Builtin, Error |
+ *    Function>` (primitives, `Date`, `RegExp`). Functions are deliberately
+ *    NOT exempt: they are structural containers whose parameters and return
+ *    type must be processed.
+ * 3. **Structural dispatch** — tuples/arrays (preserving element
+ *    optionality, rest elements, readonlyness), functions (exact filter
+ *    matches pass through unchanged; otherwise parameters and return type
+ *    are revealed), `Promise`/`PromiseLike`, `Map`/`ReadonlyMap`,
+ *    `Set`/`ReadonlySet`, then objects (below). Anything else (primitives
+ *    not caught by the gate, `unknown`, `never` via distribution) passes
+ *    through unchanged.
+ *
+ * Object semantics: `Filter` decides between eager expansion and lazy
+ * traversal. A type **exactly equal** to a filter member (`IsEqualExact`, not
+ * `extends`) is expanded — its private shape is merged and every member is
+ * recursively revealed. Everything else is traversed — the brand is dropped,
+ * members revealed, but the type itself is kept, which keeps cyclic types
+ * (e.g. `HTMLElement`) finite.
+ *
+ * The default `Filter = unknown` matches everything (aggressive mode): every
+ * object is expanded up to the depth guard. Prefer an explicit filter so the
+ * reveal is finite and scoped: `revealPrivateFilter<App>()`.
  */
 export type RevealPrivate<
   T,
@@ -157,6 +180,11 @@ type RevealPrivateObject<
   WhitelistMatch<T, Filter> extends true
     ? ExpandObject<T, Filter, Depth>
     : TraverseObject<T, Filter, Depth>;
+/**
+ * Eagerly replaces a whitelisted type by its merged shape and reveals every
+ * member. `Prettify` flattens the intersection so narrowed property access
+ * (`!== undefined` guards) and inference through the revealed type work.
+ */
 type ExpandObject<
   T extends object,
   Filter,
