@@ -1,5 +1,4 @@
 export * from "../assets/locales.js";
-export type * from "./@types/lib.dom.js";
 export type * from "./@types/lib.es5.js";
 export type * from "./@types/obsidian.js";
 export * from "./components/index.js";
