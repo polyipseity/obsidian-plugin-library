@@ -11,6 +11,7 @@ import {
   Component,
   type DataAdapter,
   DropdownComponent,
+  type FileSystem,
   type FrontMatterCache,
   Notice,
   Plugin,
@@ -19,12 +20,15 @@ import {
   ValueComponent,
   type View,
   type ViewStateResult,
+  WorkspaceRibbon,
+  type Workspace,
+  type WorkspaceLeaf,
 } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";
 import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
 import type { PluginContext } from "./plugin.js";
-import { revealPrivate, revealPrivateAsync } from "./private.js";
+import { revealPrivateAsyncFilter, revealPrivateFilter } from "./private.js";
 import { type AnyObject, launderUnchecked } from "./types.js";
 import {
   Functions,
@@ -360,7 +364,7 @@ export function addRibbonIcon(
     },
     language,
   } = context;
-  return revealPrivate(
+  return revealPrivateFilter<WorkspaceRibbon>()(
     context,
     [leftRibbon],
     (leftRibbon0) => {
@@ -547,7 +551,7 @@ export function recordViewStateHistory(
   context: PluginContext,
   result: ViewStateResult,
 ): void {
-  revealPrivate(
+  revealPrivateFilter<ViewStateResult>()(
     context,
     [result],
     (result0) => {
@@ -557,17 +561,21 @@ export function recordViewStateHistory(
   );
 }
 
+type FileSystemOpen = <Length extends number>(
+  path: Length extends 1 ? string : never,
+) => Length extends 1 ? PromiseLike<void> : never;
+
 export async function saveFileAs(
   context: PluginContext,
   adapter: DataAdapter,
   data: File,
 ): Promise<void> {
   if (
-    await revealPrivateAsync(
+    await revealPrivateAsyncFilter<DataAdapter | FileSystem | FileSystemOpen>()(
       context,
       [adapter],
       async ({ fs }) => {
-        if ("open" in fs && fs.open?.length === 1) {
+        if (fs.open?.length === 1) {
           const { length: _length } = fs.open;
           await fs.open<typeof _length>(
             (
@@ -592,7 +600,7 @@ export async function saveFileAs(
 }
 
 export function updateView(context: PluginContext, view: View): void {
-  revealPrivate(
+  revealPrivateFilter<WorkspaceLeaf | Workspace>()(
     context,
     [view.leaf, context.app.workspace],
     (leaf, workspace) => {

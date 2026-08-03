@@ -1,18 +1,23 @@
 import { noop } from "es-toolkit/function";
 import { around } from "monkey-around";
-import type { Plugins, Workspace } from "obsidian";
+import type { App, Plugins, Workspace } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";
 import type { PluginContext } from "./plugin.js";
-import { revealPrivateAsync } from "./private.js";
+import { revealPrivateAsyncFilter } from "./private.js";
 import { correctType } from "./types.js";
 import { Functions, remove } from "./utils.js";
+
+type LoadPlugin = <const I extends string>(
+  id: I,
+) => PromiseLike<Plugins.Map<I> | null>;
+type GetPlugin = <const I extends string>(id: I) => Plugins.Map<I> | null;
 
 export async function patchPlugin<const I extends string>(
   context: PluginContext,
   id: I,
   patcher: (plugin: Plugins.Map<I>) => AsyncOrSync<() => void>,
 ): Promise<() => void> {
-  return revealPrivateAsync(
+  return revealPrivateAsyncFilter<App | Plugins | LoadPlugin | GetPlugin>()(
     context,
     [context.app],
     async (app2) => {

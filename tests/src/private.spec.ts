@@ -465,9 +465,9 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // TODO: RED until Phase 1 (exact whitelist). A subtype of a filter member
-    // must NOT be expanded — only exact matches are.
-    it.skip("does not expand a subtype of a filter member", () => {
+    // Regression lock: a subtype of a filter member is NOT expanded — only
+    // exact matches are.
+    it("does not expand a subtype of a filter member", () => {
       type _A2 = Expect<
         Equalish<
           "appId" extends keyof RevealPrivate<App, { readonly keymap: Keymap }>
@@ -480,9 +480,9 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // TODO: RED until Phase 1 (tuple-aware expansion). Tuples must keep their
-    // element positions and readonlyness instead of widening to arrays.
-    it.skip("preserves tuple structure", () => {
+    // Regression lock: tuples keep their element positions and readonlyness
+    // instead of widening to arrays.
+    it("preserves tuple structure", () => {
       type _C1 = Expect<
         Equalish<RevealPrivate<readonly [App, string], App>[1], string>
       >;
@@ -490,9 +490,9 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // TODO: RED until Phase 1 (function expansion). Functions are structural
-    // containers: parameters and return type must be processed.
-    it.skip("expands function parameters and return type", () => {
+    // Regression lock: functions are structural containers — parameters and
+    // return type must be processed.
+    it("expands function parameters and return type", () => {
       type _D1 = Expect<
         Equalish<
           Parameters<RevealPrivate<(x: App) => App, App>>[0]["appId"],
@@ -503,12 +503,13 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // TODO: RED until Phase 1 (Promise expansion).
-    it.skip("expands promise resolution types", () => {
+    it("expands promise resolution types", () => {
       type _E1 = Expect<
         Equalish<
           RevealPrivate<Promise<App>, App> extends Promise<infer U>
-            ? U["appId"]
+            ? U extends { readonly appId: infer A }
+              ? A
+              : never
             : never,
           string
         >
@@ -517,15 +518,17 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // TODO: RED until Phase 1 (Map/Set arms).
-    it.skip("expands map value types", () => {
+    it("expands map value types", () => {
       type _F1 = Expect<
         Equalish<
           RevealPrivate<ReadonlyMap<App, App>, App> extends ReadonlyMap<
             infer K,
             infer V
           >
-            ? [K["appId"], V["appId"]]
+            ? [
+                K extends { readonly appId: infer A } ? A : never,
+                V extends { readonly appId: infer B } ? B : never,
+              ]
             : never,
           [string, string]
         >
@@ -556,9 +559,9 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // TODO: RED until Phase 1 (required-property exempt marker). Record<string,
-    // unknown> must not match the weak exempt marker.
-    it.skip("exempt marker is a required property", () => {
+    // Regression lock: Record<string, unknown> must not match the exempt
+    // marker (required property, not weak type).
+    it("exempt marker is a required property", () => {
       type _I1 = Expect<
         Equalish<
           Readonly<Record<string, unknown>> extends RevealPrivateExempt
