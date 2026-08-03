@@ -109,6 +109,11 @@ describe("scripts/sync-locale-keys.mjs", () => {
       c: "troisieme", // existing translation untouched
     });
 
+    expect(logSpy).toHaveBeenCalledWith(
+      `updated ${path.join(frDir, "translation.json")}`,
+    );
+    expect(logSpy).toHaveBeenCalledWith("sync complete");
+
     // verify keys are sorted at each level
     const keys = Object.keys(result);
     expect(keys).toEqual(["a", "b", "c"]);
@@ -117,10 +122,44 @@ describe("scripts/sync-locale-keys.mjs", () => {
       aValue !== null && typeof aValue === "object" && Object.keys(aValue),
     ).toEqual(["y", "z"]);
 
-    expect(logSpy).toHaveBeenCalledWith(
-      `updated ${path.join(frDir, "translation.json")}`,
+    // shared writeJSON appends a trailing newline, matching prettier output
+    expect(
+      await fs.readFile(path.join(frDir, "translation.json"), "utf-8"),
+    ).toMatch(/\n$/);
+  });
+
+  it("escapes invisible characters when writing translation files", async () => {
+    const localesDir = path.join(tmpdir, "assets", "locales");
+    await fs.mkdir(localesDir, { recursive: true });
+
+    const enDir = path.join(localesDir, "en");
+    const frDir = path.join(localesDir, "fr");
+    await fs.mkdir(enDir, { recursive: true });
+    await fs.mkdir(frDir, { recursive: true });
+
+    await fs.writeFile(
+      path.join(enDir, "translation.json"),
+      JSON.stringify({ intro: "a\u00a0b" }, null, 2),
     );
-    expect(logSpy).toHaveBeenCalledWith("sync complete");
+    await fs.writeFile(path.join(frDir, "translation.json"), "{}");
+
+    const { main } = await importScript();
+    await main(tmpdir);
+
+    const raw = await fs.readFile(
+      path.join(frDir, "translation.json"),
+      "utf-8",
+    );
+    // the saved file contains the literal escape sequence, not the raw NBSP
+    expect(raw).toContain("a\\u00a0b");
+    expect(raw).not.toContain("a\u00a0b");
+    // and still parses back to the original value
+    expect(
+      v.parse(
+        v.record(v.string(), v.unknown()),
+        v.parse(v.pipe(v.string(), v.parseJson()), raw),
+      ),
+    ).toEqual({ intro: "a\u00a0b" });
   });
 
   it("ignores directories without translation.json", async () => {
@@ -133,6 +172,7 @@ describe("scripts/sync-locale-keys.mjs", () => {
     const { main } = await importScript();
     await main(tmpdir);
 
+    // no "updated" call since `es` has no translation.json
     expect(logSpy).toHaveBeenCalledWith("sync complete");
   });
 
