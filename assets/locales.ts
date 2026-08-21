@@ -6,13 +6,14 @@ import type {
   Builtin,
   DeepReadonly,
   IsUnknown,
+  UnionKeys,
 } from "ts-essentials";
-import type { IsExact } from "../src/types.js";
 import type {
   I18nFormatters,
   I18nNamespaces,
   I18nResources,
 } from "../src/i18n.js";
+import type { IsExact } from "../src/types.js";
 import {
   capitalize,
   deepFreeze,
@@ -52,7 +53,7 @@ export type AwaitResources<T extends I18nResources, Default extends keyof T> = {
 };
 
 export type MergeResources<Ts extends readonly I18nResources[]> = {
-  [K in keyof Ts[number]]: MergeNamespaces<
+  [K in UnionKeys<Ts[number]>]: MergeNamespaces<
     readonly (Ts[number] extends unknown
       ? K extends keyof Ts[number]
         ? Ts[number][K]
@@ -61,7 +62,7 @@ export type MergeResources<Ts extends readonly I18nResources[]> = {
   >;
 };
 export type MergeNamespaces<Ts extends readonly I18nNamespaces[]> = {
-  [K in keyof Ts[number]]: () => PromiseLike<
+  [K in UnionKeys<Ts[number]>]: () => PromiseLike<
     ReturnType<
       typeof merge<
         AsyncOrSyncType<
