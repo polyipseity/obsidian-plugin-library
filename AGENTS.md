@@ -40,7 +40,7 @@ TypeScript typing rules (required)
 - i18n: add keys first in `assets/locales/en/translation.json` and keep interpolation tokens like `{{...}}` and `$t(...)` unchanged (see `.agents/instructions/localization.instructions.md`).
 - Svelte: components live under `src/components/` and are compiled via `scripts/build.mjs` (uses `esbuild-svelte` + `svelte-preprocess`). For dev builds use `node scripts/build.mjs dev`.
 - Tests: follow `tests/README.md` conventions — prefer `vi.fn()` for stubs, `vi.spyOn` for globals, reset/restore mocks in `afterEach` and use `vi.useFakeTimers()` for timer control.
-- Reveal machinery: the type-level semantics of `RevealPrivate`, the exact-whitelist `Filter`, the exempt marker policy, and the `BakedHotkey` workaround ban are specified in `.agents/instructions/reveal-private.instructions.md` and the docstrings of `src/private.ts`. Type tests live in the "Type system" describe block of `tests/src/private.spec.ts`.
+- Reveal machinery: the type-level semantics of `RevealPrivate`, the exact-whitelist `Filter` (a readonly tuple of exact types), the exempt marker policy, and the empty `$BakedHotkey` brand policy are specified in `.agents/instructions/reveal-private.instructions.md` and the docstrings of `src/private.ts`. Type tests live in the "Type system" describe block of `tests/src/private.spec.ts`.
 
 ## Build & release tips
 
