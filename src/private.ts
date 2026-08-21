@@ -84,20 +84,22 @@ type RevealPrivateExemptBuiltin =
  * would answer the brand lookup with the value type, corrupting the merged
  * shape (e.g. `Record<string, X>` would gain `X`'s members).
  */
-type MergePrivateShape<T> = string extends keyof T
-  ? Omit<T, PrivateKeys$>
-  : Omit<T, PrivateKeys$> &
-      (MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
-        PrivateKeys$,
-        keyof T
-      >] extends never
-        ? unknown
-        : UnionToIntersection<
-            MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
-              PrivateKeys$,
-              keyof T
-            >]
-          >);
+type MergePrivateShape<T> = Prettify<
+  string extends keyof T
+    ? Omit<T, PrivateKeys$>
+    : Omit<T, PrivateKeys$> &
+        (MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
+          PrivateKeys$,
+          keyof T
+        >] extends never
+          ? unknown
+          : UnionToIntersection<
+              MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
+                PrivateKeys$,
+                keyof T
+              >]
+            >)
+>;
 /**
  * Removes the private brand of `T` and reveals its members.
  *
@@ -211,15 +213,17 @@ type TraverseObject<
   T extends object,
   Filter extends readonly unknown[],
   Depth extends readonly unknown[],
-> = PrivateKeys$ extends keyof T
-  ? {
-      [K in keyof Omit<T, PrivateKeys$>]: RevealPrivate<
-        T[K],
-        Filter,
-        [...Depth, unknown]
-      >;
-    }
-  : T;
+> = Prettify<
+  PrivateKeys$ extends keyof T
+    ? {
+        [K in keyof Omit<T, PrivateKeys$>]: RevealPrivate<
+          T[K],
+          Filter,
+          [...Depth, unknown]
+        >;
+      }
+    : T
+>;
 
 function revealPrivateInternal<
   const As extends readonly HasPrivate[],
