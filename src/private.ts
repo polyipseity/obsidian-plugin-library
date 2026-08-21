@@ -53,16 +53,18 @@ type _IsEqual<A, B> =
     ? true
     : false;
 /**
- * True when `T` (after removing `undefined`/`null`) is exactly one member of
- * the `Filter` union. Subtypes and supertypes do not match.
+ * True when `T` (after removing `undefined`/`null`) is exactly one element of
+ * the `Filter` tuple. Subtypes and supertypes do not match. A tuple element
+ * may itself be a union (`X | Y`) and is matched exactly as one entry.
  */
-type WhitelistMatch<T, Filter> = [unknown] extends [Filter]
-  ? true
-  : true extends (
-        Filter extends unknown ? IsEqualExact<NonNullable<T>, Filter> : never
-      )
+type WhitelistMatch<
+  T,
+  Filter extends readonly unknown[],
+> = Filter extends readonly [infer Head, ...infer Tail]
+  ? IsEqualExact<NonNullable<T>, Head> extends true
     ? true
-    : false;
+    : WhitelistMatch<T, Tail>
+  : false;
 /**
  * The exemption gate: types that pass through `RevealPrivate` unchanged.
  * The first member mirrors the deprecated `RevealPrivateExempt` marker
@@ -114,19 +116,20 @@ type MergePrivateShape<T> = string extends keyof T
  *    through unchanged.
  *
  * Object semantics: `Filter` decides between eager expansion and lazy
- * traversal. A type **exactly equal** to a filter member (`IsEqualExact`, not
+ * traversal. A type **exactly equal** to a filter element (`IsEqualExact`, not
  * `extends`) is expanded — its private shape is merged and every member is
  * recursively revealed. Everything else is traversed — the brand is dropped,
  * members revealed, but the type itself is kept, which keeps cyclic types
  * (e.g. `HTMLElement`) finite.
  *
- * The default `Filter = unknown` matches everything (aggressive mode): every
- * object is expanded up to the depth guard. Prefer an explicit filter so the
- * reveal is finite and scoped: `revealPrivateFilter<App>()`.
+ * The default `Filter = readonly []` matches everything (aggressive mode):
+ * every object is expanded up to the depth guard. Prefer an explicit filter
+ * so the reveal is finite and scoped: `revealPrivateFilter<[App]>()`. A tuple
+ * element may itself be a union (`X | Y`) and is matched exactly as one entry.
  */
 export type RevealPrivate<
   T,
-  Filter = unknown,
+  Filter extends readonly unknown[] = readonly [],
   Depth extends readonly unknown[] = [],
 > = Depth["length"] extends MaxRevealDepth
   ? T
@@ -135,7 +138,7 @@ export type RevealPrivate<
     : RevealPrivateStructural<T, Filter, Depth>;
 type RevealPrivateStructural<
   T,
-  Filter,
+  Filter extends readonly unknown[],
   Depth extends readonly unknown[],
 > = T extends readonly unknown[]
   ? number extends T["length"]
@@ -174,7 +177,7 @@ type RevealPrivateStructural<
               : T;
 type RevealPrivateObject<
   T extends object,
-  Filter,
+  Filter extends readonly unknown[],
   Depth extends readonly unknown[],
 > =
   WhitelistMatch<T, Filter> extends true
@@ -187,7 +190,7 @@ type RevealPrivateObject<
  */
 type ExpandObject<
   T extends object,
-  Filter,
+  Filter extends readonly unknown[],
   Depth extends readonly unknown[],
 > = Prettify<{
   [K in keyof MergePrivateShape<T>]: RevealPrivate<
@@ -204,7 +207,7 @@ type ExpandObject<
  */
 type TraverseObject<
   T extends object,
-  Filter,
+  Filter extends readonly unknown[],
   Depth extends readonly unknown[],
 > = PrivateKeys$ extends keyof T
   ? {
@@ -219,7 +222,7 @@ type TraverseObject<
 function revealPrivateInternal<
   const As extends readonly HasPrivate[],
   Result,
-  Filter,
+  Filter extends readonly unknown[],
 >(
   context: PluginContext,
   args: As,
@@ -253,7 +256,7 @@ function revealPrivateInternal<
 export function revealPrivate<
   const As extends readonly HasPrivate[],
   Result,
-  Filter = unknown,
+  Filter extends readonly unknown[] = readonly [],
 >(
   context: PluginContext,
   args: As,
@@ -271,10 +274,9 @@ export function revealPrivate<
     fallback,
   );
 }
-export function revealPrivateFilter<Filter>(): <
-  const As extends readonly HasPrivate[],
-  Result,
->(
+export function revealPrivateFilter<
+  Filter extends readonly unknown[] = readonly [],
+>(): <const As extends readonly HasPrivate[], Result>(
   context: PluginContext,
   args: As,
   func: (
@@ -306,7 +308,7 @@ export function revealPrivateFilter<Filter>(): <
 async function revealPrivateAsyncInternal<
   const As extends readonly HasPrivate[],
   Result,
-  Filter,
+  Filter extends readonly unknown[],
 >(
   context: PluginContext,
   args: As,
@@ -339,7 +341,7 @@ async function revealPrivateAsyncInternal<
 export async function revealPrivateAsync<
   const As extends readonly HasPrivate[],
   Result,
-  Filter = unknown,
+  Filter extends readonly unknown[] = readonly [],
 >(
   context: PluginContext,
   args: As,
@@ -357,10 +359,9 @@ export async function revealPrivateAsync<
     fallback,
   );
 }
-export function revealPrivateAsyncFilter<Filter>(): <
-  const As extends readonly HasPrivate[],
-  Result,
->(
+export function revealPrivateAsyncFilter<
+  Filter extends readonly unknown[] = readonly [],
+>(): <const As extends readonly HasPrivate[], Result>(
   context: PluginContext,
   args: As,
   func: (

@@ -14,7 +14,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 
 ## API surface
 
-- `RevealPrivate<T, Filter = unknown>` — type-level reveal.
+- `RevealPrivate<T, Filter extends readonly unknown[] = readonly []>` — type-level reveal.
 - `revealPrivate(context, args, func, fallback)` and `revealPrivateAsync(...)` — deprecated runtime helpers wrapping `RevealPrivate`; kept for backwards compatibility.
 - `revealPrivateFilter<Filter>()` and `revealPrivateAsyncFilter<Filter>()` — recommended runtime helpers with a fixed `Filter`.
 - `RevealPrivateExempt` — deprecated brand marker; prefer the whitelist.
@@ -38,7 +38,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 
 For an object type `T`, the `Filter` decides between **eager expansion** and **lazy traversal**:
 
-- **Whitelisted** — `WhitelistMatch<T, Filter>` is true, i.e. some member `F` of the `Filter` union satisfies `IsEqualExact<NonNullable<T>, F>` — the type is **exactly** a filter member after removing `undefined`/`null`. Note this is an exact structural match, not `extends`; a subtype or supertype of a filter member is not expanded.
+- **Whitelisted** — `WhitelistMatch<T, Filter>` is true, i.e. some element `F` of the `Filter` tuple satisfies `IsEqualExact<NonNullable<T>, F>` — the type is **exactly** a filter element after removing `undefined`/`null`. Note this is an exact structural match, not `extends`; a subtype or supertype of a filter element is not expanded. A tuple element may itself be a union (`X | Y`) and is matched exactly as one entry.
 - Whitelisted types are **expanded**: the brand is replaced by the private shape (`MergePrivateShape<T>` = public members `&` the private shape) and every member is recursively revealed.
 - Non-whitelisted types are **traversed**: the brand is dropped (`Omit<T, PrivateKeys$>`) and every member is recursively revealed, but the type itself is not replaced by its shape. Traversal is lazy, which keeps cycles (e.g. `HTMLElement`) finite.
 
@@ -48,9 +48,9 @@ The whitelist therefore controls _which_ domain types are eagerly expanded; arra
 
 ## Aggressive mode
 
-`Filter = unknown` (the default) matches everything: every object type is whitelisted, so `RevealPrivate<T>` eagerly expands arrays, functions, promises, maps, sets, tuples, and all reachable object members (bounded by the depth guard). This is the historical behavior; it is intentionally aggressive and typically reveals far more than a caller needs.
+`Filter = readonly []` (the default, empty tuple) matches everything: every object type is whitelisted, so `RevealPrivate<T>` eagerly expands arrays, functions, promises, maps, sets, tuples, and all reachable object members (bounded by the depth guard). This is the historical behavior; it is intentionally aggressive and typically reveals far more than a caller needs.
 
-`RevealPrivate`/`revealPrivate`/`revealPrivateAsync` are deprecated. Prefer the filtered variants: `revealPrivateFilter<App>()(context, [app], ...)` expands only `App` and traverses everything else.
+`RevealPrivate`/`revealPrivate`/`revealPrivateAsync` are deprecated. Prefer the filtered variants: `revealPrivateFilter<[App]>()(context, [app], ...)` expands only `App` and traverses everything else.
 
 ## Exempt marker
 
@@ -58,4 +58,4 @@ The whitelist therefore controls _which_ domain types are eagerly expanded; arra
 
 ## BakedHotkey policy
 
-The library's Obsidian augmentation declares `BakedHotkey`'s private shape (`$BakedHotkey`) with its public members (`readonly key: string; readonly modifiers: readonly Modifier[]`). `$Keymap.constructor.isMatch` takes a plain `BakedHotkey` — no reveal wrapper. Never reintroduce `RevealPrivate<BakedHotkey>` as a workaround; if Obsidian's shape changes, update `$BakedHotkey`.
+The library's Obsidian augmentation declares `BakedHotkey`'s private shape (`$BakedHotkey`) as an empty interface — the public members live on the augmented `BakedHotkey` interface, not the brand. `$Keymap.constructor.isMatch` takes a plain `BakedHotkey` — no reveal wrapper. Never reintroduce `RevealPrivate<BakedHotkey>` as a workaround; if Obsidian's shape changes, update `$BakedHotkey`.
