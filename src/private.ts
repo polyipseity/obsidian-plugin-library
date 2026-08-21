@@ -1,5 +1,6 @@
 import type {
   AsyncOrSync,
+  IsNever,
   MarkRequired,
   Prettify,
   Primitive,
@@ -84,21 +85,17 @@ type RevealPrivateExemptBuiltin =
  * would answer the brand lookup with the value type, corrupting the merged
  * shape (e.g. `Record<string, X>` would gain `X`'s members).
  */
+type PrivateShape<T> = MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
+  PrivateKeys$,
+  keyof T
+>];
 type MergePrivateShape<T> = Prettify<
   string extends keyof T
     ? Omit<T, PrivateKeys$>
     : Omit<T, PrivateKeys$> &
-        (MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
-          PrivateKeys$,
-          keyof T
-        >] extends never
+        (IsNever<PrivateShape<T>> extends true
           ? unknown
-          : UnionToIntersection<
-              MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
-                PrivateKeys$,
-                keyof T
-              >]
-            >)
+          : UnionToIntersection<PrivateShape<T>>)
 >;
 /**
  * Removes the private brand of `T` and reveals its members.
