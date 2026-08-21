@@ -106,7 +106,7 @@ interface $DataAdapter {
   readonly fs: FileSystem;
 }
 
-interface $FileSystem {
+export interface $FileSystem {
   readonly open?: <Length extends number>(
     path: Length extends 1 ? string : never,
   ) => Length extends 1 ? PromiseLike<void> : never;

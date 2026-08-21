@@ -27,6 +27,7 @@ import {
 import type { AsyncOrSync } from "ts-essentials";
 import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
+import type { $FileSystem } from "./@types/obsidian.js";
 import type { PluginContext } from "./plugin.js";
 import { revealPrivateAsyncFilter, revealPrivateFilter } from "./private.js";
 import { type AnyObject, launderUnchecked } from "./types.js";
@@ -561,17 +562,15 @@ export function recordViewStateHistory(
   );
 }
 
-type FileSystemOpen = <Length extends number>(
-  path: Length extends 1 ? string : never,
-) => Length extends 1 ? PromiseLike<void> : never;
-
 export async function saveFileAs(
   context: PluginContext,
   adapter: DataAdapter,
   data: File,
 ): Promise<void> {
   if (
-    await revealPrivateAsyncFilter<DataAdapter | FileSystem | FileSystemOpen>()(
+    await revealPrivateAsyncFilter<
+      DataAdapter | FileSystem | NonNullable<$FileSystem["open"]>
+    >()(
       context,
       [adapter],
       async ({ fs }) => {
