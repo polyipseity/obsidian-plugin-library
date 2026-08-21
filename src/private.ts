@@ -51,15 +51,7 @@ type WhitelistMatch<
     : WhitelistMatch<T, Tail>
   : false;
 /**
- * The exemption gate: types that pass through `RevealPrivate` unchanged. The
- * gate matches the `RevealPrivateExempt` shape (required property, so
- * index-signature objects do not match). Builtins (`String`, `Number`,
- * `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in
- * `src/@types/lib.es5.ts`, so no special-case union is needed here. `Function`
- * is deliberately not augmented: it is a structural container whose parameters
- * and return type must be processed by the filter.
- */
-/**
+
  * The public members of `T` merged with its private shape (the `$X` brand
  * value). String-indexed types skip the brand merge: their index signature
  * would answer the brand lookup with the value type, corrupting the merged
