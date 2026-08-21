@@ -7,7 +7,7 @@ import type {
   DeepReadonly,
   IsUnknown,
 } from "ts-essentials";
-import type { Evaluate, IsExact } from "../src/types.js";
+import type { IsExact } from "../src/types.js";
 import type {
   I18nFormatters,
   I18nNamespaces,
@@ -52,14 +52,12 @@ export type AwaitResources<T extends I18nResources, Default extends keyof T> = {
 };
 
 export type MergeResources<Ts extends readonly I18nResources[]> = {
-  [K in keyof Ts[number]]: Evaluate<
-    MergeNamespaces<
-      readonly (Ts[number] extends unknown
-        ? K extends keyof Ts[number]
-          ? Ts[number][K]
-          : never
-        : never)[]
-    >
+  [K in keyof Ts[number]]: MergeNamespaces<
+    readonly (Ts[number] extends unknown
+      ? K extends keyof Ts[number]
+        ? Ts[number][K]
+        : never
+      : never)[]
   >;
 };
 export type MergeNamespaces<Ts extends readonly I18nNamespaces[]> = {
@@ -108,7 +106,7 @@ export function mergeResources<const Ts extends readonly I18nResources[]>(
   }
   // No way we are proving that to the type systemF
 
-  return deepFreeze(ret as MergeResources<Ts>);
+  return deepFreeze(ret as unknown as MergeResources<Ts>);
 }
 
 export namespace LibraryLocales {
