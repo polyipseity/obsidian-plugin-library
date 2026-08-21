@@ -39,13 +39,13 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 
 For an object type `T`, the `Filter` decides between **eager expansion** and **lazy traversal**:
 
-- **Whitelisted** — `WhitelistMatch<T, Filter>` is true, i.e. some element `F` of the `Filter` tuple satisfies `IsEqualExact<NonNullable<T>, F>` — the type is **exactly** a filter element after removing `undefined`/`null`. Note this is an exact structural match, not `extends`; a subtype or supertype of a filter element is not expanded. A tuple element may itself be a union (`X | Y`) and is matched exactly as one entry.
+- **Whitelisted** — `WhitelistMatch<T, Filter>` is true, i.e. some element `F` of the `Filter` tuple satisfies `AreNonDistributiveEqual<NonNullable<T>, F>` — the type is **exactly** a filter element after removing `undefined`/`null`. Note this is an exact structural match, not `extends`; a subtype or supertype of a filter element is not expanded. A tuple element may itself be a union (`X | Y`) and is matched exactly as one entry.
 - Whitelisted types are **expanded**: the brand is replaced by the private shape (`MergePrivateShape<T>` = public members `&` the private shape) and every member is recursively revealed.
 - Non-whitelisted types are **traversed**: the brand is dropped (`Omit<T, PrivateKeys$>`) and every member is recursively revealed, but the type itself is not replaced by its shape. Traversal is lazy, which keeps cycles (e.g. `HTMLElement`) finite.
 
 The whitelist therefore controls _which_ domain types are eagerly expanded; arrays, tuples, functions, `Promise`, maps, sets, and plain objects are always processed structurally, and the filter applies to the types nested inside them.
 
-`IsEqualExact` uses the deferred-instantiation trick; `Equalish` (mutual assignability) is used in tests only for engine-output assertions because the deferred trick is sensitive to property order in unions.
+`AreNonDistributiveEqual` (ts-essentials, the type-fest `IsEqual` mutual-assignability variant) is the exact-structural gate; `expectTypeOf(...).toEqualTypeOf(...)` (vitest) is used in tests for the same mutual-assignability semantics.
 
 ## Aggressive mode
 

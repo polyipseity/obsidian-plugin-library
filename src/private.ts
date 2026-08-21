@@ -6,6 +6,7 @@ import type {
   Primitive,
   UnionToIntersection,
 } from "ts-essentials";
+import type { AreNonDistributiveEqual } from "ts-essentials/dist/are-non-distributive-equal.js";
 import type { PluginContext } from "./plugin.js";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- extension point for private keys
@@ -40,22 +41,6 @@ export interface RevealPrivateExempt {
  */
 type MaxRevealDepth = 8;
 /**
- * Exact structural equality via the deferred-instantiation trick (type-fest
- * `IsEqual`). Order-sensitive; used for whitelist gate semantics.
- */
-type IsEqualExact<A, B> = [A] extends [B]
-  ? [B] extends [A]
-    ? _IsEqual<A, B>
-    : false
-  : false;
-type _IsEqual<A, B> =
-  (<G>() => G extends (A & G) | G ? 1 : 2) extends <G>() => G extends
-    (B & G) | G
-    ? 1
-    : 2
-    ? true
-    : false;
-/**
  * True when `T` (after removing `undefined`/`null`) is exactly one element of
  * the `Filter` tuple. Subtypes and supertypes do not match. A tuple element
  * may itself be a union (`X | Y`) and is matched exactly as one entry.
@@ -64,7 +49,7 @@ type WhitelistMatch<
   T,
   Filter extends readonly unknown[],
 > = Filter extends readonly [infer Head, ...infer Tail]
-  ? IsEqualExact<NonNullable<T>, Head> extends true
+  ? AreNonDistributiveEqual<NonNullable<T>, Head> extends true
     ? true
     : WhitelistMatch<T, Tail>
   : false;
@@ -117,11 +102,11 @@ type MergePrivateShape<T> = Prettify<
  *    through unchanged.
  *
  * Object semantics: `Filter` decides between eager expansion and lazy
- * traversal. A type **exactly equal** to a filter element (`IsEqualExact`, not
- * `extends`) is expanded — its private shape is merged and every member is
- * recursively revealed. Everything else is traversed — the brand is dropped,
- * members revealed, but the type itself is kept, which keeps cyclic types
- * (e.g. `HTMLElement`) finite.
+ * traversal. A type **exactly equal** to a filter element
+ * (`AreNonDistributiveEqual`, not `extends`) is expanded — its private shape
+ * is merged and every member is recursively revealed. Everything else is
+ * traversed — the brand is dropped, members revealed, but the type itself is
+ * kept, which keeps cyclic types (e.g. `HTMLElement`) finite.
  *
  * The default `Filter = readonly []` matches everything (aggressive mode):
  * every object is expanded up to the depth guard. Prefer an explicit filter
