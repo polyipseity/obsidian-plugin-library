@@ -79,10 +79,8 @@ interface $App {
   };
 }
 
-interface $BakedHotkey {
-  readonly key: string;
-  readonly modifiers: readonly Modifier[];
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- interface extension point
+interface $BakedHotkey {}
 
 interface $Commands {
   readonly executeCommand: (command: Command, event?: UserEvent) => boolean;

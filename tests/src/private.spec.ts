@@ -557,12 +557,12 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
-    // Regression lock: BakedHotkey's public members are declared in
-    // $BakedHotkey, so the reveal exposes them without a workaround.
-    it("reveals BakedHotkey members", () => {
-      type _H1 = Expect<
-        Equalish<RevealPrivate<BakedHotkey, BakedHotkey>["key"], string>
-      >;
+    // Regression lock: $BakedHotkey is intentionally empty — the public
+    // members live on the augmented `BakedHotkey` interface, not the brand.
+    // The reveal strips the brand and exposes no extra members.
+    it("reveals BakedHotkey as an empty brand wrapper", () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- asserting the empty revealed shape
+      type _H1 = Expect<Equalish<RevealPrivate<BakedHotkey, BakedHotkey>, {}>>;
       const _typeCheck: _H1 = true;
       expect(_typeCheck).toBe(true);
     });
