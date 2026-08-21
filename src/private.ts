@@ -22,27 +22,16 @@ export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = Prettify<
   }[P]
 >;
 /**
- * Brand marker for types that pass through `RevealPrivate` unchanged.
- * Prefer the whitelist `Filter` over this marker: it is only for types that
- * cannot be structurally represented. The marker is a required property so
- * index-signature objects (weak types) do not accidentally match it.
- *
- * @deprecated Prefer the whitelist `Filter` parameter. Builtin exceptions are
- *   handled by the gate directly; the marker is only for types that cannot be
- *   structurally represented.
+ * Brand marker for types that pass through `RevealPrivate` unchanged. The
+ * marker is a required property so index-signature objects (weak types) do not
+ * accidentally match it. Builtins (`String`, `Number`, `Boolean`, `BigInt`,
+ * `Symbol`, `Date`, `RegExp`) extend this marker in `src/@types/lib.es5.ts`,
+ * so the gate needs no special-case union. Prefer the whitelist `Filter`
+ * parameter for non-builtin exceptions.
  */
 export interface RevealPrivateExempt {
   readonly __reveal_private_exempt: true;
 }
-/**
- * The marker shape the gate matches. It mirrors `RevealPrivateExempt`
- * structurally but is not deprecated, so the gate can reference it without a
- * lint suppression. Builtins are pre-augmented with this shape in
- * `src/@types/lib.es5.ts`.
- */
-type RevealPrivateExemptMarker = {
-  readonly __reveal_private_exempt: true;
-};
 /**
  * The maximum recursion depth of `RevealPrivate`. Cyclic types (e.g. DOM
  * nodes) return the raw type past this depth.
@@ -62,13 +51,13 @@ type WhitelistMatch<
     : WhitelistMatch<T, Tail>
   : false;
 /**
- * The exemption gate: types that pass through `RevealPrivate` unchanged.
- * The gate matches the `RevealPrivateExemptMarker` shape (required property,
- * so index-signature objects do not match). Builtins (`String`, `Number`,
- * `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) are pre-augmented with the
- * marker in `src/@types/lib.es5.ts`, so no special-case union is needed here.
- * `Function` is deliberately not augmented: it is a structural container whose
- * parameters and return type must be processed by the filter.
+ * The exemption gate: types that pass through `RevealPrivate` unchanged. The
+ * gate matches the `RevealPrivateExempt` shape (required property, so
+ * index-signature objects do not match). Builtins (`String`, `Number`,
+ * `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in
+ * `src/@types/lib.es5.ts`, so no special-case union is needed here. `Function`
+ * is deliberately not augmented: it is a structural container whose parameters
+ * and return type must be processed by the filter.
  */
 /**
  * The public members of `T` merged with its private shape (the `$X` brand
@@ -95,11 +84,11 @@ type MergePrivateShape<T> = Prettify<
  * 1. **Depth guard** — past `MaxRevealDepth` (8), return `T` unchanged
  *    (terminates on cyclic types).
  * 2. **Builtin gate** — exempt types pass through unchanged: the
- *    `RevealPrivateExemptMarker` shape. Builtins (`String`, `Number`,
- *    `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) are pre-augmented with
- *    the marker in `src/@types/lib.es5.ts`, so the gate needs no special-case
- *    union. Functions are deliberately NOT exempt: they are structural
- *    containers whose parameters and return type must be processed.
+ *    `RevealPrivateExempt` shape. Builtins (`String`, `Number`, `Boolean`,
+ *    `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in
+ *    `src/@types/lib.es5.ts`, so the gate needs no special-case union.
+ *    Functions are deliberately NOT exempt: they are structural containers
+ *    whose parameters and return type must be processed.
  * 3. **Structural dispatch** — tuples/arrays (preserving element
  *    optionality, rest elements, readonlyness), functions (exact filter
  *    matches pass through unchanged; otherwise parameters and return type
@@ -126,7 +115,7 @@ export type RevealPrivate<
   Depth extends readonly unknown[] = [],
 > = Depth["length"] extends MaxRevealDepth
   ? T
-  : T extends RevealPrivateExemptMarker
+  : T extends RevealPrivateExempt
     ? T
     : RevealPrivateStructural<T, Filter, Depth>;
 type RevealPrivateStructural<

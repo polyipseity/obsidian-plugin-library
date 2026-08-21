@@ -1,3 +1,5 @@
+import type { RevealPrivateExempt } from "../private.js";
+
 declare global {
   interface FunctionConstructor {
     <const A extends readonly string[]>(
@@ -36,29 +38,15 @@ declare global {
     freeze<const T>(o: T): Readonly<T>;
   }
 
-  // Builtins that pass through `RevealPrivate` unchanged carry the exempt
+  // Builtins that pass through `RevealPrivate` unchanged extend the exempt
   // marker so the gate needs no special-case union. `Function` is
   // deliberately not augmented: it is a structural container whose
   // parameters and return type must be processed by the filter.
-  interface String {
-    readonly __reveal_private_exempt: true;
-  }
-  interface Number {
-    readonly __reveal_private_exempt: true;
-  }
-  interface Boolean {
-    readonly __reveal_private_exempt: true;
-  }
-  interface BigInt {
-    readonly __reveal_private_exempt: true;
-  }
-  interface Symbol {
-    readonly __reveal_private_exempt: true;
-  }
-  interface Date {
-    readonly __reveal_private_exempt: true;
-  }
-  interface RegExp {
-    readonly __reveal_private_exempt: true;
-  }
+  interface String extends RevealPrivateExempt {}
+  interface Number extends RevealPrivateExempt {}
+  interface Boolean extends RevealPrivateExempt {}
+  interface BigInt extends RevealPrivateExempt {}
+  interface Symbol extends RevealPrivateExempt {}
+  interface Date extends RevealPrivateExempt {}
+  interface RegExp extends RevealPrivateExempt {}
 }
