@@ -3,7 +3,6 @@ import type {
   IsNever,
   MarkRequired,
   Prettify,
-  Primitive,
   UnionToIntersection,
 } from "ts-essentials";
 import type { AreNonDistributiveEqual } from "ts-essentials/dist/are-non-distributive-equal.js";
@@ -36,6 +35,15 @@ export interface RevealPrivateExempt {
   readonly __reveal_private_exempt: true;
 }
 /**
+ * The marker shape the gate matches. It mirrors `RevealPrivateExempt`
+ * structurally but is not deprecated, so the gate can reference it without a
+ * lint suppression. Builtins are pre-augmented with this shape in
+ * `src/@types/lib.es5.ts`.
+ */
+type RevealPrivateExemptMarker = {
+  readonly __reveal_private_exempt: true;
+};
+/**
  * The maximum recursion depth of `RevealPrivate`. Cyclic types (e.g. DOM
  * nodes) return the raw type past this depth.
  */
@@ -55,15 +63,13 @@ type WhitelistMatch<
   : false;
 /**
  * The exemption gate: types that pass through `RevealPrivate` unchanged.
- * The first member mirrors the deprecated `RevealPrivateExempt` marker
- * structurally (required property, so index-signature objects do not match);
- * the others are `Exclude<Builtin, Error | Function>` (primitives, `Date`,
- * `RegExp`), spelled out directly to avoid the banned `Function` type.
- * Functions are deliberately not exempt: they are structural containers whose
+ * The gate matches the `RevealPrivateExemptMarker` shape (required property,
+ * so index-signature objects do not match). Builtins (`String`, `Number`,
+ * `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) are pre-augmented with the
+ * marker in `src/@types/lib.es5.ts`, so no special-case union is needed here.
+ * `Function` is deliberately not augmented: it is a structural container whose
  * parameters and return type must be processed by the filter.
  */
-type RevealPrivateExemptBuiltin =
-  { readonly __reveal_private_exempt: true } | Primitive | Date | RegExp;
 /**
  * The public members of `T` merged with its private shape (the `$X` brand
  * value). String-indexed types skip the brand merge: their index signature
@@ -89,10 +95,11 @@ type MergePrivateShape<T> = Prettify<
  * 1. **Depth guard** — past `MaxRevealDepth` (8), return `T` unchanged
  *    (terminates on cyclic types).
  * 2. **Builtin gate** — exempt types pass through unchanged: the
- *    `RevealPrivateExempt` marker shape and `Exclude<Builtin, Error |
- *    Function>` (primitives, `Date`, `RegExp`). Functions are deliberately
- *    NOT exempt: they are structural containers whose parameters and return
- *    type must be processed.
+ *    `RevealPrivateExemptMarker` shape. Builtins (`String`, `Number`,
+ *    `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) are pre-augmented with
+ *    the marker in `src/@types/lib.es5.ts`, so the gate needs no special-case
+ *    union. Functions are deliberately NOT exempt: they are structural
+ *    containers whose parameters and return type must be processed.
  * 3. **Structural dispatch** — tuples/arrays (preserving element
  *    optionality, rest elements, readonlyness), functions (exact filter
  *    matches pass through unchanged; otherwise parameters and return type
@@ -119,7 +126,7 @@ export type RevealPrivate<
   Depth extends readonly unknown[] = [],
 > = Depth["length"] extends MaxRevealDepth
   ? T
-  : T extends RevealPrivateExemptBuiltin
+  : T extends RevealPrivateExemptMarker
     ? T
     : RevealPrivateStructural<T, Filter, Depth>;
 type RevealPrivateStructural<
