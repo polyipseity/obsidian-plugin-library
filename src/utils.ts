@@ -12,6 +12,7 @@ import type {
   DeepReadonly,
   DeepWritable,
   Newable,
+  Prettify,
 } from "ts-essentials";
 import {
   JSON_STRINGIFY_SPACE,
@@ -291,9 +292,11 @@ export function cartesianProduct<T extends readonly (readonly unknown[])[]>(
       (acc, arr) => acc.flatMap((comb) => arr.map((ele) => [comb, ele].flat())),
       [[]],
     ),
-  ) as readonly ({ readonly [I in keyof T]: T[I][number] } & {
-    readonly length: T["length"];
-  })[];
+  ) as readonly Prettify<
+    { readonly [I in keyof T]: T[I][number] } & {
+      readonly length: T["length"];
+    }
+  >[];
 }
 
 export function clear(self0: unknown[]): void {
