@@ -17,7 +17,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 - `RevealPrivate<T, Filter extends readonly unknown[] = readonly []>` — type-level reveal.
 - `revealPrivate(context, args, func, fallback)` and `revealPrivateAsync(...)` — deprecated runtime helpers wrapping `RevealPrivate`; kept for backwards compatibility.
 - `revealPrivateFilter<Filter>()` and `revealPrivateAsyncFilter<Filter>()` — recommended runtime helpers with a fixed `Filter`.
-- `RevealPrivateExempt` — deprecated brand marker; prefer the whitelist. Builtins are pre-augmented with the same marker shape in `src/@types/lib.es5.ts`.
+- `RevealPrivateExempt` — brand marker for types that pass through `RevealPrivate` unchanged. Builtins extend it in `src/@types/lib.es5.ts`; prefer the whitelist for non-builtin exceptions.
 - `Private`, `PrivateKeys`, `HasPrivate` — branding machinery.
 - `$App`, `$BakedHotkey`, `$Commands`, `$CommunityPluginsSettingTab`, `$DataAdapter`, `$FileSystem`, `$HotkeyManager`, `$Keymap`, `$Plugins`, `$UnknownSettingTab`, `$ViewStateResult`, `$Workspace`, `$WorkspaceLeaf`, `$WorkspaceRibbon` — the private-shape brand payloads, all exported from `src/@types/obsidian.ts` and reachable through the public type barrel (`export type *`). Reference them directly (e.g. `NonNullable<$FileSystem["open"]>`) instead of reconstructing shapes.
 
@@ -26,7 +26,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 `RevealPrivate<T, Filter>` distributes over unions and evaluates as follows:
 
 1. **Depth guard.** If the recursion depth reaches `MaxRevealDepth` (8), return `T` unchanged (terminates on cyclic types).
-2. **Builtin gate.** Exempt types pass through unchanged: the `RevealPrivateExemptMarker` shape (a required property, so index-signature objects do not match). Builtins (`String`, `Number`, `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) are pre-augmented with the marker in `src/@types/lib.es5.ts`, so the gate needs no special-case union. Functions are deliberately excluded from the gate: they are structural containers whose parameters and return type must be processed.
+2. **Builtin gate.** Exempt types pass through unchanged: the `RevealPrivateExempt` shape (a required property, so index-signature objects do not match). Builtins (`String`, `Number`, `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in `src/@types/lib.es5.ts`, so the gate needs no special-case union. Functions are deliberately excluded from the gate: they are structural containers whose parameters and return type must be processed.
 3. **Structural dispatch.** Otherwise dispatch on the shape of `T`:
    - **Tuples** (`number extends T["length"]` is false): homomorphic mapped tuple, preserving element optionality, rest elements, and readonlyness.
    - **Arrays**: mapped element type, preserving mutability/readonlyness.
@@ -55,7 +55,7 @@ The whitelist therefore controls _which_ domain types are eagerly expanded; arra
 
 ## Exempt marker
 
-`RevealPrivateExempt` is a required-property marker (`readonly __reveal_private_exempt: true`). It is intentionally awkward to use: only types that cannot be structurally represented should opt out of reveal. `Record<string, X>` must _not_ match the marker — the weak-type bug that allowed it is fixed. The marker is deprecated alongside the unfiltered functions; migrate builtin exceptions into the gate instead of using the marker. Builtins (`String`, `Number`, `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) are pre-augmented with the marker in `src/@types/lib.es5.ts`, so the gate matches the marker shape directly and needs no special-case union.
+`RevealPrivateExempt` is a required-property marker (`readonly __reveal_private_exempt: true`). It is intentionally awkward to use: only types that cannot be structurally represented should opt out of reveal. `Record<string, X>` must _not_ match the marker — the weak-type bug that allowed it is fixed. Builtins (`String`, `Number`, `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in `src/@types/lib.es5.ts`, so the gate matches the marker shape directly and needs no special-case union.
 
 ## BakedHotkey policy
 
