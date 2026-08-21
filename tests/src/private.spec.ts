@@ -6,8 +6,8 @@
  * aggressive expansion). The deprecated unfiltered `revealPrivate` and
  * `revealPrivateAsync` are thin delegations to the same internal machinery.
  */
-import { afterEach, describe, expect, it, vi } from "vitest";
 import type { App, BakedHotkey, Keymap } from "obsidian";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PluginContext } from "../../src/plugin.js";
 import {
   revealPrivateAsyncFilter,

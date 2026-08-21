@@ -30,62 +30,54 @@ export function newHotkeyListener(
       let bakedHotkeys = cloneAsWritable(hotkeyManager.bakedHotkeys),
         bakedIds = cloneAsWritable(hotkeyManager.bakedIds);
 
+      type ThisType = typeof hotkeyManager;
       context.register(
         around(hotkeyManager, {
           bake(next) {
             return function fn(
-              this: HotkeyManager,
+              this: ThisType,
               ...args: Parameters<typeof next>
             ): ReturnType<typeof next> {
-              revealPrivateFilter<[HotkeyManager]>()(
-                context,
-                [this],
-                (this0) => {
-                  if (this0.baked) {
-                    return;
-                  }
+              if (this.baked) {
+                return;
+              }
+              try {
+                const defaultKeysOld = this.defaultKeys;
+                try {
+                  this.defaultKeys = Object.fromEntries(
+                    Object.entries(defaultKeysOld).filter(
+                      ([id]) => !ids || ids.has(id),
+                    ),
+                  );
+
+                  const customKeysOld: Record<string, readonly Hotkey[]> =
+                    cloneAsWritable(this.customKeys);
                   try {
-                    const defaultKeysOld = this0.defaultKeys;
-                    try {
-                      this0.defaultKeys = Object.fromEntries(
-                        Object.entries(defaultKeysOld).filter(
-                          ([id]) => !ids || ids.has(id),
-                        ),
-                      );
-
-                      const customKeysOld: Record<string, readonly Hotkey[]> =
-                        cloneAsWritable(this0.customKeys);
-                      try {
-                        for (const id of Object.keys(customKeysOld)) {
-                          if (!ids || ids.has(id)) {
-                            continue;
-                          }
-                          this0.removeHotkeys(id);
-                        }
-
-                        this0.baked = false;
-                        next.apply(this0, args);
-                        bakedHotkeys = cloneAsWritable(this0.bakedHotkeys);
-                        bakedIds = cloneAsWritable(this0.bakedIds);
-                      } finally {
-                        for (const [id, hotkey] of Object.entries(
-                          customKeysOld,
-                        )) {
-                          if (!ids || ids.has(id)) {
-                            continue;
-                          }
-                          this0.setHotkeys(id, hotkey);
-                        }
+                    for (const id of Object.keys(customKeysOld)) {
+                      if (!ids || ids.has(id)) {
+                        continue;
                       }
-                    } finally {
-                      this0.defaultKeys = defaultKeysOld;
+                      this.removeHotkeys(id);
                     }
+
+                    this.baked = false;
+                    next.apply(this, args);
+                    bakedHotkeys = cloneAsWritable(this.bakedHotkeys);
+                    bakedIds = cloneAsWritable(this.bakedIds);
                   } finally {
-                    this0.baked = false;
+                    for (const [id, hotkey] of Object.entries(customKeysOld)) {
+                      if (!ids || ids.has(id)) {
+                        continue;
+                      }
+                      this.setHotkeys(id, hotkey);
+                    }
                   }
-                },
-                noop,
-              );
+                } finally {
+                  this.defaultKeys = defaultKeysOld;
+                }
+              } finally {
+                this.baked = false;
+              }
               next.apply(this, args);
             };
           },
