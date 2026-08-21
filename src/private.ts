@@ -225,6 +225,12 @@ type TraverseObject<
     : T
 >;
 
+type RevealArgs<
+  As extends readonly HasPrivate[],
+  Filter extends readonly unknown[],
+> = { readonly [A in keyof As]: RevealPrivate<As[A], Filter> };
+type SyncResult<R> = R extends PromiseLike<unknown> ? never : R;
+
 function revealPrivateInternal<
   const As extends readonly HasPrivate[],
   Result,
@@ -232,17 +238,11 @@ function revealPrivateInternal<
 >(
   context: PluginContext,
   args: As,
-  func: (
-    ...args: { readonly [A in keyof As]: RevealPrivate<As[A], Filter> }
-  ) => Result extends PromiseLike<unknown> ? never : Result,
-  fallback: (
-    error: unknown,
-  ) => Result extends PromiseLike<unknown> ? never : Result,
-): Result extends PromiseLike<unknown> ? never : Result {
+  func: (...args: RevealArgs<As, Filter>) => SyncResult<Result>,
+  fallback: (error: unknown) => SyncResult<Result>,
+): SyncResult<Result> {
   try {
-    return func(
-      ...(args as { readonly [A in keyof As]: RevealPrivate<As[A], Filter> }),
-    );
+    return func(...(args as RevealArgs<As, Filter>));
   } catch (error) {
     /* @__PURE__ */ self.console.debug(error);
     self.console.warn(
@@ -266,13 +266,9 @@ export function revealPrivate<
 >(
   context: PluginContext,
   args: As,
-  func: (
-    ...args: { readonly [A in keyof As]: RevealPrivate<As[A], Filter> }
-  ) => Result extends PromiseLike<unknown> ? never : Result,
-  fallback: (
-    error: unknown,
-  ) => Result extends PromiseLike<unknown> ? never : Result,
-): Result extends PromiseLike<unknown> ? never : Result {
+  func: (...args: RevealArgs<As, Filter>) => SyncResult<Result>,
+  fallback: (error: unknown) => SyncResult<Result>,
+): SyncResult<Result> {
   return revealPrivateInternal<As, Result, Filter>(
     context,
     args,
@@ -285,23 +281,15 @@ export function revealPrivateFilter<
 >(): <const As extends readonly HasPrivate[], Result>(
   context: PluginContext,
   args: As,
-  func: (
-    ...args: { readonly [A in keyof As]: RevealPrivate<As[A], Filter> }
-  ) => Result extends PromiseLike<unknown> ? never : Result,
-  fallback: (
-    error: unknown,
-  ) => Result extends PromiseLike<unknown> ? never : Result,
-) => Result extends PromiseLike<unknown> ? never : Result {
+  func: (...args: RevealArgs<As, Filter>) => SyncResult<Result>,
+  fallback: (error: unknown) => SyncResult<Result>,
+) => SyncResult<Result> {
   return function <const As extends readonly HasPrivate[], Result>(
     context: PluginContext,
     args: As,
-    func: (
-      ...args: { readonly [A in keyof As]: RevealPrivate<As[A], Filter> }
-    ) => Result extends PromiseLike<unknown> ? never : Result,
-    fallback: (
-      error: unknown,
-    ) => Result extends PromiseLike<unknown> ? never : Result,
-  ): Result extends PromiseLike<unknown> ? never : Result {
+    func: (...args: RevealArgs<As, Filter>) => SyncResult<Result>,
+    fallback: (error: unknown) => SyncResult<Result>,
+  ): SyncResult<Result> {
     return revealPrivateInternal<As, Result, Filter>(
       context,
       args,
@@ -318,17 +306,11 @@ async function revealPrivateAsyncInternal<
 >(
   context: PluginContext,
   args: As,
-  func: (
-    ...args: {
-      readonly [A in keyof As]: RevealPrivate<As[A], Filter>;
-    }
-  ) => PromiseLike<Result>,
+  func: (...args: RevealArgs<As, Filter>) => PromiseLike<Result>,
   fallback: (error: unknown) => AsyncOrSync<Result>,
 ): Promise<Result> {
   try {
-    return await func(
-      ...(args as { readonly [A in keyof As]: RevealPrivate<As[A], Filter> }),
-    );
+    return await func(...(args as RevealArgs<As, Filter>));
   } catch (error) {
     /* @__PURE__ */ self.console.debug(error);
     self.console.warn(
@@ -351,11 +333,7 @@ export async function revealPrivateAsync<
 >(
   context: PluginContext,
   args: As,
-  func: (
-    ...args: {
-      readonly [A in keyof As]: RevealPrivate<As[A], Filter>;
-    }
-  ) => PromiseLike<Result>,
+  func: (...args: RevealArgs<As, Filter>) => PromiseLike<Result>,
   fallback: (error: unknown) => AsyncOrSync<Result>,
 ): Promise<Result> {
   return revealPrivateAsyncInternal<As, Result, Filter>(
@@ -370,19 +348,13 @@ export function revealPrivateAsyncFilter<
 >(): <const As extends readonly HasPrivate[], Result>(
   context: PluginContext,
   args: As,
-  func: (
-    ...args: { readonly [A in keyof As]: RevealPrivate<As[A], Filter> }
-  ) => PromiseLike<Result>,
+  func: (...args: RevealArgs<As, Filter>) => PromiseLike<Result>,
   fallback: (error: unknown) => AsyncOrSync<Result>,
 ) => Promise<Result> {
   return function <const As extends readonly HasPrivate[], Result>(
     context: PluginContext,
     args: As,
-    func: (
-      ...args: {
-        readonly [A in keyof As]: RevealPrivate<As[A], Filter>;
-      }
-    ) => PromiseLike<Result>,
+    func: (...args: RevealArgs<As, Filter>) => PromiseLike<Result>,
     fallback: (error: unknown) => AsyncOrSync<Result>,
   ): Promise<Result> {
     return revealPrivateAsyncInternal<As, Result, Filter>(
