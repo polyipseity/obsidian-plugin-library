@@ -12,12 +12,14 @@ export interface PrivateKeys {
   // Empty for interface extension.
 }
 export type PrivateKeys$ = keyof PrivateKeys;
-export type Private<T, P extends keyof PrivateKeys> = {
+export type Private<T, P extends keyof PrivateKeys> = Prettify<{
   readonly [K in P]?: T;
-};
-export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = {
-  readonly [K in P]: Private<unknown, K>;
-}[P];
+}>;
+export type HasPrivate<P extends keyof PrivateKeys = PrivateKeys$> = Prettify<
+  {
+    readonly [K in P]: Private<unknown, K>;
+  }[P]
+>;
 /**
  * Brand marker for types that pass through `RevealPrivate` unchanged.
  * Prefer the whitelist `Filter` over this marker: it is only for types that
