@@ -19,6 +19,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 - `revealPrivateFilter<Filter>()` and `revealPrivateAsyncFilter<Filter>()` — recommended runtime helpers with a fixed `Filter`.
 - `RevealPrivateExempt` — deprecated brand marker; prefer the whitelist.
 - `Private`, `PrivateKeys`, `HasPrivate` — branding machinery.
+- `$App`, `$BakedHotkey`, `$Commands`, `$CommunityPluginsSettingTab`, `$DataAdapter`, `$FileSystem`, `$HotkeyManager`, `$Keymap`, `$Plugins`, `$UnknownSettingTab`, `$ViewStateResult`, `$Workspace`, `$WorkspaceLeaf`, `$WorkspaceRibbon` — the private-shape brand payloads, all exported from `src/@types/obsidian.ts` and reachable through the public type barrel (`export type *`). Reference them directly (e.g. `NonNullable<$FileSystem["open"]>`) instead of reconstructing shapes.
 
 ## Gate semantics (evaluation order)
 
