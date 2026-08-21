@@ -12,7 +12,7 @@ import type {
   I18nNamespaces,
   I18nResources,
 } from "../src/i18n.js";
-import type { IsExact } from "../src/types.js";
+import type { IsExact } from "ts-essentials";
 import {
   capitalize,
   deepFreeze,
