@@ -41,12 +41,6 @@ export type Deopaque<T> =
       ? V
       : never
     : never;
-export type DistributeKeys<T> = T extends unknown ? keyof T : never;
-export type DistributeValues<T, K> = T extends unknown
-  ? K extends keyof T
-    ? T[K]
-    : never
-  : never;
 export type Evaluate<T> = T extends (...args: infer A) => infer R
   ? (...args: A) => R
   : T extends object

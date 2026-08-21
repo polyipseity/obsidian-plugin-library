@@ -7,17 +7,12 @@ import type {
   DeepReadonly,
   IsUnknown,
 } from "ts-essentials";
+import type { Evaluate, IsExact } from "../src/types.js";
 import type {
   I18nFormatters,
   I18nNamespaces,
   I18nResources,
 } from "../src/i18n.js";
-import type {
-  DistributeKeys,
-  DistributeValues,
-  Evaluate,
-  IsExact,
-} from "../src/types.js";
 import {
   capitalize,
   deepFreeze,
@@ -57,15 +52,29 @@ export type AwaitResources<T extends I18nResources, Default extends keyof T> = {
 };
 
 export type MergeResources<Ts extends readonly I18nResources[]> = {
-  [K in DistributeKeys<Ts[number]>]: Evaluate<
-    MergeNamespaces<readonly DistributeValues<Ts[number], K>[]>
+  [K in keyof Ts[number]]: Evaluate<
+    MergeNamespaces<
+      readonly (Ts[number] extends unknown
+        ? K extends keyof Ts[number]
+          ? Ts[number][K]
+          : never
+        : never)[]
+    >
   >;
 };
 export type MergeNamespaces<Ts extends readonly I18nNamespaces[]> = {
-  [K in DistributeKeys<Ts[number]>]: () => PromiseLike<
+  [K in keyof Ts[number]]: () => PromiseLike<
     ReturnType<
       typeof merge<
-        AsyncOrSyncType<ReturnType<DistributeValues<Ts[number], K>>>[]
+        AsyncOrSyncType<
+          ReturnType<
+            Ts[number] extends unknown
+              ? K extends keyof Ts[number]
+                ? Ts[number][K]
+                : never
+              : never
+          >
+        >[]
       >
     >
   >;
