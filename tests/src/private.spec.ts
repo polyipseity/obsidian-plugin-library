@@ -7,7 +7,7 @@
  * `revealPrivateAsync` are thin delegations to the same internal machinery.
  */
 import type { App, BakedHotkey, Keymap } from "obsidian";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import type { PluginContext } from "../../src/plugin.js";
 import {
   revealPrivateAsyncFilter,
@@ -17,29 +17,10 @@ import {
   type RevealPrivate,
 } from "../../src/private.js";
 
-// Compile-time assertion helpers (see .agents/instructions/reveal-private.instructions.md).
-// `Equalish` is mutual assignability: order-insensitive, used for engine-output
-// assertions. `IsEqualExact` is the deferred-instantiation trick: order-sensitive,
-// used for whitelist gate semantics. `Expect<T extends true> = T` fails to compile
-// when the asserted condition is false.
-type Expect<T extends true> = T;
-type Equalish<A, B> = [A] extends [B]
-  ? [B] extends [A]
-    ? true
-    : false
-  : false;
-type IsEqualExact<A, B> = [A] extends [B]
-  ? [B] extends [A]
-    ? _IsEqual<A, B>
-    : false
-  : false;
-type _IsEqual<A, B> =
-  (<G>() => G extends (A & G) | G ? 1 : 2) extends <G>() => G extends
-    (B & G) | G
-    ? 1
-    : 2
-    ? true
-    : false;
+// Compile-time assertion helpers replaced by `expectTypeOf` (vitest) and
+// `AreNonDistributiveEqual` (ts-essentials) — see
+// .agents/instructions/reveal-private.instructions.md.
+import type { AreNonDistributiveEqual } from "ts-essentials/dist/are-non-distributive-equal.js";
 
 describe("private.ts — private API access", () => {
   // Create a mock plugin context
@@ -469,107 +450,75 @@ describe("private.ts — private API access", () => {
 
     it("reveals an exactly-whitelisted type", () => {
       // Regression lock: App whitelisted by exact match reveals $App.appId.
-      type _A1 = Expect<Equalish<RevealPrivate<App, [App]>["appId"], string>>;
-      const _typeCheck: _A1 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        RevealPrivate<App, [App]>["appId"]
+      >().toEqualTypeOf<string>();
     });
 
     // Regression lock: a subtype of a filter member is NOT expanded — only
     // exact matches are.
     it("does not expand a subtype of a filter member", () => {
-      type _A2 = Expect<
-        Equalish<
-          "appId" extends keyof RevealPrivate<
-            App,
-            [{ readonly keymap: Keymap }]
-          >
-            ? true
-            : false,
-          false
-        >
-      >;
-      const _typeCheck: _A2 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        "appId" extends keyof RevealPrivate<App, [{ readonly keymap: Keymap }]>
+          ? true
+          : false
+      >().toEqualTypeOf<false>();
     });
 
     // Regression lock: tuples keep their element positions and readonlyness
     // instead of widening to arrays.[App]
     it("preserves tuple structure", () => {
-      type _C1 = Expect<
-        Equalish<RevealPrivate<readonly [App, string], [App]>[1], string>
-      >;
-      const _typeCheck: _C1 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        RevealPrivate<readonly [App, string], [App]>[1]
+      >().toEqualTypeOf<string>();
     });
 
     // Regression lock: functions are structural containers — parameters and
     // return type must be processed.
     it("expands function parameters and return type", () => {
-      type _D1 = Expect<
-        Equalish<
-          Parameters<RevealPrivate<(x: App) => App, [App]>>[0]["appId"],
-          string
-        >
-      >;
-      const _typeCheck: _D1 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        Parameters<RevealPrivate<(x: App) => App, [App]>>[0]["appId"]
+      >().toEqualTypeOf<string>();
     });
 
     it("expands promise resolution types", () => {
-      type _E1 = Expect<
-        Equalish<
-          RevealPrivate<Promise<App>, [App]> extends Promise<infer U>
-            ? U extends { readonly appId: infer A }
-              ? A
-              : never
-            : never,
-          string
-        >
-      >;
-      const _typeCheck: _E1 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        RevealPrivate<Promise<App>, [App]> extends Promise<infer U>
+          ? U extends { readonly appId: infer A }
+            ? A
+            : never
+          : never
+      >().toEqualTypeOf<string>();
     });
 
     it("expands map value types", () => {
-      type _F1 = Expect<
-        Equalish<
-          RevealPrivate<ReadonlyMap<App, App>, [App]> extends ReadonlyMap<
-            infer K,
-            infer V
-          >
-            ? [
-                K extends { readonly appId: infer A } ? A : never,
-                V extends { readonly appId: infer B } ? B : never,
-              ]
-            : never,
-          [string, string]
+      expectTypeOf<
+        RevealPrivate<ReadonlyMap<App, App>, [App]> extends ReadonlyMap<
+          infer K,
+          infer V
         >
-      >;
-      const _typeCheck: _F1 = true;
-      expect(_typeCheck).toBe(true);
+          ? [
+              K extends { readonly appId: infer A } ? A : never,
+              V extends { readonly appId: infer B } ? B : never,
+            ]
+          : never
+      >().toEqualTypeOf<[string, string]>();
     });
 
     it("passes builtins through unchanged", () => {
-      type _G1 = Expect<
-        Equalish<
-          RevealPrivate<string | number | boolean | Date>,
-          string | number | boolean | Date
-        >
-      >;
-      const _typeCheck: _G1 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        RevealPrivate<string | number | boolean | Date>
+      >().toEqualTypeOf<string | number | boolean | Date>();
     });
 
     // Regression lock: $BakedHotkey is intentionally empty — the public
     // members live on the augmented `BakedHotkey` interface, not the brand.
     // The reveal strips the brand and exposes no extra members.
     it("reveals BakedHotkey as an empty brand wrapper", () => {
-      type _H1 = Expect<
+      expectTypeOf<
+        RevealPrivate<BakedHotkey, [BakedHotkey]>
         // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- asserting the empty revealed shape
-        Equalish<RevealPrivate<BakedHotkey, [BakedHotkey]>, {}>
-      >;
-      const _typeCheck: _H1 = true;
-      expect(_typeCheck).toBe(true);
+      >().toEqualTypeOf<{}>();
     });
 
     // Regression lock: Record<string, unknown> must not match the exempt
@@ -578,43 +527,32 @@ describe("private.ts — private API access", () => {
     // the shape, not the named (deprecated) type.
     it("exempt marker is a required property", () => {
       type ExemptMarkerShape = { readonly __reveal_private_exempt: true };
-      type _I1 = Expect<
-        Equalish<
-          Readonly<Record<string, unknown>> extends ExemptMarkerShape
-            ? true
-            : false,
-          false
-        >
-      >;
-      const _typeCheck: _I1 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        Readonly<Record<string, unknown>> extends ExemptMarkerShape
+          ? true
+          : false
+      >().toEqualTypeOf<false>();
     });
 
     // Regression lock only: a nested RevealPrivate wrap must be a no-op. In real
     // usage a single RevealPrivate<App, [App]> already fully reveals; the nested
     // pattern is not recommended outside tests.
     it("reveal is idempotent", () => {
-      type _J1 = Expect<
-        Equalish<
-          RevealPrivate<RevealPrivate<App, [App]>, [App]>,
-          RevealPrivate<App, [App]>
-        >
-      >;
-      const _typeCheck: _J1 = true;
-      expect(_typeCheck).toBe(true);
+      expectTypeOf<
+        RevealPrivate<RevealPrivate<App, [App]>, [App]>
+      >().toEqualTypeOf<RevealPrivate<App, [App]>>();
     });
 
     it("matches filter members exactly, not subtypes or supertypes", () => {
-      // Gate semantics of WhitelistMatch, engine-independent regression locks.
-      type _K1 = Expect<Equalish<IsEqualExact<App, App>, true>>;
-      type _K2 = Expect<
-        Equalish<IsEqualExact<App, { readonly keymap: Keymap }>, false>
-      >;
-      type _K3 = Expect<
-        Equalish<IsEqualExact<{ readonly keymap: Keymap }, App>, false>
-      >;
-      const _typeCheck: [_K1, _K2, _K3] = [true, true, true];
-      expect(_typeCheck).toEqual([true, true, true]);
+      // Gate semantics of WhitelistMatch: AreNonDistributiveEqual is the
+      // mutual-assignability gate used by the engine.
+      expectTypeOf<AreNonDistributiveEqual<App, App>>().toEqualTypeOf<true>();
+      expectTypeOf<
+        AreNonDistributiveEqual<App, { readonly keymap: Keymap }>
+      >().toEqualTypeOf<false>();
+      expectTypeOf<
+        AreNonDistributiveEqual<{ readonly keymap: Keymap }, App>
+      >().toEqualTypeOf<false>();
     });
   });
 
