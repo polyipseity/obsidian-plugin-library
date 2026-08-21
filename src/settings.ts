@@ -129,7 +129,7 @@ export class StorageSettingsManager<
       },
     } = this;
     await context.language.onLoaded;
-    return revealPrivateFilter<App>()(
+    return revealPrivateFilter<[App]>()(
       context,
       [app],
       (app2) => `${app2.appId}.${id}.${StorageSettingsManager.KEY}`,

@@ -365,7 +365,7 @@ export function addRibbonIcon(
     },
     language,
   } = context;
-  return revealPrivateFilter<WorkspaceRibbon>()(
+  return revealPrivateFilter<[WorkspaceRibbon]>()(
     context,
     [leftRibbon],
     (leftRibbon0) => {
@@ -552,7 +552,7 @@ export function recordViewStateHistory(
   context: PluginContext,
   result: ViewStateResult,
 ): void {
-  revealPrivateFilter<ViewStateResult>()(
+  revealPrivateFilter<[ViewStateResult]>()(
     context,
     [result],
     (result0) => {
@@ -569,7 +569,7 @@ export async function saveFileAs(
 ): Promise<void> {
   if (
     await revealPrivateAsyncFilter<
-      DataAdapter | FileSystem | NonNullable<$FileSystem["open"]>
+      [DataAdapter, FileSystem, NonNullable<$FileSystem["open"]>]
     >()(
       context,
       [adapter],
@@ -599,7 +599,7 @@ export async function saveFileAs(
 }
 
 export function updateView(context: PluginContext, view: View): void {
-  revealPrivateFilter<WorkspaceLeaf | Workspace>()(
+  revealPrivateFilter<[WorkspaceLeaf, Workspace]>()(
     context,
     [view.leaf, context.app.workspace],
     (leaf, workspace) => {

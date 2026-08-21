@@ -22,7 +22,7 @@ export function newHotkeyListener(
     app,
     app: { keymap },
   } = context;
-  return revealPrivateFilter<App | HotkeyManager>()(
+  return revealPrivateFilter<[App, HotkeyManager]>()(
     context,
     [app],
     (app0) => {
@@ -37,7 +37,7 @@ export function newHotkeyListener(
               this: HotkeyManager,
               ...args: Parameters<typeof next>
             ): ReturnType<typeof next> {
-              revealPrivateFilter<HotkeyManager>()(
+              revealPrivateFilter<[HotkeyManager]>()(
                 context,
                 [this],
                 (this0) => {
@@ -94,7 +94,7 @@ export function newHotkeyListener(
 
       return (evt: KeyboardEvent, ctx: KeymapContext) => {
         revealPrivateFilter<
-          App | HotkeyManager | Commands | Keymap | BakedHotkey
+          [App, HotkeyManager, Commands, Keymap, BakedHotkey]
         >()(
           context,
           [app, keymap],

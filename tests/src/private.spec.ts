@@ -65,7 +65,7 @@ describe("private.ts — private API access", () => {
       const context = createMockContext();
       const obj = makeHasPrivate({ public: "visible", private: "hidden" });
 
-      const result = revealPrivateFilter<unknown>()(
+      const result = revealPrivateFilter<[]>()(
         context,
         [obj],
         (revealed) => {
@@ -81,7 +81,7 @@ describe("private.ts — private API access", () => {
       const context = createMockContext();
       const obj = makeHasPrivate({ value: 42 });
 
-      const result = revealPrivateFilter<unknown>()(
+      const result = revealPrivateFilter<[]>()(
         context,
         [obj],
         (revealed) => revealed.value * 2,
@@ -97,7 +97,7 @@ describe("private.ts — private API access", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const obj = makeHasPrivate({});
 
-      const result = revealPrivateFilter<unknown>()(
+      const result = revealPrivateFilter<[]>()(
         context,
         [obj],
         () => {
@@ -120,7 +120,7 @@ describe("private.ts — private API access", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const obj = makeHasPrivate({});
 
-      revealPrivateFilter<unknown>()(
+      revealPrivateFilter<[]>()(
         context,
         [obj],
         () => {
@@ -141,7 +141,7 @@ describe("private.ts — private API access", () => {
       const obj1 = makeHasPrivate({ a: 1 });
       const obj2 = makeHasPrivate({ b: 2 });
 
-      const result = revealPrivateFilter<unknown>()(
+      const result = revealPrivateFilter<[]>()(
         context,
         [obj1, obj2],
         (r1, r2) => r1.a + r2.b,
@@ -155,7 +155,7 @@ describe("private.ts — private API access", () => {
       const context = createMockContext();
       const obj = makeHasPrivate({ data: "test" });
 
-      const stringResult: string = revealPrivateFilter<unknown>()(
+      const stringResult: string = revealPrivateFilter<[]>()(
         context,
         [obj],
         (revealed) => revealed.data,
@@ -164,7 +164,7 @@ describe("private.ts — private API access", () => {
 
       expect(typeof stringResult).toBe("string");
 
-      const numberResult: number = revealPrivateFilter<unknown>()(
+      const numberResult: number = revealPrivateFilter<[]>()(
         context,
         [obj],
         () => 42,
@@ -179,7 +179,7 @@ describe("private.ts — private API access", () => {
       const fallback = vi.fn(() => "fallback");
       const obj = makeHasPrivate({});
 
-      revealPrivateFilter<unknown>()(context, [obj], () => "success", fallback);
+      revealPrivateFilter<[]>()(context, [obj], () => "success", fallback);
 
       expect(fallback).not.toHaveBeenCalled();
     });
@@ -187,7 +187,7 @@ describe("private.ts — private API access", () => {
     it("handles empty args array", () => {
       const context = createMockContext();
 
-      const result = revealPrivateFilter<unknown>()(
+      const result = revealPrivateFilter<[]>()(
         context,
         [],
         () => "no-args",
@@ -204,7 +204,7 @@ describe("private.ts — private API access", () => {
       const testError = new Error("Specific error");
       const obj = makeHasPrivate({});
 
-      revealPrivateFilter<unknown>()(
+      revealPrivateFilter<[]>()(
         context,
         [obj],
         () => {
@@ -228,7 +228,7 @@ describe("private.ts — private API access", () => {
       const context = createMockContext();
       const obj = makeHasPrivate({ value: "async-test" });
 
-      const result = await revealPrivateAsyncFilter<unknown>()(
+      const result = await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async (revealed) => {
@@ -245,7 +245,7 @@ describe("private.ts — private API access", () => {
       const context = createMockContext();
       const obj = makeHasPrivate({ count: 10 });
 
-      const promise = revealPrivateAsyncFilter<unknown>()(
+      const promise = revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async (revealed) => {
@@ -265,7 +265,7 @@ describe("private.ts — private API access", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const obj = makeHasPrivate({});
 
-      const result = await revealPrivateAsyncFilter<unknown>()(
+      const result = await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async () => {
@@ -291,7 +291,7 @@ describe("private.ts — private API access", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const obj = {} as HasPrivate;
 
-      await revealPrivateAsyncFilter<unknown>()(
+      await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async () => {
@@ -312,7 +312,7 @@ describe("private.ts — private API access", () => {
       const obj1 = makeHasPrivate({ x: 5 });
       const obj2 = makeHasPrivate({ y: 7 });
 
-      const result = await revealPrivateAsyncFilter<unknown>()(
+      const result = await revealPrivateAsyncFilter<[]>()(
         context,
         [obj1, obj2],
         async (r1, r2) => {
@@ -332,7 +332,7 @@ describe("private.ts — private API access", () => {
       const obj = makeHasPrivate({});
 
       // Sync fallback
-      const syncResult = await revealPrivateAsyncFilter<unknown>()(
+      const syncResult = await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async () => {
@@ -351,7 +351,7 @@ describe("private.ts — private API access", () => {
       // Async fallback
       debugSpy.mockClear();
       warnSpy.mockClear();
-      const asyncResult = await revealPrivateAsyncFilter<unknown>()(
+      const asyncResult = await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async () => {
@@ -377,7 +377,7 @@ describe("private.ts — private API access", () => {
       const fallback = vi.fn(async () => "fallback");
       const obj = makeHasPrivate({});
 
-      await revealPrivateAsyncFilter<unknown>()(
+      await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async () => "success",
@@ -393,7 +393,7 @@ describe("private.ts — private API access", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const obj = makeHasPrivate({});
 
-      const result = await revealPrivateAsyncFilter<unknown>()(
+      const result = await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
 
@@ -416,7 +416,7 @@ describe("private.ts — private API access", () => {
       const testError = new Error("Specific async error");
       const obj = makeHasPrivate({});
 
-      await revealPrivateAsyncFilter<unknown>()(
+      await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async () => {
@@ -469,7 +469,7 @@ describe("private.ts — private API access", () => {
 
     it("reveals an exactly-whitelisted type", () => {
       // Regression lock: App whitelisted by exact match reveals $App.appId.
-      type _A1 = Expect<Equalish<RevealPrivate<App, App>["appId"], string>>;
+      type _A1 = Expect<Equalish<RevealPrivate<App, [App]>["appId"], string>>;
       const _typeCheck: _A1 = true;
       expect(_typeCheck).toBe(true);
     });
@@ -479,7 +479,10 @@ describe("private.ts — private API access", () => {
     it("does not expand a subtype of a filter member", () => {
       type _A2 = Expect<
         Equalish<
-          "appId" extends keyof RevealPrivate<App, { readonly keymap: Keymap }>
+          "appId" extends keyof RevealPrivate<
+            App,
+            [{ readonly keymap: Keymap }]
+          >
             ? true
             : false,
           false
@@ -490,10 +493,10 @@ describe("private.ts — private API access", () => {
     });
 
     // Regression lock: tuples keep their element positions and readonlyness
-    // instead of widening to arrays.
+    // instead of widening to arrays.[App]
     it("preserves tuple structure", () => {
       type _C1 = Expect<
-        Equalish<RevealPrivate<readonly [App, string], App>[1], string>
+        Equalish<RevealPrivate<readonly [App, string], [App]>[1], string>
       >;
       const _typeCheck: _C1 = true;
       expect(_typeCheck).toBe(true);
@@ -504,7 +507,7 @@ describe("private.ts — private API access", () => {
     it("expands function parameters and return type", () => {
       type _D1 = Expect<
         Equalish<
-          Parameters<RevealPrivate<(x: App) => App, App>>[0]["appId"],
+          Parameters<RevealPrivate<(x: App) => App, [App]>>[0]["appId"],
           string
         >
       >;
@@ -515,7 +518,7 @@ describe("private.ts — private API access", () => {
     it("expands promise resolution types", () => {
       type _E1 = Expect<
         Equalish<
-          RevealPrivate<Promise<App>, App> extends Promise<infer U>
+          RevealPrivate<Promise<App>, [App]> extends Promise<infer U>
             ? U extends { readonly appId: infer A }
               ? A
               : never
@@ -530,7 +533,7 @@ describe("private.ts — private API access", () => {
     it("expands map value types", () => {
       type _F1 = Expect<
         Equalish<
-          RevealPrivate<ReadonlyMap<App, App>, App> extends ReadonlyMap<
+          RevealPrivate<ReadonlyMap<App, App>, [App]> extends ReadonlyMap<
             infer K,
             infer V
           >
@@ -561,8 +564,10 @@ describe("private.ts — private API access", () => {
     // members live on the augmented `BakedHotkey` interface, not the brand.
     // The reveal strips the brand and exposes no extra members.
     it("reveals BakedHotkey as an empty brand wrapper", () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- asserting the empty revealed shape
-      type _H1 = Expect<Equalish<RevealPrivate<BakedHotkey, BakedHotkey>, {}>>;
+      type _H1 = Expect<
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- asserting the empty revealed shape
+        Equalish<RevealPrivate<BakedHotkey, [BakedHotkey]>, {}>
+      >;
       const _typeCheck: _H1 = true;
       expect(_typeCheck).toBe(true);
     });
@@ -588,8 +593,8 @@ describe("private.ts — private API access", () => {
     it("reveal is idempotent", () => {
       type _J1 = Expect<
         Equalish<
-          RevealPrivate<RevealPrivate<App, App>, App>,
-          RevealPrivate<App, App>
+          RevealPrivate<RevealPrivate<App, [App]>, [App]>,
+          RevealPrivate<App, [App]>
         >
       >;
       const _typeCheck: _J1 = true;
@@ -617,7 +622,7 @@ describe("private.ts — private API access", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const obj = null as unknown as HasPrivate;
 
-      const result = revealPrivateFilter<unknown>()(
+      const result = revealPrivateFilter<[]>()(
         context,
         [obj],
         () => {
@@ -640,7 +645,7 @@ describe("private.ts — private API access", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       const obj = makeHasPrivate({});
 
-      const result = await revealPrivateAsyncFilter<unknown>()(
+      const result = await revealPrivateAsyncFilter<[]>()(
         context,
         [obj],
         async () => {

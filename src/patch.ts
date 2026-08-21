@@ -17,7 +17,7 @@ export async function patchPlugin<const I extends string>(
   id: I,
   patcher: (plugin: Plugins.Map<I>) => AsyncOrSync<() => void>,
 ): Promise<() => void> {
-  return revealPrivateAsyncFilter<App | Plugins | LoadPlugin | GetPlugin>()(
+  return revealPrivateAsyncFilter<[App, Plugins, LoadPlugin, GetPlugin]>()(
     context,
     [context.app],
     async (app2) => {
