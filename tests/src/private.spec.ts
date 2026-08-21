@@ -590,6 +590,9 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toBe(true);
     });
 
+    // Regression lock only: a nested RevealPrivate wrap must be a no-op. In real
+    // usage a single RevealPrivate<App, [App]> already fully reveals; the nested
+    // pattern is not recommended outside tests.
     it("reveal is idempotent", () => {
       type _J1 = Expect<
         Equalish<
