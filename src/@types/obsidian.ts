@@ -67,7 +67,7 @@ declare module "../private.js" {
   }
 }
 
-interface $App {
+export interface $App {
   readonly appId: string;
   readonly commands: Commands;
   readonly hotkeyManager: HotkeyManager;
@@ -80,14 +80,14 @@ interface $App {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- interface extension point
-interface $BakedHotkey {}
+export interface $BakedHotkey {}
 
-interface $Commands {
+export interface $Commands {
   readonly executeCommand: (command: Command, event?: UserEvent) => boolean;
   readonly findCommand: (id?: string) => Command | undefined;
 }
 
-interface $CommunityPluginsSettingTab extends SettingTab {
+export interface $CommunityPluginsSettingTab extends SettingTab {
   readonly id: "community-plugins";
   readonly installedPlugins?:
     | {
@@ -102,7 +102,7 @@ interface $CommunityPluginsSettingTab extends SettingTab {
     ((manifest: PluginManifest, element: HTMLElement) => void) | undefined;
 }
 
-interface $DataAdapter {
+export interface $DataAdapter {
   readonly fs: FileSystem;
 }
 
@@ -112,7 +112,7 @@ export interface $FileSystem {
   ) => Length extends 1 ? PromiseLike<void> : never;
 }
 
-interface $HotkeyManager {
+export interface $HotkeyManager {
   readonly bake: () => void;
   baked: boolean;
   bakedHotkeys: BakedHotkey[];
@@ -123,36 +123,36 @@ interface $HotkeyManager {
   readonly setHotkeys: (id: string, hotkey: readonly Hotkey[]) => void;
 }
 
-interface $Keymap {
+export interface $Keymap {
   readonly constructor: typeof Keymap & {
     readonly isMatch: (key: BakedHotkey, ctx: KeymapContext) => boolean;
   };
 }
 
-interface $Plugins {
+export interface $Plugins {
   readonly getPlugin: <const I extends string>(id: I) => Plugins.Map<I> | null;
   readonly loadPlugin: <const I extends string>(
     id: I,
   ) => PromiseLike<Plugins.Map<I> | null>;
 }
 
-interface $UnknownSettingTab extends SettingTab {
+export interface $UnknownSettingTab extends SettingTab {
   readonly id: unique symbol;
 }
 
-interface $ViewStateResult {
+export interface $ViewStateResult {
   history: boolean;
 }
 
-interface $Workspace {
+export interface $Workspace {
   readonly requestUpdateLayout: () => void;
 }
 
-interface $WorkspaceLeaf {
+export interface $WorkspaceLeaf {
   readonly updateHeader: () => void;
 }
 
-interface $WorkspaceRibbon {
+export interface $WorkspaceRibbon {
   readonly addRibbonItemButton: (
     id: string,
     icon: string,
