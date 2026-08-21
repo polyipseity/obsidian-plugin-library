@@ -4,7 +4,7 @@
 
 Rework the private-revealing transformation around an exact whitelist. This may break existing usages.
 
-- `RevealPrivate<T, Filter>` (and the runtime helpers) now expands **only** types that exactly match a `Filter` member (`IsEqualExact`), traversing everything else by dropping the brand. Previously every object type was eagerly expanded.
+- `RevealPrivate<T, Filter>` (and the runtime helpers) now expands **only** types that exactly match a `Filter` member (`AreNonDistributiveEqual`), traversing everything else by dropping the brand.
 - The `Filter` parameter is now a **readonly tuple** (`readonly unknown[]`) instead of a union. Wrap each whitelist member in tuple brackets, e.g. `revealPrivateFilter<[App, Keymap]>()`. A nested union can be held as a single tuple element so it is not flattened.
 - Add `revealPrivateFilter<Filter>()` and `revealPrivateAsyncFilter<Filter>()` to fix the filter at the call site.
 - Deprecate `RevealPrivate`, `revealPrivate`, `revealPrivateAsync`. Use the filtered variants instead; builtin exceptions are handled by the gate directly.
