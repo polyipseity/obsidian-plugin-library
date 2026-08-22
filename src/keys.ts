@@ -1,15 +1,13 @@
 import { noop } from "es-toolkit/function";
 import { around } from "monkey-around";
+import type { Hotkey, KeymapContext, KeymapEventListener } from "obsidian";
 import type {
-  App,
-  BakedHotkey,
-  Commands,
-  Hotkey,
-  HotkeyManager,
-  Keymap,
-  KeymapContext,
-  KeymapEventListener,
-} from "obsidian";
+  $App,
+  $BakedHotkey,
+  $Commands,
+  $HotkeyManager,
+  $Keymap,
+} from "./@types/obsidian.js";
 import type { PluginContext } from "./plugin.js";
 import { revealPrivateFilter } from "./private.js";
 import { cloneAsWritable } from "./utils.js";
@@ -22,7 +20,7 @@ export function newHotkeyListener(
     app,
     app: { keymap },
   } = context;
-  return revealPrivateFilter<[App, HotkeyManager]>()(
+  return revealPrivateFilter<[$App, $HotkeyManager]>()(
     context,
     [app],
     (app0) => {
@@ -86,7 +84,7 @@ export function newHotkeyListener(
 
       return (evt: KeyboardEvent, ctx: KeymapContext) => {
         revealPrivateFilter<
-          [App, HotkeyManager, Commands, Keymap, BakedHotkey]
+          [$App, $HotkeyManager, $Commands, $Keymap, $BakedHotkey]
         >()(
           context,
           [app, keymap],

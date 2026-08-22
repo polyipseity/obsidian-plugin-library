@@ -1,7 +1,7 @@
 import { throttle } from "es-toolkit/function";
 import { isEmptyObject, isEqual, isNil } from "es-toolkit/predicate";
 import type { AsyncOrSync, DeepReadonly, DeepWritable } from "ts-essentials";
-import type { App } from "obsidian";
+import type { $App } from "./@types/obsidian.js";
 import { type Fixed, type Fixer, markFixed } from "./fixers.js";
 import { SAVE_SETTINGS_WAIT } from "./internals/magic.js";
 import {
@@ -129,7 +129,7 @@ export class StorageSettingsManager<
       },
     } = this;
     await context.language.onLoaded;
-    return revealPrivateFilter<[App]>()(
+    return revealPrivateFilter<[$App]>()(
       context,
       [app],
       (app2) => `${app2.appId}.${id}.${StorageSettingsManager.KEY}`,

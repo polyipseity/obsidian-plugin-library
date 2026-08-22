@@ -11,7 +11,6 @@ import {
   Component,
   type DataAdapter,
   DropdownComponent,
-  type FileSystem,
   type FrontMatterCache,
   Notice,
   Plugin,
@@ -20,14 +19,18 @@ import {
   ValueComponent,
   type View,
   type ViewStateResult,
-  WorkspaceRibbon,
-  type Workspace,
-  type WorkspaceLeaf,
 } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";
 import { InternalDOMClasses } from "./internals/magic.js";
 import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
-import type { $FileSystem } from "./@types/obsidian.js";
+import type {
+  $DataAdapter,
+  $FileSystem,
+  $ViewStateResult,
+  $Workspace,
+  $WorkspaceLeaf,
+  $WorkspaceRibbon,
+} from "./@types/obsidian.js";
 import type { PluginContext } from "./plugin.js";
 import { revealPrivateAsyncFilter, revealPrivateFilter } from "./private.js";
 import { type AnyObject, launderUnchecked } from "./types.js";
@@ -365,7 +368,7 @@ export function addRibbonIcon(
     },
     language,
   } = context;
-  return revealPrivateFilter<[WorkspaceRibbon]>()(
+  return revealPrivateFilter<[$WorkspaceRibbon]>()(
     context,
     [leftRibbon],
     (leftRibbon0) => {
@@ -552,7 +555,7 @@ export function recordViewStateHistory(
   context: PluginContext,
   result: ViewStateResult,
 ): void {
-  revealPrivateFilter<[ViewStateResult]>()(
+  revealPrivateFilter<[$ViewStateResult]>()(
     context,
     [result],
     (result0) => {
@@ -569,7 +572,7 @@ export async function saveFileAs(
 ): Promise<void> {
   if (
     await revealPrivateAsyncFilter<
-      [DataAdapter, FileSystem, NonNullable<$FileSystem["open"]>]
+      [$DataAdapter, $FileSystem, NonNullable<$FileSystem["open"]>]
     >()(
       context,
       [adapter],
@@ -599,7 +602,7 @@ export async function saveFileAs(
 }
 
 export function updateView(context: PluginContext, view: View): void {
-  revealPrivateFilter<[WorkspaceLeaf, Workspace]>()(
+  revealPrivateFilter<[$WorkspaceLeaf, $Workspace]>()(
     context,
     [view.leaf, context.app.workspace],
     (leaf, workspace) => {
