@@ -96,9 +96,11 @@ type WhitelistMatch<
 /**
  * True when `T` (after removing `undefined`/`null`) is exactly one element of
  * the `RecursionBlacklist` tuple. The blacklist is a SET of types to STOP
- * recursing into (returned as-is); it matches the whole type, branded or not.
- * Orthogonal to the reveal whitelist — a type can be in neither, either, or
- * both lists. The blacklist wins: recursion stops before reveal is considered.
+ * recursing into (members returned raw); it matches the whole type, branded or
+ * not. Orthogonal to the reveal whitelist — a type can be in neither, either,
+ * or both lists. The blacklist only suppresses descent into members; the
+ * reveal at the node is unaffected. A type in both lists is revealed (shape
+ * merged) but not descended.
  */
 type RecursionBlacklistMatch<
   T,
@@ -140,9 +142,10 @@ type MergePrivateShape<T> = Prettify<
  *    `src/@types/lib.es5.ts`, so the gate needs no special-case union.
  *    Functions are deliberately NOT exempt: they are structural containers
  *    whose parameters and return type must be processed.
- * 3. **Recursion blacklist** — if `T` is in `RecursionBlacklist`, return `T`
- *    unchanged and stop recursing. The blacklist wins over the reveal
- *    whitelist.
+ * 3. **Recursion blacklist** — if `T` is in `RecursionBlacklist`, descent into
+ *    its members stops (members returned raw). This is orthogonal to the
+ *    reveal whitelist: a type in both lists is revealed (shape merged) but not
+ *    descended.
  * 4. **Structural dispatch** — tuples/arrays (preserving element
  *    optionality, rest elements, readonlyness), functions (exact blacklist
  *    matches pass through unchanged; otherwise parameters and return type
@@ -156,8 +159,10 @@ type MergePrivateShape<T> = Prettify<
  *   type's brand payload exactly matches a whitelist element
  *   (`AreNonDistributiveEqual`), its private `$X` shape is merged and every
  *   member is recursively revealed.
- * - `RecursionBlacklist` — a SET of types to STOP recursing into (returned as-
- *   is). Matches the whole type exactly. Orthogonal to the reveal whitelist.
+ * - `RecursionBlacklist` — a SET of types to STOP recursing into (members
+ *   returned raw). Matches the whole type exactly. Orthogonal to the reveal
+ *   whitelist: the two lists have no precedence, each governing its own concern
+ *   (reveal-at-node vs descend-into-members).
  * Recursion is uniform for BRANDED types — every branded object is recursed
  * into unless blacklisted, and the reveal whitelist only decides
  * reveal-vs-traverse. Non-branded objects (no private brand, e.g. DOM types
@@ -189,23 +194,11 @@ type RevealPrivateImpl<
   ? T
   : [T] extends [RevealPrivateExempt]
     ? T
-    : RecursionBlacklistMatch<T, RecursionBlacklist> extends true
-      ? T
-      : [T] extends [object]
-        ? RevealWhitelistMatch<T, RevealWhitelist> extends true
-          ? RevealUnion<T, RevealWhitelist, RecursionBlacklist, Depth>
-          : RevealPrivateStructural<
-              T,
-              RevealWhitelist,
-              RecursionBlacklist,
-              Depth
-            >
-        : RevealPrivateStructural<
-            T,
-            RevealWhitelist,
-            RecursionBlacklist,
-            Depth
-          >;
+    : [T] extends [object]
+      ? RevealWhitelistMatch<T, RevealWhitelist> extends true
+        ? RevealUnion<T, RevealWhitelist, RecursionBlacklist, Depth>
+        : RevealPrivateStructural<T, RevealWhitelist, RecursionBlacklist, Depth>
+      : RevealPrivateStructural<T, RevealWhitelist, RecursionBlacklist, Depth>;
 type RevealPrivateStructural<
   T,
   RevealWhitelist extends readonly unknown[],
@@ -330,8 +323,21 @@ type RevealPrivateObject<
   Depth extends readonly unknown[],
 > =
   RevealWhitelistMatch<T, RevealWhitelist> extends true
-    ? RevealObject<T, RevealWhitelist, RecursionBlacklist, Depth>
-    : TraverseObject<T, RevealWhitelist, RecursionBlacklist, Depth>;
+    ? RecursionBlacklistMatch<T, RecursionBlacklist> extends true
+      ? RevealObjectNoRecurse<T>
+      : RevealObject<T, RevealWhitelist, RecursionBlacklist, Depth>
+    : RecursionBlacklistMatch<T, RecursionBlacklist> extends true
+      ? T
+      : TraverseObject<T, RevealWhitelist, RecursionBlacklist, Depth>;
+/**
+ * Merges the private `$X` shape of a whitelisted type but returns its members
+ * raw (no descent). Used when a type is in BOTH the reveal whitelist and the
+ * recursion blacklist: the two concerns are orthogonal, so the reveal at the
+ * node still applies while descent into members is suppressed.
+ */
+type RevealObjectNoRecurse<T extends object> = Prettify<{
+  [K in keyof MergePrivateShape<T>]: MergePrivateShape<T>[K];
+}>;
 /**
  * Eagerly replaces a whitelisted type by its merged shape and reveals every
  * member. `Prettify` flattens the intersection so narrowed property access
