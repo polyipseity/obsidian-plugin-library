@@ -2,9 +2,14 @@
  * Comprehensive tests for src/private.ts — private API access utilities
  *
  * Runtime tests exercise the recommended `revealPrivateFilter` /
- * `revealPrivateAsyncFilter` entry points (with `Filter = unknown` for the
- * aggressive expansion). The deprecated unfiltered `revealPrivate` and
+ * `revealPrivateAsyncFilter` entry points (with `RevealWhitelist = []` for the
+ * traverse-only behavior). The deprecated unfiltered `revealPrivate` and
  * `revealPrivateAsync` are thin delegations to the same internal machinery.
+ *
+ * The reveal whitelist is a SET of PRIVATE types (`$X` brand payloads) to
+ * reveal; the recursion blacklist is a SET of types to stop recursing into.
+ * Both are orthogonal. List private types (`$App`, `$CommunityPluginsSettingTab`,
+ * ...) to reveal them; intermediate types on an access path are auto-traversed.
  */
 import type {
   App,
@@ -13,7 +18,12 @@ import type {
   Keymap,
   UnknownSettingTab,
 } from "obsidian";
-import type { $App } from "../../src/@types/obsidian.js";
+import type {
+  $App,
+  $BakedHotkey,
+  $CommunityPluginsSettingTab,
+  $UnknownSettingTab,
+} from "../../src/@types/obsidian.js";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import type { PluginContext } from "../../src/plugin.js";
 import {
@@ -455,16 +465,30 @@ describe("private.ts — private API access", () => {
       expect(_typeCheck).toEqual([]);
     });
 
-    it("reveals an exactly-whitelisted type", () => {
-      // Regression lock: App whitelisted by exact match reveals $App.appId.
+    it("reveals an exactly-whitelisted private type", () => {
+      // Regression lock: App's brand payload $App whitelisted by exact match
+      // reveals $App.appId. The augmented `App` type itself is NOT a whitelist
+      // element — only the `$X` brand payload matches.
       expectTypeOf<
-        RevealPrivate<App, [App]>["appId"]
+        RevealPrivate<App, [$App]>["appId"]
       >().toEqualTypeOf<string>();
     });
 
-    // Regression lock: a subtype of a filter member is NOT expanded — only
-    // exact matches are.
-    it("does not expand a subtype of a filter member", () => {
+    // Regression lock: the reveal whitelist matches the `$X` brand payload, not
+    // the augmented type. Listing `App` (the augmented interface) does NOT
+    // reveal `$App.appId`.
+    it("reveal whitelist matches brand payload, not augmented type", () => {
+      expectTypeOf<
+        RevealPrivate<App, [$App]>["appId"]
+      >().toEqualTypeOf<string>();
+      expectTypeOf<
+        "appId" extends keyof RevealPrivate<App, [App]> ? true : false
+      >().toEqualTypeOf<false>();
+    });
+
+    // Regression lock: a subtype of a whitelist member is NOT expanded — only
+    // exact matches of the `$X` brand payload are.
+    it("does not expand a subtype of a whitelist member", () => {
       expectTypeOf<
         "appId" extends keyof RevealPrivate<App, [{ readonly keymap: Keymap }]>
           ? true
@@ -473,24 +497,25 @@ describe("private.ts — private API access", () => {
     });
 
     // Regression lock: tuples keep their element positions and readonlyness
-    // instead of widening to arrays.[App]
+    // instead of widening to arrays. The branded `App` element is revealed via
+    // its `$App` brand payload.
     it("preserves tuple structure", () => {
       expectTypeOf<
-        RevealPrivate<readonly [App, string], [App]>[1]
+        RevealPrivate<readonly [App, string], [$App]>[1]
       >().toEqualTypeOf<string>();
     });
 
     // Regression lock: functions are structural containers — parameters and
-    // return type must be processed.
+    // return type must be processed. The branded `App` is revealed via `$App`.
     it("expands function parameters and return type", () => {
       expectTypeOf<
-        Parameters<RevealPrivate<(x: App) => App, [App]>>[0]["appId"]
+        Parameters<RevealPrivate<(x: App) => App, [$App]>>[0]["appId"]
       >().toEqualTypeOf<string>();
     });
 
     it("expands promise resolution types", () => {
       expectTypeOf<
-        RevealPrivate<Promise<App>, [App]> extends Promise<infer U>
+        RevealPrivate<Promise<App>, [$App]> extends Promise<infer U>
           ? U extends { readonly appId: infer A }
             ? A
             : never
@@ -500,7 +525,7 @@ describe("private.ts — private API access", () => {
 
     it("expands map value types", () => {
       expectTypeOf<
-        RevealPrivate<ReadonlyMap<App, App>, [App]> extends ReadonlyMap<
+        RevealPrivate<ReadonlyMap<App, App>, [$App]> extends ReadonlyMap<
           infer K,
           infer V
         >
@@ -523,7 +548,7 @@ describe("private.ts — private API access", () => {
     // The reveal strips the brand and exposes no extra members.
     it("reveals BakedHotkey as an empty brand wrapper", () => {
       expectTypeOf<
-        RevealPrivate<BakedHotkey, [BakedHotkey]>
+        RevealPrivate<BakedHotkey, [$BakedHotkey]>
         // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- asserting the empty revealed shape
       >().toEqualTypeOf<{}>();
     });
@@ -542,12 +567,12 @@ describe("private.ts — private API access", () => {
     });
 
     // Regression lock only: a nested RevealPrivate wrap must be a no-op. In real
-    // usage a single RevealPrivate<App, [App]> already fully reveals; the nested
+    // usage a single RevealPrivate<App, [$App]> already fully reveals; the nested
     // pattern is not recommended outside tests.
     it("reveal is idempotent", () => {
       expectTypeOf<
-        RevealPrivate<RevealPrivate<App, [App]>, [App]>
-      >().toEqualTypeOf<RevealPrivate<App, [App]>>();
+        RevealPrivate<RevealPrivate<App, [$App]>, [$App]>
+      >().toEqualTypeOf<RevealPrivate<App, [$App]>>();
     });
 
     it("matches filter members exactly, not subtypes or supertypes", () => {
@@ -562,34 +587,35 @@ describe("private.ts — private API access", () => {
       >().toEqualTypeOf<false>();
     });
 
-    // Regression lock: a union filter element (`X | Y`) matches ONLY the whole
-    // union `T = X | Y` (exact AreNonDistributiveEqual). Individual members X
-    // and Y are traversed, so their private members are NOT revealed.
-    it("matches only the whole union filter element, not individual members", () => {
+    // Regression lock: a union whitelist element (`$X | $Y`) matches ONLY the
+    // whole union `T = $X | $Y` (exact AreNonDistributiveEqual). Individual
+    // members `$X` and `$Y` are traversed, so their private members are NOT
+    // revealed.
+    it("matches only the whole union whitelist element, not individual members", () => {
       type Single = RevealPrivate<
         CommunityPluginsSettingTab,
-        [CommunityPluginsSettingTab | UnknownSettingTab]
+        [$CommunityPluginsSettingTab | $UnknownSettingTab]
       >;
       expectTypeOf<
         "id" extends keyof Single ? true : false
       >().toEqualTypeOf<false>();
       type Whole = RevealPrivate<
         CommunityPluginsSettingTab | UnknownSettingTab,
-        [CommunityPluginsSettingTab | UnknownSettingTab]
+        [$CommunityPluginsSettingTab | $UnknownSettingTab]
       >;
       expectTypeOf<
         "id" extends keyof Whole ? true : false
       >().toEqualTypeOf<true>();
     });
 
-    // Regression lock: a whole-union filter element (`X | Y`) is matched as a
-    // single entry, so each union member is expanded by `ExpandObject` rather
-    // than split before the filter is consulted. Mirrors the documentations.ts
-    // use case where `App.setting.settingTabs` is typed as `X | Y`.
-    it("reveals both union branches via whole-union filter element", () => {
+    // Regression lock: a whole-union whitelist element (`$X | $Y`) is matched as
+    // a single entry, so each union member is expanded by `RevealObject` rather
+    // than split before the whitelist is consulted. Mirrors the documentations.ts
+    // use case where `App.setting.settingTabs` is typed as `$X | $Y`.
+    it("reveals both union branches via whole-union whitelist element", () => {
       type Whole = RevealPrivate<
         CommunityPluginsSettingTab | UnknownSettingTab,
-        [CommunityPluginsSettingTab | UnknownSettingTab]
+        [$CommunityPluginsSettingTab | $UnknownSettingTab]
       >;
       // Both union branches expose the private `id` (from $CommunityPluginsSettingTab
       // and $UnknownSettingTab).
@@ -607,47 +633,69 @@ describe("private.ts — private API access", () => {
       >().toEqualTypeOf<true>();
     });
 
-    // Regression lock (mirrors obsidian-plugin-template/src/documentations.ts):
-    // the union lives nested under App.setting.settingTabs. The full filter
-    // `[App, $App["setting"], CommunityPluginsSettingTab | UnknownSettingTab]`
-    // must reveal `app0.setting` and the union members' private `id`.
-    it("reveals App.setting.settingTabs union members via full filter", () => {
-      type R1 = RevealPrivate<
-        App,
-        [App, $App["setting"], CommunityPluginsSettingTab | UnknownSettingTab]
-      >;
+    // Regression lock: `$App` whitelisted reveals `appId`, but the union
+    // members nested under the non-branded `setting` intermediate are NOT
+    // revealed — non-branded objects are returned unchanged (see docstring).
+    // To reveal the union members, whitelist them as a whole-union element on
+    // the whole union (see the test below), not nested under a non-branded type.
+    it("reveals App.appId via $App but not the nested union under setting", () => {
+      type R1 = RevealPrivate<App, [$App]>;
       expectTypeOf<
-        "setting" extends keyof R1 ? true : false
+        "appId" extends keyof R1 ? true : false
       >().toEqualTypeOf<true>();
       type Tab = R1["setting"]["settingTabs"][number];
       expectTypeOf<
         "id" extends keyof Tab ? true : false
-      >().toEqualTypeOf<true>();
+      >().toEqualTypeOf<false>();
     });
 
-    // Regression lock: dropping one union member from the filter means the
+    // Regression lock: dropping one union member from the whitelist means the
     // whole-union element no longer matches, so `tab.id` stays hidden.
-    it("does not reveal tab.id when a union member is missing from the filter", () => {
-      type R2 = RevealPrivate<
-        App,
-        [App, $App["setting"], CommunityPluginsSettingTab]
-      >;
+    it("does not reveal tab.id when a union member is missing from the whitelist", () => {
+      type R2 = RevealPrivate<App, [$App, $CommunityPluginsSettingTab]>;
       type Tab = R2["setting"]["settingTabs"][number];
       expectTypeOf<
         "id" extends keyof Tab ? true : false
       >().toEqualTypeOf<false>();
     });
 
-    // Regression lock: omitting $App["setting"] from the filter means the path
-    // to `settingTabs` is never reached, so `tab.id` stays hidden.
-    it("does not reveal tab.id when $App['setting'] is omitted from the filter", () => {
+    // Regression lock: the recursion blacklist stops recursion into a type,
+    // returning it unchanged. `App` blacklisted returns `App` as-is, so
+    // `appId` is NOT revealed even though `$App` is in the whitelist.
+    it("recursion blacklist stops recursion", () => {
+      type R = RevealPrivate<App, [], [App]>;
+      expectTypeOf<AreNonDistributiveEqual<R, App>>().toEqualTypeOf<true>();
+    });
+
+    // Regression lock: the recursion blacklist wins over the reveal whitelist.
+    // `App` blacklisted returns `App` unchanged even with `$App` whitelisted.
+    it("recursion blacklist wins over reveal whitelist", () => {
+      type R = RevealPrivate<App, [$App], [App]>;
+      expectTypeOf<AreNonDistributiveEqual<R, App>>().toEqualTypeOf<true>();
+    });
+
+    // Regression lock: the recursion blacklist stops recursion into a nested
+    // non-branded type. `Date` blacklisted returns `Date` unchanged.
+    it("recursion blacklist on a nested non-branded type", () => {
+      type R = RevealPrivate<{ readonly at: Date }, [], [Date]>;
+      expectTypeOf<
+        AreNonDistributiveEqual<R, { readonly at: Date }>
+      >().toEqualTypeOf<true>();
+    });
+
+    // Regression lock: with only the union whitelist (no `$App`), `App` is
+    // traversed but its non-branded `setting` intermediate is returned
+    // unchanged, so `appId` and the nested union `id` stay hidden.
+    it("does not reveal appId or nested union id without $App in the whitelist", () => {
       type R3 = RevealPrivate<
         App,
-        [App, CommunityPluginsSettingTab | UnknownSettingTab]
+        [$CommunityPluginsSettingTab | $UnknownSettingTab]
       >;
-      type Tab = R3["setting"]["settingTabs"][number];
       expectTypeOf<
-        "id" extends keyof Tab ? true : false
+        "appId" extends keyof R3 ? true : false
+      >().toEqualTypeOf<false>();
+      expectTypeOf<
+        "setting" extends keyof R3 ? true : false
       >().toEqualTypeOf<false>();
     });
   });
