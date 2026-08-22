@@ -13,6 +13,7 @@ import type {
   Keymap,
   UnknownSettingTab,
 } from "obsidian";
+import type { $App } from "../../src/@types/obsidian.js";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import type { PluginContext } from "../../src/plugin.js";
 import {
@@ -604,6 +605,50 @@ describe("private.ts — private API access", () => {
       expectTypeOf<
         "installedPlugins" extends keyof CommunityBranch ? true : false
       >().toEqualTypeOf<true>();
+    });
+
+    // Regression lock (mirrors obsidian-plugin-template/src/documentations.ts):
+    // the union lives nested under App.setting.settingTabs. The full filter
+    // `[App, $App["setting"], CommunityPluginsSettingTab | UnknownSettingTab]`
+    // must reveal `app0.setting` and the union members' private `id`.
+    it("reveals App.setting.settingTabs union members via full filter", () => {
+      type R1 = RevealPrivate<
+        App,
+        [App, $App["setting"], CommunityPluginsSettingTab | UnknownSettingTab]
+      >;
+      expectTypeOf<
+        "setting" extends keyof R1 ? true : false
+      >().toEqualTypeOf<true>();
+      type Tab = R1["setting"]["settingTabs"][number];
+      expectTypeOf<
+        "id" extends keyof Tab ? true : false
+      >().toEqualTypeOf<true>();
+    });
+
+    // Regression lock: dropping one union member from the filter means the
+    // whole-union element no longer matches, so `tab.id` stays hidden.
+    it("does not reveal tab.id when a union member is missing from the filter", () => {
+      type R2 = RevealPrivate<
+        App,
+        [App, $App["setting"], CommunityPluginsSettingTab]
+      >;
+      type Tab = R2["setting"]["settingTabs"][number];
+      expectTypeOf<
+        "id" extends keyof Tab ? true : false
+      >().toEqualTypeOf<false>();
+    });
+
+    // Regression lock: omitting $App["setting"] from the filter means the path
+    // to `settingTabs` is never reached, so `tab.id` stays hidden.
+    it("does not reveal tab.id when $App['setting'] is omitted from the filter", () => {
+      type R3 = RevealPrivate<
+        App,
+        [App, CommunityPluginsSettingTab | UnknownSettingTab]
+      >;
+      type Tab = R3["setting"]["settingTabs"][number];
+      expectTypeOf<
+        "id" extends keyof Tab ? true : false
+      >().toEqualTypeOf<false>();
     });
   });
 
