@@ -27,7 +27,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 
 1. **Depth guard.** If the recursion depth reaches `Depth` (default `DefaultRevealDepth` = 8), return `T` unchanged (terminates on cyclic types). `Depth` is a configurable number generic, orthogonal to both lists.
 2. **Builtin gate.** Exempt types pass through unchanged: the `RevealPrivateExempt` shape (a required property, so index-signature objects do not match). Builtins (`String`, `Number`, `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in `src/@types/lib.es5.ts`, so the gate needs no special-case union. Functions are deliberately excluded from the gate: they are structural containers whose parameters and return type must be processed.
-3. **Recursion blacklist.** If `RecursionBlacklistMatch<T, RecursionBlacklist>` is true (the whole type `T` exactly matches a blacklist element via `AreNonDistributiveEqual`), return `T` unchanged. The blacklist wins over the reveal whitelist.
+3. **Recursion blacklist.** If `RecursionBlacklistMatch<T, RecursionBlacklist>` is true (the whole type `T` exactly matches a blacklist element via `AreNonDistributiveEqual`), descent into its members stops (members returned raw). This is orthogonal to the reveal whitelist: a type in both lists is revealed (shape merged) but not descended.
 4. **Structural dispatch.** Otherwise dispatch on the shape of `T`:
    - **Tuples** (`number extends T["length"]` is false): homomorphic mapped tuple, preserving element optionality, rest elements, and readonlyness.
    - **Arrays**: mapped element type, preserving mutability/readonlyness.
@@ -41,7 +41,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 The two concerns are **orthogonal**, modeled as two separate lists plus a configurable depth:
 
 - **`RevealWhitelist` (whitelist)** — a SET of PRIVATE types (`$X` brand payloads) to reveal. When a branded type's brand payload `T[PrivateKeys$]` exactly matches a reveal-whitelist element (`AreNonDistributiveEqual`), its private `$X` shape is merged and members are recursed. A union element (`$X | $Y`) matches only the whole union; individual members `$X`/`$Y` do not match the `$X | $Y` element.
-- **`RecursionBlacklist` (blacklist)** — a SET of types to STOP recursing into (returned as-is). `RecursionBlacklistMatch` matches the whole type `T` exactly (`AreNonDistributiveEqual<NonNullable<T>, Head>`), branded or not. Orthogonal to the reveal whitelist: a type can be in neither, either, or both lists — the blacklist wins, so recursion stops before reveal is considered.
+- **`RecursionBlacklist` (blacklist)** — a SET of types to STOP recursing into (members returned raw). `RecursionBlacklistMatch` matches the whole type `T` exactly (`AreNonDistributiveEqual<NonNullable<T>, Head>`), branded or not. Orthogonal to the reveal whitelist: a type can be in neither, either, or both lists. The blacklist only suppresses descent into members; the reveal at the node is unaffected, so a type in both lists is revealed but not descended.
 - **Recursion is uniform** — there is no branded/non-branded distinction. Every object is recursed into unless blacklisted. The reveal whitelist only decides reveal-vs-traverse for a branded type; intermediate types on an access path are auto-traversed, so you list only the private types you want revealed.
 - **`Depth` is orthogonal** to both lists — a configurable number generic bounding recursion on cyclic types.
 
