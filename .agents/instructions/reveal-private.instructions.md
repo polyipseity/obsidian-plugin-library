@@ -39,7 +39,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 
 For an object type `T`, the `Filter` decides between **eager expansion** and **lazy traversal**:
 
-- **Whitelisted** — `WhitelistMatch<T, Filter>` is true, i.e. some element `F` of the `Filter` tuple satisfies `AreNonDistributiveEqual<NonNullable<T>, F>` — the type is **exactly** a filter element after removing `undefined`/`null`. Note this is an exact structural match, not `extends`; a subtype or supertype of a filter element is not expanded. A tuple element may itself be a union (`X | Y`) and is matched exactly as one entry.
+- **Whitelisted** — `WhitelistMatch<T, Filter>` is true, i.e. some element `F` of the `Filter` tuple satisfies `AreNonDistributiveEqual<NonNullable<T>, F>` — the type is **exactly** a filter element after removing `undefined`/`null`. Note this is an exact structural match, not `extends`; a subtype or supertype of a filter element is not expanded. A tuple element may itself be a union (`X | Y`) and is matched exactly as one entry. The whole union `T = X | Y` is matched as one entry; `RevealPrivate` checks the filter on the whole `T` before distributing, so a union filter element is reachable (individual members `X`/`Y` still do not match).
 - Whitelisted types are **expanded**: the brand is replaced by the private shape (`MergePrivateShape<T>` = public members `&` the private shape) and every member is recursively revealed.
 - Non-whitelisted types are **traversed**: the brand is dropped (`Omit<T, PrivateKeys$>`) and every member is recursively revealed, but the type itself is not replaced by its shape. Traversal is lazy, which keeps cycles (e.g. `HTMLElement`) finite.
 
