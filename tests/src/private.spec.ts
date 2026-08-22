@@ -667,11 +667,16 @@ describe("private.ts — private API access", () => {
       expectTypeOf<AreNonDistributiveEqual<R, App>>().toEqualTypeOf<true>();
     });
 
-    // Regression lock: the recursion blacklist wins over the reveal whitelist.
-    // `App` blacklisted returns `App` unchanged even with `$App` whitelisted.
-    it("recursion blacklist wins over reveal whitelist", () => {
+    // Regression lock: the recursion blacklist and reveal whitelist are
+    // orthogonal. `App` blacklisted stops descent into members, but `$App`
+    // whitelisted still merges the private shape — so `appId` is revealed while
+    // `setting` stays the raw, un-revealed type (no descent).
+    it("recursion blacklist stops descent but reveal still applies", () => {
       type R = RevealPrivate<App, [$App], [App]>;
-      expectTypeOf<AreNonDistributiveEqual<R, App>>().toEqualTypeOf<true>();
+      expectTypeOf<R["appId"]>().toEqualTypeOf<string>();
+      expectTypeOf<
+        AreNonDistributiveEqual<R["setting"], $App["setting"]>
+      >().toEqualTypeOf<true>();
     });
 
     // Regression lock: the recursion blacklist stops recursion into a nested
