@@ -40,7 +40,10 @@ type MaxRevealDepth = 8;
 /**
  * True when `T` (after removing `undefined`/`null`) is exactly one element of
  * the `Filter` tuple. Subtypes and supertypes do not match. A tuple element
- * may itself be a union (`X | Y`) and is matched exactly as one entry.
+ * may itself be a union (`X | Y`) and is matched exactly as one entry. The
+ * whole union `T = X | Y` is matched as a single entry; `RevealPrivate`
+ * preserves the union through to the filter check (it is not split into
+ * members beforehand), so the match is reachable.
  */
 type WhitelistMatch<
   T,
@@ -100,6 +103,9 @@ type MergePrivateShape<T> = Prettify<
  * every object is expanded up to the depth guard. Prefer an explicit filter
  * so the reveal is finite and scoped: `revealPrivateFilter<[App]>()`. A tuple
  * element may itself be a union (`X | Y`) and is matched exactly as one entry.
+ * The whole union `T = X | Y` is matched as a single entry; `RevealPrivate`
+ * preserves the union through to the filter check (it is not split into
+ * members beforehand), so the match is reachable.
  */
 export type RevealPrivate<
   T,
@@ -107,9 +113,13 @@ export type RevealPrivate<
   Depth extends readonly unknown[] = [],
 > = Depth["length"] extends MaxRevealDepth
   ? T
-  : T extends RevealPrivateExempt
+  : [T] extends [RevealPrivateExempt]
     ? T
-    : RevealPrivateStructural<T, Filter, Depth>;
+    : [T] extends [object]
+      ? WhitelistMatch<T, Filter> extends true
+        ? ExpandUnion<T, Filter, Depth>
+        : RevealPrivateStructural<T, Filter, Depth>
+      : RevealPrivateStructural<T, Filter, Depth>;
 type RevealPrivateStructural<
   T,
   Filter extends readonly unknown[],
@@ -173,6 +183,23 @@ type ExpandObject<
     [...Depth, unknown]
   >;
 }>;
+/**
+ * Eagerly expands a (possibly union) object type whose whole shape exactly
+ * matches a filter element. Distributes `RevealPrivate` over the union's
+ * members so each is expanded by `ExpandObject`; this is reached only after
+ * `WhitelistMatch<T, Filter>` has matched the entire `T` (e.g. `T = X | Y`
+ * against filter `[X | Y]`), so the union is revealed as a whole rather than
+ * split before the filter is consulted.
+ */
+type ExpandUnion<
+  T,
+  Filter extends readonly unknown[],
+  Depth extends readonly unknown[],
+> = T extends (...args: never[]) => unknown
+  ? T
+  : T extends object
+    ? ExpandObject<T, Filter, Depth>
+    : T;
 /**
  * Lazily reveals the members of a branded (or string-indexed) type without
  * replacing it by its shape. Unbranded object types (e.g. DOM types like
