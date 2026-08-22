@@ -1,5 +1,5 @@
 ---
-description: "Use when working on the RevealPrivate reveal machinery in src/private.ts — type-level semantics, exact-whitelist filter behavior, exempt marker policy, and the BakedHotkey workaround ban."
+description: "Use when working on the RevealPrivate reveal machinery in src/private.ts — two orthogonal lists (reveal whitelist + recursion blacklist), configurable depth, exempt marker policy, and the BakedHotkey workaround ban."
 name: "RevealPrivate Specification"
 applyTo: "src/private.ts"
 ---
@@ -14,44 +14,48 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 
 ## API surface
 
-- `RevealPrivate<T, Filter extends readonly unknown[] = readonly []>` — type-level reveal.
+- `RevealPrivate<T, RevealWhitelist extends readonly unknown[] = readonly [], RecursionBlacklist extends readonly unknown[] = readonly [], Depth extends number = DefaultRevealDepth>` — type-level reveal.
 - `revealPrivate(context, args, func, fallback)` and `revealPrivateAsync(...)` — deprecated runtime helpers wrapping `RevealPrivate`; kept for backwards compatibility.
-- `revealPrivateFilter<Filter>()` and `revealPrivateAsyncFilter<Filter>()` — recommended runtime helpers with a fixed `Filter`.
-- `RevealPrivateExempt` — brand marker for types that pass through `RevealPrivate` unchanged. Builtins extend it in `src/@types/lib.es5.ts`; prefer the whitelist for non-builtin exceptions.
+- `revealPrivateFilter<RevealWhitelist, RecursionBlacklist, Depth>()` and `revealPrivateAsyncFilter<RevealWhitelist, RecursionBlacklist, Depth>()` — recommended runtime helpers with fixed lists and depth.
+- `RevealPrivateExempt` — brand marker for types that pass through `RevealPrivate` unchanged. Builtins extend it in `src/@types/lib.es5.ts`; prefer the recursion blacklist for non-builtin exceptions.
 - `Private`, `PrivateKeys`, `HasPrivate` — branding machinery.
 - `$App`, `$BakedHotkey`, `$Commands`, `$CommunityPluginsSettingTab`, `$DataAdapter`, `$FileSystem`, `$HotkeyManager`, `$Keymap`, `$Plugins`, `$UnknownSettingTab`, `$ViewStateResult`, `$Workspace`, `$WorkspaceLeaf`, `$WorkspaceRibbon` — the private-shape brand payloads, all exported from `src/@types/obsidian.ts` and reachable through the public type barrel (`export type *`). Reference them directly (e.g. `NonNullable<$FileSystem["open"]>`) instead of reconstructing shapes.
 
 ## Gate semantics (evaluation order)
 
-`RevealPrivate<T, Filter>` distributes over unions and evaluates as follows:
+`RevealPrivate<T, RevealWhitelist, RecursionBlacklist, Depth>` distributes over unions and evaluates as follows:
 
-1. **Depth guard.** If the recursion depth reaches `MaxRevealDepth` (8), return `T` unchanged (terminates on cyclic types).
+1. **Depth guard.** If the recursion depth reaches `Depth` (default `DefaultRevealDepth` = 8), return `T` unchanged (terminates on cyclic types). `Depth` is a configurable number generic, orthogonal to both lists.
 2. **Builtin gate.** Exempt types pass through unchanged: the `RevealPrivateExempt` shape (a required property, so index-signature objects do not match). Builtins (`String`, `Number`, `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in `src/@types/lib.es5.ts`, so the gate needs no special-case union. Functions are deliberately excluded from the gate: they are structural containers whose parameters and return type must be processed.
-3. **Structural dispatch.** Otherwise dispatch on the shape of `T`:
+3. **Recursion blacklist.** If `RecursionBlacklistMatch<T, RecursionBlacklist>` is true (the whole type `T` exactly matches a blacklist element via `AreNonDistributiveEqual`), return `T` unchanged. The blacklist wins over the reveal whitelist.
+4. **Structural dispatch.** Otherwise dispatch on the shape of `T`:
    - **Tuples** (`number extends T["length"]` is false): homomorphic mapped tuple, preserving element optionality, rest elements, and readonlyness.
    - **Arrays**: mapped element type, preserving mutability/readonlyness.
-   - **Functions**: exact filter matches pass through unchanged; otherwise parameters and return type are revealed.
+   - **Functions**: exact whole-type matches pass through unchanged; otherwise parameters and return type are revealed.
    - **Promise** before `PromiseLike`; **Map** before `ReadonlyMap`; **Set** before `ReadonlySet` — preserving the concrete/readonly variant.
    - **Objects**: see below.
    - Anything else (primitives not caught by the gate, `unknown`, `never` via distribution) passes through unchanged.
 
-## Object semantics: exact whitelist vs traversal
+## Two orthogonal lists
 
-For an object type `T`, the `Filter` decides between **eager expansion** and **lazy traversal**:
+The two concerns are **orthogonal**, modeled as two separate lists plus a configurable depth:
 
-- **Whitelisted** — `WhitelistMatch<T, Filter>` is true, i.e. some element `F` of the `Filter` tuple satisfies `AreNonDistributiveEqual<NonNullable<T>, F>` — the type is **exactly** a filter element after removing `undefined`/`null`. Note this is an exact structural match, not `extends`; a subtype or supertype of a filter element is not expanded. A tuple element may itself be a union (`X | Y`) and is matched exactly as one entry. The whole union `T = X | Y` is matched as one entry; `RevealPrivate` checks the filter on the whole `T` before distributing, so a union filter element is reachable (individual members `X`/`Y` still do not match).
-- Whitelisted types are **expanded**: the brand is replaced by the private shape (`MergePrivateShape<T>` = public members `&` the private shape) and every member is recursively revealed.
-- Non-whitelisted types are **traversed**: the brand is dropped (`Omit<T, PrivateKeys$>`) and every member is recursively revealed, but the type itself is not replaced by its shape. Traversal is lazy, which keeps cycles (e.g. `HTMLElement`) finite.
-
-The whitelist therefore controls _which_ domain types are eagerly expanded; arrays, tuples, functions, `Promise`, maps, sets, and plain objects are always processed structurally, and the filter applies to the types nested inside them.
+- **`RevealWhitelist` (whitelist)** — a SET of PRIVATE types (`$X` brand payloads) to reveal. When a branded type's brand payload `T[PrivateKeys$]` exactly matches a reveal-whitelist element (`AreNonDistributiveEqual`), its private `$X` shape is merged and members are recursed. A union element (`$X | $Y`) matches only the whole union; individual members `$X`/`$Y` do not match the `$X | $Y` element.
+- **`RecursionBlacklist` (blacklist)** — a SET of types to STOP recursing into (returned as-is). `RecursionBlacklistMatch` matches the whole type `T` exactly (`AreNonDistributiveEqual<NonNullable<T>, Head>`), branded or not. Orthogonal to the reveal whitelist: a type can be in neither, either, or both lists — the blacklist wins, so recursion stops before reveal is considered.
+- **Recursion is uniform** — there is no branded/non-branded distinction. Every object is recursed into unless blacklisted. The reveal whitelist only decides reveal-vs-traverse for a branded type; intermediate types on an access path are auto-traversed, so you list only the private types you want revealed.
+- **`Depth` is orthogonal** to both lists — a configurable number generic bounding recursion on cyclic types.
 
 `AreNonDistributiveEqual` (ts-essentials, the type-fest `IsEqual` mutual-assignability variant) is the exact-structural gate; `expectTypeOf(...).toEqualTypeOf(...)` (vitest) is used in tests for the same mutual-assignability semantics.
 
-## Aggressive mode
+## Default behavior
 
-`Filter = readonly []` (the default, empty tuple) matches everything: every object type is whitelisted, so `RevealPrivate<T>` eagerly expands arrays, functions, promises, maps, sets, tuples, and all reachable object members (bounded by the depth guard). This is the historical behavior; it is intentionally aggressive and typically reveals far more than a caller needs.
+`RevealWhitelist = readonly []` (the default) means NO reveal: branded types are traversed (brand dropped, members recursed) but not replaced by their private shape. `RecursionBlacklist = readonly []` (the default) means nothing is blacklisted. List private types in the reveal whitelist to reveal them; list whole types in the recursion blacklist to keep them opaque.
 
-`RevealPrivate`/`revealPrivate`/`revealPrivateAsync` are deprecated. Prefer the filtered variants: `revealPrivateFilter<[App]>()(context, [app], ...)` expands only `App` and traverses everything else.
+`RevealPrivate`/`revealPrivate`/`revealPrivateAsync` are deprecated. Prefer the filtered variants: `revealPrivateFilter<[$App]>()(context, [app], ...)` reveals only `App` and traverses everything else.
+
+## Worked example
+
+To reveal `app.setting.settingTabs[i].id` you list ONLY the private types whose shape you want: `revealPrivateFilter<[$CommunityPluginsSettingTab | $UnknownSettingTab]>()`. `App` and `setting` are auto-traversed — you do NOT list them. To keep DOM nodes opaque, add a recursion blacklist: `revealPrivateFilter<[$CommunityPluginsSettingTab | $UnknownSettingTab], [HTMLElement]>()`.
 
 ## Exempt marker
 
