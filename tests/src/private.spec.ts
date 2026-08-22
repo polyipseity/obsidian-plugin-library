@@ -6,7 +6,13 @@
  * aggressive expansion). The deprecated unfiltered `revealPrivate` and
  * `revealPrivateAsync` are thin delegations to the same internal machinery.
  */
-import type { App, BakedHotkey, Keymap } from "obsidian";
+import type {
+  App,
+  BakedHotkey,
+  CommunityPluginsSettingTab,
+  Keymap,
+  UnknownSettingTab,
+} from "obsidian";
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import type { PluginContext } from "../../src/plugin.js";
 import {
@@ -553,6 +559,51 @@ describe("private.ts — private API access", () => {
       expectTypeOf<
         AreNonDistributiveEqual<{ readonly keymap: Keymap }, App>
       >().toEqualTypeOf<false>();
+    });
+
+    // Regression lock: a union filter element (`X | Y`) matches ONLY the whole
+    // union `T = X | Y` (exact AreNonDistributiveEqual). Individual members X
+    // and Y are traversed, so their private members are NOT revealed.
+    it("matches only the whole union filter element, not individual members", () => {
+      type Single = RevealPrivate<
+        CommunityPluginsSettingTab,
+        [CommunityPluginsSettingTab | UnknownSettingTab]
+      >;
+      expectTypeOf<
+        "id" extends keyof Single ? true : false
+      >().toEqualTypeOf<false>();
+      type Whole = RevealPrivate<
+        CommunityPluginsSettingTab | UnknownSettingTab,
+        [CommunityPluginsSettingTab | UnknownSettingTab]
+      >;
+      expectTypeOf<
+        "id" extends keyof Whole ? true : false
+      >().toEqualTypeOf<true>();
+    });
+
+    // Regression lock: a whole-union filter element (`X | Y`) is matched as a
+    // single entry, so each union member is expanded by `ExpandObject` rather
+    // than split before the filter is consulted. Mirrors the documentations.ts
+    // use case where `App.setting.settingTabs` is typed as `X | Y`.
+    it("reveals both union branches via whole-union filter element", () => {
+      type Whole = RevealPrivate<
+        CommunityPluginsSettingTab | UnknownSettingTab,
+        [CommunityPluginsSettingTab | UnknownSettingTab]
+      >;
+      // Both union branches expose the private `id` (from $CommunityPluginsSettingTab
+      // and $UnknownSettingTab).
+      expectTypeOf<
+        Whole extends { readonly id: unknown } ? true : false
+      >().toEqualTypeOf<true>();
+      // The CommunityPluginsSettingTab branch additionally reveals the optional
+      // private `installedPlugins`; narrow to it via the literal `id`.
+      type CommunityBranch = Extract<
+        Whole,
+        { readonly id: "community-plugins" }
+      >;
+      expectTypeOf<
+        "installedPlugins" extends keyof CommunityBranch ? true : false
+      >().toEqualTypeOf<true>();
     });
   });
 
