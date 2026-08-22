@@ -38,7 +38,7 @@ describe("scripts/utils.mjs", () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    const out = await execute("node", [
+    const out = await execute(process.execPath, [
       "-e",
       "process.stdout.write('ok'); process.stderr.write('bad'); process.exit(0)",
     ]);
@@ -49,7 +49,9 @@ describe("scripts/utils.mjs", () => {
 
   it("execute throws when the child exits with non-zero exit code", async () => {
     const { execute } = await import("../../scripts/utils.mjs");
-    await expect(execute("node", ["-e", "process.exit(2)"])).rejects.toThrow();
+    await expect(
+      execute(process.execPath, ["-e", "process.exit(2)"]),
+    ).rejects.toThrow();
   });
 
   it("PACKAGE_ID resolves to name from package.json", async () => {
@@ -96,7 +98,7 @@ describe("scripts/utils.mjs", () => {
     it("execute throws when the child exits with non-zero exit code", async () => {
       const { execute } = await import("../../scripts/utils.mjs");
       await expect(
-        execute("node", [
+        execute(process.execPath, [
           "-e",
           "process.stdout.write('o'); process.stderr.write('e'); process.exit(3)",
         ]),
@@ -110,7 +112,7 @@ describe("scripts/utils.mjs", () => {
       const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
       const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      const out = await execute("node", [
+      const out = await execute(process.execPath, [
         "-e",
         "process.stdout.write('hello'); process.exit(0)",
       ]);
@@ -124,7 +126,7 @@ describe("scripts/utils.mjs", () => {
       const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
       const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-      const out = await execute("node", [
+      const out = await execute(process.execPath, [
         "-e",
         "process.stderr.write('err'); process.exit(0)",
       ]);
@@ -135,7 +137,7 @@ describe("scripts/utils.mjs", () => {
 
     it("handles child that produces no output but exits successfully", async () => {
       const { execute } = await import("../../scripts/utils.mjs");
-      const out = await execute("node", ["-e", "process.exit(0)"]);
+      const out = await execute(process.execPath, ["-e", "process.exit(0)"]);
       expect(out).toBe("");
     }, 20000);
 
