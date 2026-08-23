@@ -58,6 +58,14 @@ The two concerns are **orthogonal**, modeled as two separate lists plus a config
 
 To reveal `app.setting.settingTabs[i].id` you list the private types whose shape you want, **per member**: `revealPrivateFilter<[$CommunityPluginsSettingTab, $UnknownSettingTab]>()`. `App` and `setting` are auto-traversed — you do NOT list them. Each union member is evaluated independently, so the `CommunityPluginsSettingTab` branch reveals `id`/`installedPlugins` while the `UnknownSettingTab` branch keeps its private `id` hidden. To keep DOM nodes opaque, add a recursion blacklist: `revealPrivateFilter<[$CommunityPluginsSettingTab, $UnknownSettingTab], [HTMLElement, Document, Element]>()`.
 
+## Usage guidelines
+
+Decision-oriented guidance for the three knobs — when to reach for each:
+
+- **Reveal whitelist** — list ONLY the private `$X` brand payloads whose shape you want exposed. Prefer **per-member** elements (`[$CommunityPluginsSettingTab, $UnknownSettingTab]`) so each union branch is evaluated independently (the "expand some, not others" behavior). Use a **whole-union** element (`[$X | $Y]`) only when you deliberately want both `$X` shapes merged into one object (conflicting literal `id`s collapse to `never`). Intermediate types on an access path (`App`, `setting`) are auto-traversed — do NOT list them.
+- **Recursion blacklist** — list WHOLE types to stop descent into their members (keep them opaque). Use it for types that blow up the reveal or that you don't need to inspect, e.g. DOM nodes `[HTMLElement, Document, Element]` at a call site whose `containerEl` would otherwise pull in the whole DOM tree. The blacklist is orthogonal to the whitelist: a type in both is revealed (shape merged) but not descended. Reach for the blacklist when a member's descent is unwanted, not to suppress a reveal.
+- **Depth** — defaults to `8` and is sufficient for virtually all real access paths; **usually no need to change it**. Only override the `Depth` number generic when you observe a cyclic type (e.g. DOM nodes) being truncated to its raw shape too early, or when you need to reveal deeper than the default allows. Treat depth as a last-resort escape hatch, not a routine tuning parameter.
+
 ## Exempt marker
 
 `RevealPrivateExempt` is a required-property marker (`readonly __reveal_private_exempt: true`). It is intentionally awkward to use: only types that cannot be structurally represented should opt out of reveal. `Record<string, X>` must _not_ match the marker — the weak-type bug that allowed it is fixed. Builtins (`String`, `Number`, `Boolean`, `BigInt`, `Symbol`, `Date`, `RegExp`) extend the marker in `src/@types/lib.es5.ts`, so the gate matches the marker shape directly and needs no special-case union.
