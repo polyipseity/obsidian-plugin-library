@@ -52,6 +52,17 @@ declare module "../../src/private.js" {
   }
 }
 
+// Second consumer-side private key, mirroring CONSUMER_KEY. Used by the
+// "multiple private keys — selective reveal" block to exercise a type carrying
+// MULTIPLE private keys (selective per-key reveal).
+declare const VENDOR2: unique symbol;
+type Vendor2 = typeof VENDOR2;
+declare module "../../src/private.js" {
+  interface PrivateKeys {
+    readonly [VENDOR2]: never;
+  }
+}
+
 describe("private.ts — private API access", () => {
   // Create a mock plugin context
   const createMockContext = (): PluginContext => {
@@ -793,6 +804,66 @@ describe("private.ts — private API access", () => {
       it("reveals vendor brand when both payloads are whitelisted", () => {
         expectTypeOf<
           RevealPrivate<App, [$App, $ConsumerThing]>["appId"]
+        >().toEqualTypeOf<string>();
+      });
+    });
+
+    // Regression lock: a type carrying MULTIPLE private keys reveals a
+    // SELECTIVE subset of their shapes — only the `$X` payloads present in the
+    // whitelist are merged, per key, not all-or-nothing.
+    describe("multiple private keys — selective reveal", () => {
+      interface $MultiA {
+        readonly a: number;
+      }
+      interface $MultiB {
+        readonly b: string;
+      }
+      interface Multi
+        extends Private<$MultiA, Vendor2>, Private<$MultiB, ConsumerKey> {}
+
+      it("reveals only the A private shape when only $MultiA is whitelisted", () => {
+        expectTypeOf<
+          RevealPrivate<Multi, [$MultiA]>["a"]
+        >().toEqualTypeOf<number>();
+        expectTypeOf<
+          "b" extends keyof RevealPrivate<Multi, [$MultiA]> ? true : false
+        >().toEqualTypeOf<false>();
+      });
+
+      it("reveals only the B private shape when only $MultiB is whitelisted", () => {
+        expectTypeOf<
+          RevealPrivate<Multi, [$MultiB]>["b"]
+        >().toEqualTypeOf<string>();
+        expectTypeOf<
+          "a" extends keyof RevealPrivate<Multi, [$MultiB]> ? true : false
+        >().toEqualTypeOf<false>();
+      });
+
+      it("reveals both private shapes when both payloads are whitelisted", () => {
+        expectTypeOf<
+          "a" extends keyof RevealPrivate<Multi, [$MultiA, $MultiB]>
+            ? true
+            : false
+        >().toEqualTypeOf<true>();
+        expectTypeOf<
+          "b" extends keyof RevealPrivate<Multi, [$MultiB, $MultiA]>
+            ? true
+            : false
+        >().toEqualTypeOf<true>();
+      });
+
+      it("reveals neither private shape when the whitelist is empty", () => {
+        expectTypeOf<
+          "a" extends keyof RevealPrivate<Multi, []> ? true : false
+        >().toEqualTypeOf<false>();
+        expectTypeOf<
+          "b" extends keyof RevealPrivate<Multi, []> ? true : false
+        >().toEqualTypeOf<false>();
+      });
+
+      it("keeps single-key App reveal working (no regression)", () => {
+        expectTypeOf<
+          RevealPrivate<App, [$App]>["appId"]
         >().toEqualTypeOf<string>();
       });
     });
