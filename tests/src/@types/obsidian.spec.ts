@@ -14,7 +14,7 @@ import type {
   $Workspace,
   $WorkspaceLeaf,
   $WorkspaceRibbon,
-} from "../../src/@types/obsidian.js";
+} from "../../../src/@types/obsidian.js";
 
 describe("$ brand interface export contract", () => {
   it("exports all $ brand interfaces from @types/obsidian", () => {
