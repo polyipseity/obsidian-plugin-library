@@ -368,7 +368,7 @@ export function addRibbonIcon(
     },
     language,
   } = context;
-  return revealPrivateFilter<[$WorkspaceRibbon]>()(
+  return revealPrivateFilter<[$WorkspaceRibbon], [HTMLElement, MouseEvent]>()(
     context,
     [leftRibbon],
     (leftRibbon0) => {

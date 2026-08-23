@@ -194,11 +194,18 @@ type RevealPrivateImpl<
   ? T
   : [T] extends [RevealPrivateExempt]
     ? T
-    : [T] extends [object]
-      ? RevealWhitelistMatch<T, RevealWhitelist> extends true
-        ? RevealUnion<T, RevealWhitelist, RecursionBlacklist, Depth>
-        : RevealPrivateStructural<T, RevealWhitelist, RecursionBlacklist, Depth>
-      : RevealPrivateStructural<T, RevealWhitelist, RecursionBlacklist, Depth>;
+    : T extends infer U
+      ? [U] extends [object]
+        ? RevealWhitelistMatch<U, RevealWhitelist> extends true
+          ? RevealUnion<U, RevealWhitelist, RecursionBlacklist, Depth>
+          : RevealPrivateStructural<
+              U,
+              RevealWhitelist,
+              RecursionBlacklist,
+              Depth
+            >
+        : RevealPrivateStructural<U, RevealWhitelist, RecursionBlacklist, Depth>
+      : never;
 type RevealPrivateStructural<
   T,
   RevealWhitelist extends readonly unknown[],
@@ -358,11 +365,13 @@ type RevealObject<
 }>;
 /**
  * Eagerly reveals a (possibly union) object type whose whole shape exactly
- * matches a reveal-whitelist element. Distributes `RevealPrivate` over the
- * union's members so each is revealed by `RevealObject`; this is reached only
- * after `RevealWhitelistMatch<T, RevealWhitelist>` has matched the entire `T`
- * (e.g. `T = X | Y` against whitelist `[X | Y]`), so the union is revealed as a
- * whole rather than split before the whitelist is consulted.
+ * matches a reveal-whitelist element. Reached only after
+ * `RevealWhitelistMatch<T, RevealWhitelist>` has matched the entire `T` (e.g.
+ * `T = X | Y` against whitelist `[X | Y]`). Distributes the union over its
+ * members (`T extends infer U`) so each is revealed by `RevealObject`; when the
+ * whitelist element is itself a whole union (`$X | $Y`), `RevealObject` merges
+ * both `$X` shapes into one object (conflicting literal `id`s collapse to
+ * `never`), so the result is a single merged object rather than a union.
  */
 type RevealUnion<
   T,
@@ -372,13 +381,18 @@ type RevealUnion<
 > = T extends (...args: never[]) => unknown
   ? T
   : T extends object
-    ? RevealObject<T, RevealWhitelist, RecursionBlacklist, Depth>
+    ? T extends infer U
+      ? U extends object
+        ? RevealObject<U, RevealWhitelist, RecursionBlacklist, Depth>
+        : U
+      : never
     : T;
 /**
  * Uniformly reveals the members of a branded object without replacing it by
  * its shape. The brand key is omitted and every member is recursed into.
- * Non-branded objects (no private brand) are returned unchanged by the
- * `PrivateKeys$ extends keyof T` guard, which keeps cyclic types (e.g.
+ * Non-branded objects (no private brand) are descended into member-by-member
+ * so nested unions reach `RevealPrivateImpl` and are distributed over their
+ * members; the depth guard in `RevealPrivateImpl` keeps cyclic types (e.g.
  * `HTMLElement`) finite and the result assignable to the plain original.
  */
 type TraverseObject<
@@ -396,7 +410,14 @@ type TraverseObject<
           Tail<Depth>
         >;
       }
-    : T
+    : {
+        [K in keyof T]: RevealPrivateImpl<
+          T[K],
+          RevealWhitelist,
+          RecursionBlacklist,
+          Tail<Depth>
+        >;
+      }
 >;
 
 type RevealArgs<

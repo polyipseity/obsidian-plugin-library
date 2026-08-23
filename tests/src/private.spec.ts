@@ -18,13 +18,13 @@ import type {
   Keymap,
   UnknownSettingTab,
 } from "obsidian";
+import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import type {
   $App,
   $BakedHotkey,
   $CommunityPluginsSettingTab,
   $UnknownSettingTab,
 } from "../../src/@types/obsidian.js";
-import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 import type { PluginContext } from "../../src/plugin.js";
 import {
   revealPrivateAsyncFilter,
@@ -587,25 +587,68 @@ describe("private.ts — private API access", () => {
       >().toEqualTypeOf<false>();
     });
 
-    // Regression lock: a union whitelist element (`$X | $Y`) matches ONLY the
-    // whole union `T = $X | $Y` (exact AreNonDistributiveEqual). Individual
-    // members `$X` and `$Y` are traversed, so their private members are NOT
-    // revealed.
-    it("matches only the whole union whitelist element, not individual members", () => {
-      type Single = RevealPrivate<
-        CommunityPluginsSettingTab,
-        [$CommunityPluginsSettingTab | $UnknownSettingTab]
-      >;
+    // Regression lock (user scenario, mirrors obsidian-plugin-template/src/
+    // documentations.ts): the per-member whitelist reveals each union branch's
+    // private members independently. `CommunityPluginsSettingTab` reveals `id`,
+    // `containerEl`, `installedPlugins`, `renderInstalledPlugin`;
+    // `UnknownSettingTab` reveals `id` only. This is the exact consumer call
+    // that failed under the consumer's real-obsidian tsc before the
+    // distributive fix.
+    it("reveals documentations.ts settingTabs union via per-member whitelist", () => {
+      type Tab = RevealPrivate<
+        App,
+        [$App, $CommunityPluginsSettingTab, $UnknownSettingTab]
+      >["setting"]["settingTabs"][number];
+      // Both union branches expose the private `id`.
       expectTypeOf<
-        "id" extends keyof Single ? true : false
-      >().toEqualTypeOf<false>();
-      type Whole = RevealPrivate<
-        CommunityPluginsSettingTab | UnknownSettingTab,
-        [$CommunityPluginsSettingTab | $UnknownSettingTab]
-      >;
-      expectTypeOf<
-        "id" extends keyof Whole ? true : false
+        "id" extends keyof Tab ? true : false
       >().toEqualTypeOf<true>();
+      // CommunityPluginsSettingTab branch additionally reveals its private members.
+      type CommunityBranch = Extract<Tab, { readonly id: "community-plugins" }>;
+      expectTypeOf<
+        "containerEl" extends keyof CommunityBranch ? true : false
+      >().toEqualTypeOf<true>();
+      expectTypeOf<
+        "installedPlugins" extends keyof CommunityBranch ? true : false
+      >().toEqualTypeOf<true>();
+      expectTypeOf<
+        "renderInstalledPlugin" extends keyof CommunityBranch ? true : false
+      >().toEqualTypeOf<true>();
+      // UnknownSettingTab branch reveals `id` but has no installedPlugins.
+      // `unique symbol` cannot be pattern-matched by `Extract` (a `unique symbol`
+      // value is not assignable to the `unique symbol` type), so isolate the
+      // non-community branch with `Exclude`.
+      type UnknownBranch = Exclude<Tab, { readonly id: "community-plugins" }>;
+      expectTypeOf<
+        "id" extends keyof UnknownBranch ? true : false
+      >().toEqualTypeOf<true>();
+      expectTypeOf<
+        "installedPlugins" extends keyof UnknownBranch ? true : false
+      >().toEqualTypeOf<false>();
+    });
+
+    // Regression lock: the user's "expand some, not others" intent — whitelist
+    // only `$CommunityPluginsSettingTab` (drop `$UnknownSettingTab`). The
+    // whitelisted branch reveals `id`/`installedPlugins`; the un-whitelisted
+    // `UnknownSettingTab` branch keeps its private `id` hidden.
+    it("reveals only the whitelisted union member", () => {
+      type Tab = RevealPrivate<
+        App,
+        [$App, $CommunityPluginsSettingTab]
+      >["setting"]["settingTabs"][number];
+      type CommunityBranch = Extract<Tab, { readonly id: "community-plugins" }>;
+      expectTypeOf<
+        "id" extends keyof CommunityBranch ? true : false
+      >().toEqualTypeOf<true>();
+      expectTypeOf<
+        "installedPlugins" extends keyof CommunityBranch ? true : false
+      >().toEqualTypeOf<true>();
+      // `unique symbol` cannot be pattern-matched by `Extract`; the un-whitelisted
+      // `UnknownSettingTab` branch keeps its private `id` hidden, so the whole
+      // `Tab` union has no `id` key at all.
+      expectTypeOf<
+        "id" extends keyof Tab ? true : false
+      >().toEqualTypeOf<false>();
     });
 
     // Regression lock: a whole-union whitelist element (`$X | $Y`) is matched as
@@ -617,13 +660,16 @@ describe("private.ts — private API access", () => {
         CommunityPluginsSettingTab | UnknownSettingTab,
         [$CommunityPluginsSettingTab | $UnknownSettingTab]
       >;
-      // Both union branches expose the private `id` (from $CommunityPluginsSettingTab
-      // and $UnknownSettingTab).
+      // The whole-union whitelist element matches `A | B` as a single entry, so
+      // `RevealObject` merges both `$X` shapes into one object: the conflicting
+      // `id` literals collapse to `never` and the optional `installedPlugins`
+      // (present only on `$CommunityPluginsSettingTab`) is merged away. The
+      // result is therefore a single (non-distributed) object, not a union.
       expectTypeOf<
-        Whole extends { readonly id: unknown } ? true : false
-      >().toEqualTypeOf<true>();
-      // The CommunityPluginsSettingTab branch additionally reveals the optional
-      // private `installedPlugins`; narrow to it via the literal `id`.
+        "installedPlugins" extends keyof Whole ? true : false
+      >().toEqualTypeOf<false>();
+      // The CommunityPluginsSettingTab branch is still reachable via its literal
+      // `id` and reveals the optional private `installedPlugins`.
       type CommunityBranch = Extract<
         Whole,
         { readonly id: "community-plugins" }
@@ -644,16 +690,6 @@ describe("private.ts — private API access", () => {
         "appId" extends keyof R1 ? true : false
       >().toEqualTypeOf<true>();
       type Tab = R1["setting"]["settingTabs"][number];
-      expectTypeOf<
-        "id" extends keyof Tab ? true : false
-      >().toEqualTypeOf<false>();
-    });
-
-    // Regression lock: dropping one union member from the whitelist means the
-    // whole-union element no longer matches, so `tab.id` stays hidden.
-    it("does not reveal tab.id when a union member is missing from the whitelist", () => {
-      type R2 = RevealPrivate<App, [$App, $CommunityPluginsSettingTab]>;
-      type Tab = R2["setting"]["settingTabs"][number];
       expectTypeOf<
         "id" extends keyof Tab ? true : false
       >().toEqualTypeOf<false>();
