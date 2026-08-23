@@ -166,9 +166,10 @@ type MergePrivateShape<T> = Prettify<
  * Recursion is uniform for BRANDED types — every branded object is recursed
  * into unless blacklisted, and the reveal whitelist only decides
  * reveal-vs-traverse. Non-branded objects (no private brand, e.g. DOM types
- * like `HTMLElement` or plain data) are returned unchanged, which keeps the
- * reveal finite and the result assignable to the plain original. You no
- * longer list intermediate types on an access path:
+ * like `HTMLElement` or plain data) are descended member-by-member so nested
+ * unions reach `RevealPrivateImpl` and distribute; the depth guard keeps cyclic
+ * types finite and the result assignable to the plain original. You no longer
+ * list intermediate types on an access path:
  * `app.setting.settingTabs[i].id` is revealed by
  * `RevealPrivate<App, [$CommunityPluginsSettingTab | $UnknownSettingTab]>` —
  * `App` and `setting` are auto-traversed.
