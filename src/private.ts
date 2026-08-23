@@ -81,6 +81,38 @@ type RevealWhitelistMatch<
       : RevealWhitelistMatch<T, Tail>
   : false;
 /**
+ * Walks the `RevealWhitelist` tuple; returns `V` when `NonNullable<V>` exactly
+ * matches the head element via `AreNonDistributiveEqual`, else `never` after
+ * recursing the tail. Mirrors the structure of `RevealWhitelistMatch` but
+ * yields the matched brand payload `V` (so the caller can collect the key that
+ * carried it) instead of `true`.
+ */
+type WhitelistMember<
+  V,
+  RevealWhitelist extends readonly unknown[],
+> = RevealWhitelist extends readonly [infer Head, ...infer Tail]
+  ? AreNonDistributiveEqual<NonNullable<V>, Head> extends true
+    ? V
+    : WhitelistMember<V, Tail>
+  : never;
+/**
+ * The SUBSET of `Extract<PrivateKeys$, keyof T>` whose brand payload
+ * (`NonNullable<T[K]>`) exactly matches one `RevealWhitelist` element via
+ * `AreNonDistributiveEqual`. Unlike `RevealWhitelistMatch` (which tests the
+ * whole brand payload `T[PrivateKeys$]` against the whitelist as one entry),
+ * this maps each private key independently, so a type carrying MULTIPLE private
+ * keys can reveal a SELECTIVE subset of their shapes. Returns `never` when no
+ * key matches.
+ */
+type WhitelistedPrivateKeys<T, RevealWhitelist extends readonly unknown[]> =
+  Extract<PrivateKeys$, keyof T> extends infer K
+    ? K extends PrivateKeys$ & keyof T
+      ? [WhitelistMember<NonNullable<T[K]>, RevealWhitelist>] extends [never]
+        ? never
+        : K
+      : never
+    : never;
+/**
  * True when the whole type `T` (after removing `undefined`/`null`) is exactly
  * one element of the `RevealWhitelist` tuple. Unlike `RevealWhitelistMatch`
  * (which matches the brand payload of a branded type), this matches the entire
@@ -120,17 +152,23 @@ type RecursionBlacklistMatch<
  * would answer the brand lookup with the value type, corrupting the merged
  * shape (e.g. `Record<string, X>` would gain `X`'s members).
  */
-type PrivateShape<T> = MarkRequired<T, Extract<PrivateKeys$, keyof T>>[Extract<
-  PrivateKeys$,
-  keyof T
->];
-type MergePrivateShape<T> = Prettify<
+type PrivateShape<
+  T,
+  RevealWhitelist extends readonly unknown[] = readonly [],
+> = MarkRequired<
+  T,
+  WhitelistedPrivateKeys<T, RevealWhitelist>
+>[WhitelistedPrivateKeys<T, RevealWhitelist>];
+type MergePrivateShape<
+  T,
+  RevealWhitelist extends readonly unknown[] = readonly [],
+> = Prettify<
   string extends keyof T
     ? Omit<T, PrivateKeys$>
     : Omit<T, PrivateKeys$> &
-        (IsNever<PrivateShape<T>> extends true
+        (IsNever<PrivateShape<T, RevealWhitelist>> extends true
           ? unknown
-          : UnionToIntersection<PrivateShape<T>>)
+          : UnionToIntersection<PrivateShape<T, RevealWhitelist>>)
 >;
 /**
  * Removes the private brand of `T` and reveals its members.
@@ -333,21 +371,31 @@ type RevealPrivateObject<
   RecursionBlacklist extends readonly unknown[],
   Depth extends readonly unknown[],
 > =
-  RevealWhitelistMatch<T, RevealWhitelist> extends true
-    ? RecursionBlacklistMatch<T, RecursionBlacklist> extends true
-      ? RevealObjectNoRecurse<T>
-      : RevealObject<T, RevealWhitelist, RecursionBlacklist, Depth>
-    : RecursionBlacklistMatch<T, RecursionBlacklist> extends true
-      ? T
-      : TraverseObject<T, RevealWhitelist, RecursionBlacklist, Depth>;
+  RecursionBlacklistMatch<T, RecursionBlacklist> extends true
+    ? [WhitelistedPrivateKeys<T, RevealWhitelist>] extends [never]
+      ? RevealWhitelistMatch<T, RevealWhitelist> extends true
+        ? RevealObjectNoRecurse<T, RevealWhitelist>
+        : T
+      : RevealObjectNoRecurse<T, RevealWhitelist>
+    : [WhitelistedPrivateKeys<T, RevealWhitelist>] extends [never]
+      ? RevealWhitelistMatch<T, RevealWhitelist> extends true
+        ? RevealObject<T, RevealWhitelist, RecursionBlacklist, Depth>
+        : TraverseObject<T, RevealWhitelist, RecursionBlacklist, Depth>
+      : RevealObject<T, RevealWhitelist, RecursionBlacklist, Depth>;
 /**
  * Merges the private `$X` shape of a whitelisted type but returns its members
  * raw (no descent). Used when a type is in BOTH the reveal whitelist and the
  * recursion blacklist: the two concerns are orthogonal, so the reveal at the
  * node still applies while descent into members is suppressed.
  */
-type RevealObjectNoRecurse<T extends object> = Prettify<{
-  [K in keyof MergePrivateShape<T>]: MergePrivateShape<T>[K];
+type RevealObjectNoRecurse<
+  T extends object,
+  RevealWhitelist extends readonly unknown[] = readonly [],
+> = Prettify<{
+  [K in keyof MergePrivateShape<T, RevealWhitelist>]: MergePrivateShape<
+    T,
+    RevealWhitelist
+  >[K];
 }>;
 /**
  * Eagerly replaces a whitelisted type by its merged shape and reveals every
@@ -360,8 +408,8 @@ type RevealObject<
   RecursionBlacklist extends readonly unknown[],
   Depth extends readonly unknown[],
 > = Prettify<{
-  [K in keyof MergePrivateShape<T>]: RevealPrivateImpl<
-    MergePrivateShape<T>[K],
+  [K in keyof MergePrivateShape<T, RevealWhitelist>]: RevealPrivateImpl<
+    MergePrivateShape<T, RevealWhitelist>[K],
     RevealWhitelist,
     RecursionBlacklist,
     Tail<Depth>
