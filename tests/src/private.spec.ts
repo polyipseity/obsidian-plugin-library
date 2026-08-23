@@ -30,6 +30,7 @@ import {
   revealPrivateAsyncFilter,
   revealPrivateFilter,
   type HasPrivate,
+  type Private,
   type PrivateKeys,
   type RevealPrivate,
 } from "../../src/private.js";
