@@ -39,6 +39,18 @@ import {
 // .agents/instructions/reveal-private.instructions.md.
 import type { AreNonDistributiveEqual } from "ts-essentials/dist/are-non-distributive-equal.js";
 
+// Consumer-side augmentation of the open `PrivateKeys` interface. This simulates
+// a downstream consumer adding its own unique-symbol private key. The reveal
+// machinery must stay union-safe: a type is branded when it carries ANY private
+// key, so vendor-branded (`$App`) and consumer-branded types coexist.
+declare const CONSUMER_KEY: unique symbol;
+type ConsumerKey = typeof CONSUMER_KEY;
+declare module "../../src/private.js" {
+  interface PrivateKeys {
+    readonly [CONSUMER_KEY]: never;
+  }
+}
+
 describe("private.ts — private API access", () => {
   // Create a mock plugin context
   const createMockContext = (): PluginContext => {
@@ -738,6 +750,50 @@ describe("private.ts — private API access", () => {
       expectTypeOf<
         "setting" extends keyof R3 ? true : false
       >().toEqualTypeOf<false>();
+    });
+
+    // Regression lock: a consumer-augmented `PrivateKeys` key reveals its own
+    // branded type via its `$X` payload, independent of the vendor's `$App`.
+    describe("consumer PrivateKeys augmentation — union of private keys", () => {
+      interface $ConsumerThing {
+        readonly foo: number;
+        readonly bar: string;
+      }
+      interface ConsumerThing extends Private<$ConsumerThing, ConsumerKey> {}
+
+      it("reveals a consumer-augmented private type via its brand payload", () => {
+        expectTypeOf<
+          RevealPrivate<ConsumerThing, [$ConsumerThing]>["foo"]
+        >().toEqualTypeOf<number>();
+        expectTypeOf<
+          RevealPrivate<ConsumerThing, [$ConsumerThing]>["bar"]
+        >().toEqualTypeOf<string>();
+      });
+
+      it("keeps vendor reveal working alongside the consumer key", () => {
+        expectTypeOf<
+          RevealPrivate<App, [$App]>["appId"]
+        >().toEqualTypeOf<string>();
+      });
+
+      it("isolates vendor and consumer brands by whitelist", () => {
+        expectTypeOf<
+          "appId" extends keyof RevealPrivate<App, [$ConsumerThing]>
+            ? true
+            : false
+        >().toEqualTypeOf<false>();
+        expectTypeOf<
+          "foo" extends keyof RevealPrivate<ConsumerThing, [$App]>
+            ? true
+            : false
+        >().toEqualTypeOf<false>();
+      });
+
+      it("reveals vendor brand when both payloads are whitelisted", () => {
+        expectTypeOf<
+          RevealPrivate<App, [$App, $ConsumerThing]>["appId"]
+        >().toEqualTypeOf<string>();
+      });
     });
   });
 
