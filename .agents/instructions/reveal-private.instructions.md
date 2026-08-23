@@ -18,7 +18,7 @@ Obsidian plugin authors need to read members that Obsidian keeps private. The li
 - `revealPrivate(context, args, func, fallback)` and `revealPrivateAsync(...)` — deprecated runtime helpers wrapping `RevealPrivate`; kept for backwards compatibility.
 - `revealPrivateFilter<RevealWhitelist, RecursionBlacklist, Depth>()` and `revealPrivateAsyncFilter<RevealWhitelist, RecursionBlacklist, Depth>()` — recommended runtime helpers with fixed lists and depth.
 - `RevealPrivateExempt` — brand marker for types that pass through `RevealPrivate` unchanged. Builtins extend it in `src/@types/lib.es5.ts`; prefer the recursion blacklist for non-builtin exceptions.
-- `Private`, `PrivateKeys`, `HasPrivate` — branding machinery.
+- `Private`, `PrivateKeys`, `HasPrivate` — branding machinery. `PrivateKeys` is an open interface: consumers may augment it with their own unique-symbol keys (e.g. `declare module "../../src/private.js" { interface PrivateKeys { readonly [MY_KEY]: never; } }`). The reveal machinery is **union-safe** over `keyof PrivateKeys` — a type is detected as branded when it carries **any** private key (`Extract<PrivateKeys$, keyof T>` is non-`never`), not all of them, so vendor-branded and consumer-branded types coexist.
 - `$App`, `$BakedHotkey`, `$Commands`, `$CommunityPluginsSettingTab`, `$DataAdapter`, `$FileSystem`, `$HotkeyManager`, `$Keymap`, `$Plugins`, `$UnknownSettingTab`, `$ViewStateResult`, `$Workspace`, `$WorkspaceLeaf`, `$WorkspaceRibbon` — the private-shape brand payloads, all exported from `src/@types/obsidian.ts` and reachable through the public type barrel (`export type *`). Reference them directly (e.g. `NonNullable<$FileSystem["open"]>`) instead of reconstructing shapes.
 
 ## Gate semantics (evaluation order)
