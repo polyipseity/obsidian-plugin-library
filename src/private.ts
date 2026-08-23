@@ -71,11 +71,14 @@ type RevealWhitelistMatch<
   T,
   RevealWhitelist extends readonly unknown[],
 > = RevealWhitelist extends readonly [infer Head, ...infer Tail]
-  ? PrivateKeys$ extends keyof T
-    ? AreNonDistributiveEqual<NonNullable<T[PrivateKeys$]>, Head> extends true
+  ? [Extract<PrivateKeys$, keyof T>] extends [never]
+    ? RevealWhitelistMatch<T, Tail>
+    : AreNonDistributiveEqual<
+          NonNullable<T[Extract<PrivateKeys$, keyof T>]>,
+          Head
+        > extends true
       ? true
       : RevealWhitelistMatch<T, Tail>
-    : RevealWhitelistMatch<T, Tail>
   : false;
 /**
  * True when the whole type `T` (after removing `undefined`/`null`) is exactly
@@ -402,9 +405,9 @@ type TraverseObject<
   RecursionBlacklist extends readonly unknown[],
   Depth extends readonly unknown[],
 > = Prettify<
-  PrivateKeys$ extends keyof T
+  [Extract<PrivateKeys$, keyof T>] extends [never]
     ? {
-        [K in keyof Omit<T, PrivateKeys$>]: RevealPrivateImpl<
+        [K in keyof T]: RevealPrivateImpl<
           T[K],
           RevealWhitelist,
           RecursionBlacklist,
@@ -412,7 +415,7 @@ type TraverseObject<
         >;
       }
     : {
-        [K in keyof T]: RevealPrivateImpl<
+        [K in keyof Omit<T, Extract<PrivateKeys$, keyof T>>]: RevealPrivateImpl<
           T[K],
           RevealWhitelist,
           RecursionBlacklist,
