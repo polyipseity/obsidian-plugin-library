@@ -611,7 +611,7 @@ describe("private.ts — private API access", () => {
       >().toEqualTypeOf<false>();
     });
 
-    // Regression lock (user scenario, mirrors obsidian-plugin-template/src/
+    // Regression lock (user scenario, mirrors obsidian-plugin-library/src/
     // documentations.ts): the per-member whitelist reveals each union branch's
     // private members independently. `CommunityPluginsSettingTab` reveals `id`,
     // `containerEl`, `installedPlugins`, `renderInstalledPlugin`;
