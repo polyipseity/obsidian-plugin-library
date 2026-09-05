@@ -9,7 +9,7 @@ import {
   fixInSet,
   type Fixed,
 } from "../../src/fixers.js";
-import type { Unchecked } from "../../src/types.js";
+import type { AnyObject } from "../../src/types.js";
 
 describe("fixers.ts — settings validation and fixing", () => {
   describe("markFixed", () => {
@@ -105,7 +105,7 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("returns valid value when type matches", () => {
       const defaults: TestSettings = { name: "default", age: 0, active: false };
-      const from: Unchecked<TestSettings> = {
+      const from: AnyObject = {
         name: "John",
         age: 30,
         active: true,
@@ -118,7 +118,7 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("returns default when type does not match", () => {
       const defaults: TestSettings = { name: "default", age: 0, active: false };
-      const from: Unchecked<TestSettings> = {
+      const from: AnyObject = {
         name: 123,
         age: "not a number",
         active: "yes",
@@ -131,9 +131,9 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("handles multiple allowed types", () => {
       const defaults = { value: "default" as string | number };
-      const from1: Unchecked<typeof defaults> = { value: "text" };
-      const from2: Unchecked<typeof defaults> = { value: 42 };
-      const from3: Unchecked<typeof defaults> = {
+      const from1: AnyObject = { value: "text" };
+      const from2: AnyObject = { value: 42 };
+      const from3: AnyObject = {
         value: true,
       };
 
@@ -148,7 +148,7 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("handles null values", () => {
       const defaults = { optional: null as string | null };
-      const from: Unchecked<typeof defaults> = { optional: null };
+      const from: AnyObject = { optional: null };
 
       expect(fixTyped(defaults, from, "optional", ["string", "null"])).toBe(
         null,
@@ -157,7 +157,7 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("handles undefined values", () => {
       const defaults = { optional: undefined as string | undefined };
-      const from: Unchecked<typeof defaults> = { optional: undefined };
+      const from: AnyObject = { optional: undefined };
 
       expect(
         fixTyped(defaults, from, "optional", ["string", "undefined"]),
@@ -178,7 +178,7 @@ describe("fixers.ts — settings validation and fixing", () => {
         scores: [0],
         flags: [false],
       };
-      const from: Unchecked<SettingsWithArray> = {
+      const from: AnyObject = {
         tags: ["a", "b", "c"],
         scores: [1, 2, 3],
         flags: [true, false, true],
@@ -203,7 +203,7 @@ describe("fixers.ts — settings validation and fixing", () => {
         scores: [0],
         flags: [false],
       };
-      const from: Unchecked<SettingsWithArray> = {
+      const from: AnyObject = {
         tags: [1, 2, 3] as unknown,
         scores: ["a", "b"] as unknown,
         flags: ["yes", "no"] as unknown,
@@ -220,7 +220,7 @@ describe("fixers.ts — settings validation and fixing", () => {
         scores: [0],
         flags: [false],
       };
-      const from: Unchecked<SettingsWithArray> = {
+      const from: AnyObject = {
         tags: "not an array",
         scores: 42,
         flags: null,
@@ -233,14 +233,14 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("handles empty arrays", () => {
       const defaults = { items: ["default"] };
-      const from: Unchecked<typeof defaults> = { items: [] };
+      const from: AnyObject = { items: [] };
 
       expect(fixArray(defaults, from, "items", ["string"])).toEqual([]);
     });
 
     it("handles arrays with mixed valid types", () => {
       const defaults = { values: ["default"] as (string | number)[] };
-      const from: Unchecked<typeof defaults> = { values: ["a", 1, "b", 2] };
+      const from: AnyObject = { values: ["a", 1, "b", 2] };
 
       expect(fixArray(defaults, from, "values", ["string", "number"])).toEqual([
         "a",
@@ -252,7 +252,7 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("rejects arrays with partially invalid elements", () => {
       const defaults = { items: ["default"] };
-      const from: Unchecked<typeof defaults> = {
+      const from: AnyObject = {
         items: ["valid", 123, "also valid"],
       };
 
@@ -264,7 +264,7 @@ describe("fixers.ts — settings validation and fixing", () => {
 
     it("throws TypeError when default is not an array", () => {
       const defaults = { notArray: "string" };
-      const from: Unchecked<typeof defaults> = {
+      const from: AnyObject = {
         notArray: ["a", "b"] as unknown,
       };
 
@@ -279,8 +279,8 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("returns value when it exists in set", () => {
       const defaults = { color: "red" as const };
       const set = ["red", "green", "blue"] as const;
-      const from1: Unchecked<typeof defaults> = { color: "green" };
-      const from2: Unchecked<typeof defaults> = { color: "blue" };
+      const from1: AnyObject = { color: "green" };
+      const from2: AnyObject = { color: "blue" };
 
       expect(fixInSet(defaults, from1, "color", set)).toBe("green");
       expect(fixInSet(defaults, from2, "color", set)).toBe("blue");
@@ -289,7 +289,7 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("returns default when value not in set", () => {
       const defaults = { color: "red" as const };
       const set = ["red", "green", "blue"] as const;
-      const from: Unchecked<typeof defaults> = { color: "yellow" };
+      const from: AnyObject = { color: "yellow" };
 
       expect(fixInSet(defaults, from, "color", set)).toBe("red");
     });
@@ -297,8 +297,8 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("handles numeric sets", () => {
       const defaults = { level: 1 };
       const set = [1, 2, 3, 4, 5] as const;
-      const from1: Unchecked<typeof defaults> = { level: 3 };
-      const from2: Unchecked<typeof defaults> = { level: 10 };
+      const from1: AnyObject = { level: 3 };
+      const from2: AnyObject = { level: 10 };
 
       expect(fixInSet(defaults, from1, "level", set)).toBe(3);
       expect(fixInSet(defaults, from2, "level", set)).toBe(1);
@@ -307,13 +307,13 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("handles mixed-type sets", () => {
       const defaults = { value: "default" as const };
       const set = ["a", 1, true, null] as const;
-      const from1: Unchecked<typeof defaults> = {
+      const from1: AnyObject = {
         value: 1,
       };
-      const from2: Unchecked<typeof defaults> = {
+      const from2: AnyObject = {
         value: true,
       };
-      const from3: Unchecked<typeof defaults> = {
+      const from3: AnyObject = {
         value: "invalid",
       };
 
@@ -325,7 +325,7 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("handles empty set", () => {
       const defaults = { value: "default" };
       const set = [] as const;
-      const from: Unchecked<typeof defaults> = { value: "anything" };
+      const from: AnyObject = { value: "anything" };
 
       expect(fixInSet(defaults, from, "value", set)).toBe("default");
     });
@@ -333,8 +333,8 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("handles single-element set", () => {
       const defaults = { value: "only" as const };
       const set = ["only"] as const;
-      const from1: Unchecked<typeof defaults> = { value: "only" };
-      const from2: Unchecked<typeof defaults> = { value: "other" };
+      const from1: AnyObject = { value: "only" };
+      const from2: AnyObject = { value: "other" };
 
       expect(fixInSet(defaults, from1, "value", set)).toBe("only");
       expect(fixInSet(defaults, from2, "value", set)).toBe("only");
@@ -343,8 +343,8 @@ describe("fixers.ts — settings validation and fixing", () => {
     it("uses strict equality for set membership", () => {
       const defaults = { value: 0 };
       const set = [0, 1, 2] as const;
-      const from1: Unchecked<typeof defaults> = { value: 0 };
-      const from2: Unchecked<typeof defaults> = {
+      const from1: AnyObject = { value: 0 };
+      const from2: AnyObject = {
         value: false,
       };
 

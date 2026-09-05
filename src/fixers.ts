@@ -1,13 +1,13 @@
+import { isEqual } from "es-toolkit/predicate";
+import type { DeepWritable } from "ts-essentials";
 import {
   type InverseTypeofMapE,
   type PrimitiveOfE,
   genericTypeofGuardE,
   primitiveOfE,
 } from "./typeof.js";
-import type { ReadonlyTuple, Unchecked } from "./types.js";
+import { type AnyObject, type ReadonlyTuple } from "./types.js";
 import { inSet, isHomogenousArray, lazyInit } from "./utils.js";
-import { isEqual } from "es-toolkit/predicate";
-import type { DeepWritable } from "ts-essentials";
 
 export interface Fixed<T> {
   readonly value: DeepWritable<T>;
@@ -30,7 +30,7 @@ export function markFixed<T>(
 
 export function fixTyped<S, K extends keyof S>(
   defaults: S,
-  from: Unchecked<S>,
+  from: AnyObject,
   key: K,
   types: readonly InverseTypeofMapE<S[K]>[],
 ): PrimitiveOfE<S[K]> {
@@ -44,7 +44,7 @@ export function fixArray<
   V extends (S[K] extends readonly (infer V0)[] ? V0 : never),
 >(
   defaults: S,
-  from: Unchecked<S>,
+  from: AnyObject,
   key: K,
   types: readonly InverseTypeofMapE<V>[],
 ): PrimitiveOfE<V>[] {
@@ -62,7 +62,7 @@ export function fixArray<
 
 export function fixInSet<S, const Vs extends ReadonlyTuple>(
   defaults: S,
-  from: Unchecked<S>,
+  from: AnyObject,
   key: keyof S,
   set: Vs,
 ): Vs[number] {
