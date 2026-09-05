@@ -1,4 +1,3 @@
-
 ---
 "@polyipseity/obsidian-plugin-library": minor
 ---
