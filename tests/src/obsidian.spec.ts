@@ -14,6 +14,7 @@ import {
 import { toJSONOrString } from "../../src/utils.js";
 import type { FrontMatterCache, Notice } from "obsidian";
 import type { PluginContext } from "../../src/plugin.js";
+import { noop } from "es-toolkit/function";
 
 describe("obsidian.ts — Obsidian API utilities", () => {
   beforeEach(() => {
@@ -780,7 +781,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       ui.new(
         () => ({}),
         () => {
-          void configure();
+          configure().catch(noop);
         },
         null,
       );
@@ -796,7 +797,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       };
 
       const component = new LambdaComponent(() => {
-        void onLoad();
+        onLoad().catch(noop);
       });
 
       component.load();
