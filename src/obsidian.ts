@@ -491,7 +491,7 @@ export function printMalformedData(
 export function newCollaborativeState(
   context: Plugin | PluginManifest,
   states: ReadonlyMap<UnnamespacedID<string>, unknown>,
-): unknown {
+): Record<string, unknown> {
   const entries = (function* fn(): Generator<readonly [string, unknown], void> {
     for (const [key, value] of states.entries()) {
       yield [key.namespaced(context), value];
