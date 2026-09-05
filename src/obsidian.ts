@@ -21,8 +21,6 @@ import {
   type ViewStateResult,
 } from "obsidian";
 import type { AsyncOrSync } from "ts-essentials";
-import { InternalDOMClasses } from "./internals/magic.js";
-import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
 import type {
   $DataAdapter,
   $FileSystem,
@@ -31,6 +29,8 @@ import type {
   $WorkspaceLeaf,
   $WorkspaceRibbon,
 } from "./@types/obsidian.js";
+import { InternalDOMClasses } from "./internals/magic.js";
+import { DOMClasses, NOTICE_NO_TIMEOUT, SI_PREFIX_SCALE } from "./magic.js";
 import type { PluginContext } from "./plugin.js";
 import { revealPrivateAsyncFilter, revealPrivateFilter } from "./private.js";
 import { type AnyObject, launderUnchecked } from "./types.js";
@@ -649,6 +649,6 @@ export function writeStateCollaboratively(
   state: unknown,
   implType: string,
   implState: unknown,
-): unknown {
+): Record<string, unknown> {
   return Object.assign(launderUnchecked(state), { [implType]: implState });
 }
