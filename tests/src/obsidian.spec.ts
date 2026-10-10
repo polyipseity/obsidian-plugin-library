@@ -12,9 +12,83 @@ import {
   printMalformedData,
 } from "../../src/obsidian.js";
 import { toJSONOrString } from "../../src/utils.js";
+import { linkSetting } from "../../src/settings-widgets.js";
 import type { FrontMatterCache, Notice } from "obsidian";
 import type { PluginContext } from "../../src/plugin.js";
 import { noop } from "es-toolkit/function";
+
+// `UpdatableUI.newSetting` needs text components backed by real elements,
+// which the shared mock lacks: `setValue` writes the element without firing
+// events and `onChange` listens to `input`, as in Obsidian. No other test here
+// uses these classes.
+vi.mock("obsidian", async (importOriginal) => {
+  class ValueComponent {
+    public setDisabled(): this {
+      return this;
+    }
+  }
+  class AbstractTextComponent<
+    E extends HTMLInputElement | HTMLTextAreaElement,
+  > extends ValueComponent {
+    #onChange: (value: string) => unknown = () => undefined;
+    public constructor(public readonly inputEl: E) {
+      super();
+      inputEl.addEventListener("input", () => this.#onChange(inputEl.value));
+    }
+    public getValue(): string {
+      return this.inputEl.value;
+    }
+    public setValue(value: string): this {
+      this.inputEl.value = value;
+      return this;
+    }
+    public setPlaceholder(): this {
+      return this;
+    }
+    public onChange(callback: (value: string) => unknown): this {
+      this.#onChange = callback;
+      return this;
+    }
+  }
+  class Setting {
+    public readonly settingEl = document.createElement("div");
+    public constructor(containerEl: HTMLElement) {
+      containerEl.append(this.settingEl);
+    }
+    public setName(): this {
+      return this;
+    }
+    public setDesc(): this {
+      return this;
+    }
+    public setDisabled(): this {
+      return this;
+    }
+    public setTooltip(): this {
+      return this;
+    }
+    public addText(
+      cb: (component: AbstractTextComponent<HTMLInputElement>) => unknown,
+    ): this {
+      const el = this.settingEl.appendChild(document.createElement("input"));
+      cb(new AbstractTextComponent(el));
+      return this;
+    }
+    public addTextArea(
+      cb: (component: AbstractTextComponent<HTMLTextAreaElement>) => unknown,
+    ): this {
+      const el = this.settingEl.appendChild(document.createElement("textarea"));
+      cb(new AbstractTextComponent(el));
+      return this;
+    }
+  }
+  return {
+    ...(await importOriginal<object>()),
+    AbstractTextComponent,
+    Setting,
+    ValueComponent,
+  };
+});
 
 describe("obsidian.ts — Obsidian API utilities", () => {
   beforeEach(() => {
@@ -408,6 +482,109 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       const result = ui.new(() => ({}), null, null);
 
       expect(result).toBe(ui);
+    });
+  });
+
+  describe("UpdatableUI.newSetting refresh of a text field", () => {
+    // Types `text` at the caret like a keystroke: edit, move caret, fire input.
+    async function typeAt(
+      el: HTMLInputElement | HTMLTextAreaElement,
+      caret: number,
+      text: string,
+    ): Promise<void> {
+      el.focus();
+      el.value = el.value.slice(0, caret) + text + el.value.slice(caret);
+      el.setSelectionRange(caret + text.length, caret + text.length);
+      el.dispatchEvent(new Event("input"));
+      // `linkSetting` awaits its setter and callback before the refresh lands.
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
+    }
+
+    afterEach(() => {
+      document.body.replaceChildren();
+    });
+
+    it("keeps the caret of a focused input when its setting refreshes", async () => {
+      const ui = new UpdatableUI();
+      let stored = "python3",
+        input: HTMLInputElement | undefined;
+      ui.newSetting(document.body, (setting) => {
+        setting.addText(
+          linkSetting(
+            () => stored,
+            (value) => {
+              stored = value;
+            },
+            () => {
+              ui.update();
+            },
+            {
+              post(component) {
+                input = component.inputEl;
+              },
+            },
+          ),
+        );
+      });
+      if (!input) throw new Error("addText did not run");
+
+      await typeAt(input, 0, "u");
+
+      expect(stored).toBe("upython3");
+      expect(input.value).toBe("upython3");
+      expect([input.selectionStart, input.selectionEnd]).toEqual([1, 1]);
+    });
+
+    it("keeps the caret of a focused textarea mid-document", async () => {
+      const ui = new UpdatableUI();
+      let stored = '{\n  "fontFamily": "monospace"\n}',
+        textArea: HTMLTextAreaElement | undefined;
+      ui.newSetting(document.body, (setting) => {
+        setting.addTextArea(
+          linkSetting(
+            () => stored,
+            (value) => {
+              stored = value;
+            },
+            () => {
+              ui.update();
+            },
+            {
+              post(component) {
+                textArea = component.inputEl;
+              },
+            },
+          ),
+        );
+      });
+      if (!textArea) throw new Error("addTextArea did not run");
+      const caret = stored.indexOf("monospace") + "mono".length;
+
+      await typeAt(textArea, caret, "X");
+
+      expect(textArea.value).toBe('{\n  "fontFamily": "monoXspace"\n}');
+      expect([textArea.selectionStart, textArea.selectionEnd]).toEqual([
+        caret + 1,
+        caret + 1,
+      ]);
+    });
+
+    it("still resets a field the user is not editing", () => {
+      const ui = new UpdatableUI();
+      let input: HTMLInputElement | undefined;
+      ui.newSetting(document.body, (setting) => {
+        setting.addText((text) => {
+          // Only the first render writes a value, so refreshes rely on the reset.
+          if (!input) text.setValue("initial");
+          input = text.inputEl;
+        });
+      });
+      if (!input) throw new Error("addText did not run");
+      input.value = "stale";
+
+      ui.update();
+
+      expect(input.value).toBe("initial");
     });
   });
 
