@@ -25,14 +25,12 @@ import {
   genericTypeofGuardE,
 } from "./typeof.js";
 import {
-  type AnyObject,
   type AsyncFunctionConstructor,
   type Base64String,
   type CodePoint,
   type ReadonlyTuple,
   contravariant,
   correctType,
-  launderUnchecked,
   simplifyType,
 } from "./types.js";
 
@@ -513,15 +511,19 @@ export function instanceOf<T extends Node | UIEvent>(
   if (typeof typeMain === "function" && self0 instanceof typeMain) {
     return true;
   }
-  const win =
-      "ownerDocument" in self0
-        ? launderUnchecked<AnyObject>(self0.ownerDocument)["defaultView"]
-        : launderUnchecked<AnyObject>(self0)["view"],
-    typeWin: unknown = isPrimitive(win) ? null : Reflect.get(win, name);
-  if (typeof typeWin === "function" && self0 instanceof typeWin) {
-    return true;
+  try {
+    // `defaultView` and `view` are inherited accessors, so read them from the value itself
+    const [owner, key]: readonly [unknown, string] =
+        "ownerDocument" in self0
+          ? [self0.ownerDocument, "defaultView"]
+          : [self0, "view"],
+      win: unknown = isPrimitive(owner) ? null : Reflect.get(owner, key),
+      typeWin: unknown = isPrimitive(win) ? null : Reflect.get(win, name);
+    return typeof typeWin === "function" && self0 instanceof typeWin;
+  } catch (error) {
+    /* @__PURE__ */ self.console.debug(error);
+    return false;
   }
-  return false;
 }
 
 export function isHomogenousArray<T extends PrimitiveTypeE>(
