@@ -497,10 +497,15 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       el.setSelectionRange(caret + text.length, caret + text.length);
       el.dispatchEvent(new Event("input"));
       // `linkSetting` awaits its setter and callback before the refresh lands.
-      await new Promise((resolve) => window.setTimeout(resolve, 0));
+      await vi.runAllTimersAsync();
     }
 
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
     afterEach(() => {
+      vi.useRealTimers();
       document.body.replaceChildren();
     });
 
@@ -511,13 +516,13 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       ui.newSetting(document.body, (setting) => {
         setting.addText(
           linkSetting(
-            () => stored,
-            (value) => {
+            vi.fn(() => stored),
+            vi.fn((value: string) => {
               stored = value;
-            },
-            () => {
+            }),
+            vi.fn(() => {
               ui.update();
-            },
+            }),
             {
               post(component) {
                 input = component.inputEl;
@@ -542,13 +547,13 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       ui.newSetting(document.body, (setting) => {
         setting.addTextArea(
           linkSetting(
-            () => stored,
-            (value) => {
+            vi.fn(() => stored),
+            vi.fn((value: string) => {
               stored = value;
-            },
-            () => {
+            }),
+            vi.fn(() => {
               ui.update();
-            },
+            }),
             {
               post(component) {
                 textArea = component.inputEl;
