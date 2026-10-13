@@ -519,7 +519,31 @@ export function instanceOf<T extends Node | UIEvent>(
           : [self0, "view"],
       win: unknown = isPrimitive(owner) ? null : Reflect.get(owner, key),
       typeWin: unknown = isPrimitive(win) ? null : Reflect.get(win, name);
-    return typeof typeWin === "function" && self0 instanceof typeWin;
+    if (typeof typeWin === "function" && self0 instanceof typeWin) {
+      return true;
+    }
+    if (!("ownerDocument" in self0)) {
+      return false;
+    }
+    // A node that moved keeps the classes of the window that created it, and that window may be closed
+    for (
+      let proto = Reflect.getPrototypeOf(self0);
+      proto !== null;
+      proto = Reflect.getPrototypeOf(proto)
+    ) {
+      const typeProto: unknown = Reflect.getOwnPropertyDescriptor(
+        proto,
+        "constructor",
+      )?.value;
+      if (
+        typeof typeProto === "function" &&
+        typeProto.name === name &&
+        self0 instanceof typeProto
+      ) {
+        return true;
+      }
+    }
+    return false;
   } catch (error) {
     /* @__PURE__ */ self.console.debug(error);
     return false;

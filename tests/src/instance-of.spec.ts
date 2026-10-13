@@ -58,6 +58,35 @@ describe("instanceOf", () => {
     expect(instanceOf(element, HTMLInputElement)).toBe(false);
   });
 
+  it("recognizes a node of another window after it moved to this window", () => {
+    const element = foreignWindow().document.createElement("textarea");
+    document.body.append(element);
+    expect(element.ownerDocument).toBe(document);
+    expect(element).not.toBeInstanceOf(HTMLElement);
+    expect(instanceOf(element, HTMLElement)).toBe(true);
+    expect(instanceOf(element, Node)).toBe(true);
+    expect(instanceOf(element, HTMLInputElement)).toBe(false);
+  });
+
+  it("recognizes a node that moved from one other window to another", () => {
+    const element = foreignWindow().document.createElement("div"),
+      destination = foreignWindow();
+    destination.document.body.append(element);
+    expect(element.ownerDocument).toBe(destination.document);
+    expect(element).not.toBeInstanceOf(destination.HTMLElement);
+    expect(instanceOf(element, HTMLElement)).toBe(true);
+    expect(instanceOf(element, Node)).toBe(true);
+    expect(instanceOf(element, HTMLInputElement)).toBe(false);
+  });
+
+  it("rejects a plain object that only has an `ownerDocument` key", () => {
+    for (const ownerDocument of [null, document, foreignWindow().document]) {
+      const pretender = { ownerDocument };
+      expect(instanceOf(pretender, Node)).toBe(false);
+      expect(instanceOf(pretender, HTMLElement)).toBe(false);
+    }
+  });
+
   it("recognizes a UI event of another window", () => {
     const foreign = foreignWindow(),
       event = new foreign.MouseEvent("click", { view: foreign });
