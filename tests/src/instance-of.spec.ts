@@ -58,6 +58,25 @@ describe("instanceOf", () => {
     expect(instanceOf(element, HTMLInputElement)).toBe(false);
   });
 
+  it("recognizes an SVG element of another window", () => {
+    const element = foreignWindow().document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg",
+    );
+    expect(element).not.toBeInstanceOf(SVGElement);
+    expect(instanceOf(element, SVGElement)).toBe(true);
+    expect(instanceOf(element, Element)).toBe(true);
+    expect(instanceOf(element, HTMLElement)).toBe(false);
+  });
+
+  it("recognizes the document of another window", () => {
+    const { document: foreignDocument } = foreignWindow();
+    expect(foreignDocument).not.toBeInstanceOf(Document);
+    expect(instanceOf(foreignDocument, Document)).toBe(true);
+    expect(instanceOf(foreignDocument, Node)).toBe(true);
+    expect(instanceOf(foreignDocument, HTMLElement)).toBe(false);
+  });
+
   it("recognizes a node of another window after it moved to this window", () => {
     const element = foreignWindow().document.createElement("textarea");
     document.body.append(element);
@@ -79,6 +98,18 @@ describe("instanceOf", () => {
     expect(instanceOf(element, HTMLInputElement)).toBe(false);
   });
 
+  it("recognizes a node of another window whose document has no window", () => {
+    // Stands in for a node that outlived the popout window that created it
+    const element = foreignWindow()
+      .document.implementation.createHTMLDocument()
+      .createElement("div");
+    expect(element.ownerDocument.defaultView).toBeNull();
+    expect(element).not.toBeInstanceOf(HTMLElement);
+    expect(instanceOf(element, HTMLElement)).toBe(true);
+    expect(instanceOf(element, Node)).toBe(true);
+    expect(instanceOf(element, HTMLInputElement)).toBe(false);
+  });
+
   it("rejects a plain object that only has an `ownerDocument` key", () => {
     for (const ownerDocument of [null, document, foreignWindow().document]) {
       const pretender = { ownerDocument };
@@ -94,6 +125,30 @@ describe("instanceOf", () => {
     expect(instanceOf(event, MouseEvent)).toBe(true);
     expect(instanceOf(event, UIEvent)).toBe(true);
     expect(instanceOf(event, KeyboardEvent)).toBe(false);
+  });
+
+  it("recognizes a click dispatched in another window and its target", () => {
+    const foreign = foreignWindow(),
+      button = foreign.document.createElement("button"),
+      listener = vi.fn<(event: Event) => void>();
+    foreign.document.body.append(button);
+    button.addEventListener("click", listener);
+    button.click();
+    const event = listener.mock.calls[0]?.[0];
+    expect(event).not.toBeInstanceOf(UIEvent);
+    expect(instanceOf(event, MouseEvent)).toBe(true);
+    expect(instanceOf(event, UIEvent)).toBe(true);
+    expect(instanceOf(event, KeyboardEvent)).toBe(false);
+    expect(event?.target).toBe(button);
+    expect(instanceOf(event?.target, HTMLElement)).toBe(true);
+    expect(instanceOf(event?.target, Node)).toBe(true);
+  });
+
+  it("returns false by design for a UI event of another window without a view", () => {
+    const event = new (foreignWindow().MouseEvent)("click");
+    expect(event.view).toBeNull();
+    expect(instanceOf(event, MouseEvent)).toBe(false);
+    expect(instanceOf(event, UIEvent)).toBe(false);
   });
 
   it("returns false when the owner window cannot be read", () => {
