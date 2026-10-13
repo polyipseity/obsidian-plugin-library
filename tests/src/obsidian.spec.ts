@@ -554,31 +554,12 @@ describe("obsidian.ts — Obsidian API utilities", () => {
 
     it("keeps the caret of a focused input when its setting refreshes", async () => {
       const ui = new UpdatableUI();
-      let stored = "python3",
-        input: HTMLInputElement | undefined;
-      ui.newSetting(document.body, (setting) => {
-        setting.addText(
-          linkSetting(
-            vi.fn(() => stored),
-            vi.fn((value: string) => {
-              stored = value;
-            }),
-            vi.fn(() => {
-              ui.update();
-            }),
-            {
-              post(component) {
-                input = component.inputEl;
-              },
-            },
-          ),
-        );
-      });
-      if (!input) throw new Error("addText did not run");
+      const state = { stored: "python3" };
+      const input = linkedInput(ui, state);
 
       await typeAt(input, 0, "u");
 
-      expect(stored).toBe("upython3");
+      expect(state.stored).toBe("upython3");
       expect(input.value).toBe("upython3");
       expect([input.selectionStart, input.selectionEnd]).toEqual([1, 1]);
     });
@@ -684,15 +665,7 @@ describe("obsidian.ts — Obsidian API utilities", () => {
 
     it("still resets a field the user is not editing", () => {
       const ui = new UpdatableUI();
-      let input: HTMLInputElement | undefined;
-      ui.newSetting(document.body, (setting) => {
-        setting.addText((text) => {
-          // Only the first render writes a value, so refreshes rely on the reset.
-          if (!input) text.setValue("initial");
-          input = text.inputEl;
-        });
-      });
-      if (!input) throw new Error("addText did not run");
+      const input = firstRenderOnlyInput(ui);
       input.value = "stale";
 
       ui.update();
