@@ -83,7 +83,8 @@ export function newHotkeyListener(
       );
 
       return (evt: KeyboardEvent, ctx: KeymapContext) => {
-        revealPrivateFilter<
+        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- Obsidian reads this result; only the `noop` fallback types it as void
+        return revealPrivateFilter<
           [$App, $HotkeyManager, $Commands, $Keymap, $BakedHotkey]
         >()(
           context,
