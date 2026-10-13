@@ -221,7 +221,8 @@ export class UpdatableUI {
                   comp.selectEl.replaceChildren();
                 }
                 // Resetting the field being typed in, before the callback writes
-                // its value back, would move its caret to the end.
+                // its value back, would move its caret to the end. A focused
+                // text field thus keeps its value unless the callback sets it.
                 const editing =
                   comp instanceof AbstractTextComponent &&
                   comp.inputEl === settingEl.ownerDocument.activeElement;
