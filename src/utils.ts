@@ -541,7 +541,7 @@ export function instanceOf<T extends Node | UIEvent>(
       if (
         typeof typeProto === "function" &&
         typeProto.name === name &&
-        Reflect.get(typeProto, "prototype") === proto
+        typeProto.prototype === proto
       ) {
         return true;
       }
