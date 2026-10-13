@@ -212,7 +212,7 @@ describe("instanceOf", () => {
     ]);
   });
 
-  it("catches a throwing Proxy trap only in the owner window lookup", () => {
+  it("catches a throwing Proxy trap inside the fallback only", () => {
     const debug = vi.spyOn(console, "debug").mockImplementation(() => {}),
       trap = (): never => {
         throw new Error("trap");
@@ -221,10 +221,19 @@ describe("instanceOf", () => {
     expect(instanceOf(new Proxy({}, { has: trap }), Node)).toBe(false);
     expect(instanceOf(new Proxy({}, { get: trap }), Node)).toBe(false);
     expect(debug).toHaveBeenCalledTimes(2);
+    // The prototype chain step, also in the fallback, asks a prototype for its `constructor`
+    const prototype = new Proxy({}, { getOwnPropertyDescriptor: trap });
+    expect(
+      instanceOf(
+        Object.create(prototype, { ownerDocument: { value: null } }),
+        Node,
+      ),
+    ).toBe(false);
+    expect(debug).toHaveBeenCalledTimes(3);
     // The plain `instanceof` checks before the lookup reach `getPrototypeOf`
     expect(() =>
       instanceOf(new Proxy({}, { getPrototypeOf: trap }), Node),
     ).toThrow("trap");
-    expect(debug).toHaveBeenCalledTimes(2);
+    expect(debug).toHaveBeenCalledTimes(3);
   });
 });
