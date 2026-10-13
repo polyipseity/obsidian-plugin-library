@@ -378,14 +378,14 @@ describe("keys.ts — hotkey management", () => {
       expect(mockApp.commands.executeCommand).toHaveBeenCalledTimes(1);
     });
 
-    it("returns true when no hotkey matches", () => {
+    it("returns nothing when no hotkey matches", () => {
       mockKeymap.constructor.isMatch.mockReturnValue(false);
 
-      expect(press()).toBe(true);
+      expect(press()).toBeUndefined();
       expect(mockApp.commands.executeCommand).not.toHaveBeenCalled();
     });
 
-    it("returns true for a repeat of a command that does not repeat", () => {
+    it("returns nothing for a repeat of a command that does not repeat", () => {
       mockKeymap.constructor.isMatch.mockReturnValue(true);
       mockApp.commands.findCommand.mockReturnValue({
         id: "command-1",
@@ -393,7 +393,7 @@ describe("keys.ts — hotkey management", () => {
       });
       mockApp.commands.executeCommand.mockReturnValue(true);
 
-      expect(press({ repeat: true })).toBe(true);
+      expect(press({ repeat: true })).toBeUndefined();
       expect(mockApp.commands.executeCommand).not.toHaveBeenCalled();
     });
   });

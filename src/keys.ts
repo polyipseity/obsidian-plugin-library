@@ -1,4 +1,3 @@
-import { noop } from "es-toolkit/function";
 import { around } from "monkey-around";
 import type { Hotkey, KeymapContext, KeymapEventListener } from "obsidian";
 import type {
@@ -83,7 +82,6 @@ export function newHotkeyListener(
       );
 
       return (evt: KeyboardEvent, ctx: KeymapContext) => {
-        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression -- Obsidian reads this result; only the `noop` fallback types it as void
         return revealPrivateFilter<
           [$App, $HotkeyManager, $Commands, $Keymap, $BakedHotkey]
         >()(
@@ -106,12 +104,12 @@ export function newHotkeyListener(
               }
               ++idx;
             }
-            return true;
+            return void 0;
           },
-          noop,
+          () => void 0,
         );
       };
     },
-    () => noop,
+    () => () => void 0,
   );
 }
