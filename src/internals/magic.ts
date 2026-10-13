@@ -1,5 +1,6 @@
 export const FUNCTION_CONSTRUCTOR_OFFSET_SCRIPT = "LoremIpsum",
   MAX_LOCK_PENDING = Infinity,
+  MAX_PROTOTYPE_DEPTH = 64,
   SAVE_SETTINGS_WAIT = 2;
 
 export namespace InternalDOMClasses {

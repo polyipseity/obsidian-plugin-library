@@ -35,7 +35,7 @@ import {
 } from "./types.js";
 
 import AsyncLock from "async-lock";
-import { MAX_LOCK_PENDING } from "./internals/magic.js";
+import { MAX_LOCK_PENDING, MAX_PROTOTYPE_DEPTH } from "./internals/magic.js";
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift";
 
@@ -526,19 +526,21 @@ export function instanceOf<T extends Node | UIEvent>(
       return false;
     }
     // A node that moved keeps the classes of the window that created it, and that window may be closed
+    // The depth limit ends the walk for a Proxy whose chain has no end
     for (
-      let proto = Reflect.getPrototypeOf(self0);
-      proto !== null;
-      proto = Reflect.getPrototypeOf(proto)
+      let proto = Reflect.getPrototypeOf(self0), depth = 0;
+      proto !== null && depth < MAX_PROTOTYPE_DEPTH;
+      proto = Reflect.getPrototypeOf(proto), ++depth
     ) {
       const typeProto: unknown = Reflect.getOwnPropertyDescriptor(
         proto,
         "constructor",
       )?.value;
+      // `instanceof` would walk the chain once more, without the limit
       if (
         typeof typeProto === "function" &&
         typeProto.name === name &&
-        self0 instanceof typeProto
+        Reflect.get(typeProto, "prototype") === proto
       ) {
         return true;
       }

@@ -127,6 +127,26 @@ describe("instanceOf", () => {
     expect(instanceOf(pretender, Node)).toBe(false);
   });
 
+  it("ends the prototype chain step for a Proxy whose chain has no end", () => {
+    // The second target also has a `constructor` of that name
+    for (const target of [{}, { constructor: function Node() {} }]) {
+      // A real chain without end would hang the run, so this one ends late
+      const end = 1000;
+      let fallback = false,
+        steps = 0;
+      const endless: object = new Proxy(target, {
+        // No prototype for the plain `instanceof` checks, itself in the fallback
+        getPrototypeOf: () => (fallback && ++steps <= end ? endless : null),
+        has(_target, key): boolean {
+          fallback = true;
+          return key === "ownerDocument";
+        },
+      });
+      expect(instanceOf(endless, Node)).toBe(false);
+      expect(steps).toBeLessThan(end);
+    }
+  });
+
   it("recognizes a UI event of another window", () => {
     const foreign = foreignWindow(),
       event = new foreign.MouseEvent("click", { view: foreign });
