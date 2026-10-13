@@ -118,6 +118,15 @@ describe("instanceOf", () => {
     }
   });
 
+  it("rejects an object whose prototype only has a `constructor` of that name", () => {
+    // The name alone must not be enough
+    const pretender: unknown = Object.create(
+      { constructor: function Node() {} },
+      { ownerDocument: { value: null } },
+    );
+    expect(instanceOf(pretender, Node)).toBe(false);
+  });
+
   it("recognizes a UI event of another window", () => {
     const foreign = foreignWindow(),
       event = new foreign.MouseEvent("click", { view: foreign });
