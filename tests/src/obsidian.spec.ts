@@ -12,9 +12,83 @@ import {
   printMalformedData,
 } from "../../src/obsidian.js";
 import { toJSONOrString } from "../../src/utils.js";
+import { linkSetting } from "../../src/settings-widgets.js";
 import type { FrontMatterCache, Notice } from "obsidian";
 import type { PluginContext } from "../../src/plugin.js";
 import { noop } from "es-toolkit/function";
+
+// `UpdatableUI.newSetting` needs text components backed by real elements,
+// which the shared mock lacks: `setValue` writes the element without firing
+// events and `onChange` listens to `input`, as in Obsidian. No other test here
+// uses these classes.
+vi.mock("obsidian", async (importOriginal) => {
+  class ValueComponent {
+    public setDisabled(): this {
+      return this;
+    }
+  }
+  class AbstractTextComponent<
+    E extends HTMLInputElement | HTMLTextAreaElement,
+  > extends ValueComponent {
+    #onChange: (value: string) => unknown = () => undefined;
+    public constructor(public readonly inputEl: E) {
+      super();
+      inputEl.addEventListener("input", () => this.#onChange(inputEl.value));
+    }
+    public getValue(): string {
+      return this.inputEl.value;
+    }
+    public setValue(value: string): this {
+      this.inputEl.value = value;
+      return this;
+    }
+    public setPlaceholder(): this {
+      return this;
+    }
+    public onChange(callback: (value: string) => unknown): this {
+      this.#onChange = callback;
+      return this;
+    }
+  }
+  class Setting {
+    public readonly settingEl = document.createElement("div");
+    public constructor(containerEl: HTMLElement) {
+      containerEl.append(this.settingEl);
+    }
+    public setName(): this {
+      return this;
+    }
+    public setDesc(): this {
+      return this;
+    }
+    public setDisabled(): this {
+      return this;
+    }
+    public setTooltip(): this {
+      return this;
+    }
+    public addText(
+      cb: (component: AbstractTextComponent<HTMLInputElement>) => unknown,
+    ): this {
+      const el = this.settingEl.appendChild(document.createElement("input"));
+      cb(new AbstractTextComponent(el));
+      return this;
+    }
+    public addTextArea(
+      cb: (component: AbstractTextComponent<HTMLTextAreaElement>) => unknown,
+    ): this {
+      const el = this.settingEl.appendChild(document.createElement("textarea"));
+      cb(new AbstractTextComponent(el));
+      return this;
+    }
+  }
+  return {
+    ...(await importOriginal<object>()),
+    AbstractTextComponent,
+    Setting,
+    ValueComponent,
+  };
+});
 
 describe("obsidian.ts — Obsidian API utilities", () => {
   beforeEach(() => {
@@ -408,6 +482,223 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       const result = ui.new(() => ({}), null, null);
 
       expect(result).toBe(ui);
+    });
+  });
+
+  describe("UpdatableUI.newSetting refresh of a text field", () => {
+    // Types `text` at the caret like a keystroke: edit, move caret, fire input.
+    async function typeAt(
+      el: HTMLInputElement | HTMLTextAreaElement,
+      caret: number,
+      text: string,
+    ): Promise<void> {
+      el.focus();
+      el.value = el.value.slice(0, caret) + text + el.value.slice(caret);
+      el.setSelectionRange(caret + text.length, caret + text.length);
+      el.dispatchEvent(new Event("input"));
+      // `linkSetting` awaits its setter and callback before the refresh lands.
+      await vi.runAllTimersAsync();
+    }
+
+    // Adds a text field linked to `state.stored` that refreshes `ui` on change.
+    function linkedInput(
+      ui: UpdatableUI,
+      state: { stored: string },
+      parent: HTMLElement = document.body,
+    ): HTMLInputElement {
+      let input: HTMLInputElement | undefined;
+      ui.newSetting(parent, (setting) => {
+        setting.addText(
+          linkSetting(
+            vi.fn(() => state.stored),
+            vi.fn((value: string) => {
+              state.stored = value;
+            }),
+            vi.fn(() => {
+              ui.update();
+            }),
+            {
+              post(component) {
+                input = component.inputEl;
+              },
+            },
+          ),
+        );
+      });
+      if (!input) throw new Error("addText did not run");
+      return input;
+    }
+
+    // Adds a text field that only the first render writes, so refreshes rely
+    // on the reset.
+    function firstRenderOnlyInput(ui: UpdatableUI): HTMLInputElement {
+      let input: HTMLInputElement | undefined;
+      ui.newSetting(document.body, (setting) => {
+        setting.addText((text) => {
+          if (!input) text.setValue("initial");
+          input = text.inputEl;
+        });
+      });
+      if (!input) throw new Error("addText did not run");
+      return input;
+    }
+
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      document.body.replaceChildren();
+    });
+
+    it("keeps the caret of a focused input when its setting refreshes", async () => {
+      const ui = new UpdatableUI();
+      const state = { stored: "python3" };
+      const input = linkedInput(ui, state);
+
+      await typeAt(input, 0, "u");
+
+      expect(state.stored).toBe("upython3");
+      expect(input.value).toBe("upython3");
+      expect([input.selectionStart, input.selectionEnd]).toEqual([1, 1]);
+    });
+
+    it("keeps the caret of a focused textarea mid-document", async () => {
+      const ui = new UpdatableUI();
+      let stored = '{\n  "fontFamily": "monospace"\n}',
+        textArea: HTMLTextAreaElement | undefined;
+      ui.newSetting(document.body, (setting) => {
+        setting.addTextArea(
+          linkSetting(
+            vi.fn(() => stored),
+            vi.fn((value: string) => {
+              stored = value;
+            }),
+            vi.fn(() => {
+              ui.update();
+            }),
+            {
+              post(component) {
+                textArea = component.inputEl;
+              },
+            },
+          ),
+        );
+      });
+      if (!textArea) throw new Error("addTextArea did not run");
+      const caret = stored.indexOf("monospace") + "mono".length;
+
+      await typeAt(textArea, caret, "X");
+
+      expect(textArea.value).toBe('{\n  "fontFamily": "monoXspace"\n}');
+      expect([textArea.selectionStart, textArea.selectionEnd]).toEqual([
+        caret + 1,
+        caret + 1,
+      ]);
+    });
+
+    it("stores a second keystroke typed where the first left the caret", async () => {
+      const ui = new UpdatableUI();
+      const state = { stored: "python3" };
+      const input = linkedInput(ui, state);
+
+      await typeAt(input, 0, "u");
+      await typeAt(input, input.selectionStart ?? 0, "v");
+
+      expect(state.stored).toBe("uvpython3");
+      expect(input.value).toBe("uvpython3");
+      expect([input.selectionStart, input.selectionEnd]).toEqual([2, 2]);
+    });
+
+    it("keeps the caret of an input focused in another document", async () => {
+      const frame = document.body.appendChild(document.createElement("iframe"));
+      const { contentDocument } = frame;
+      if (!contentDocument) throw new Error("iframe has no document");
+      const ui = new UpdatableUI();
+      const input = linkedInput(
+        ui,
+        { stored: "python3" },
+        contentDocument.body,
+      );
+
+      await typeAt(input, 0, "u");
+
+      // As in a popout window, the global document does not see this focus.
+      expect(contentDocument.activeElement).toBe(input);
+      expect(document.activeElement).not.toBe(input);
+      expect([input.value, input.selectionStart, input.selectionEnd]).toEqual([
+        "upython3",
+        1,
+        1,
+      ]);
+    });
+
+    it("writes only the current value to a focused number input", async () => {
+      const ui = new UpdatableUI();
+      const state = { stored: "5" };
+      const input = linkedInput(ui, state);
+      input.type = "number";
+      input.focus();
+      input.value = "15";
+      // A number input has no caret to read, so watch what the refresh writes.
+      const write = vi.spyOn(input, "value", "set");
+
+      input.dispatchEvent(new Event("input"));
+      await vi.runAllTimersAsync();
+
+      expect(state.stored).toBe("15");
+      expect(write.mock.calls).toEqual([["15"]]);
+    });
+
+    it("shows a value changed elsewhere in a focused field", () => {
+      const ui = new UpdatableUI();
+      const state = { stored: "python3" };
+      const input = linkedInput(ui, state);
+      input.focus();
+      state.stored = "python";
+
+      ui.update();
+
+      expect(input.value).toBe("python");
+    });
+
+    it("still resets a field the user is not editing", () => {
+      const ui = new UpdatableUI();
+      const input = firstRenderOnlyInput(ui);
+      input.value = "stale";
+
+      ui.update();
+
+      expect(input.value).toBe("initial");
+    });
+
+    it("still resets an unfocused field while another field has focus", () => {
+      const ui = new UpdatableUI();
+      const focused = linkedInput(ui, { stored: "python3" });
+      const other = firstRenderOnlyInput(ui);
+      focused.focus();
+      other.value = "stale";
+
+      ui.update();
+
+      expect(other.value).toBe("initial");
+    });
+
+    it("does not reset a focused field until a refresh after it loses focus", () => {
+      const ui = new UpdatableUI();
+      const input = firstRenderOnlyInput(ui);
+      input.focus();
+      input.value = "typed";
+
+      ui.update();
+      expect(input.value).toBe("typed");
+
+      // Losing focus resets nothing by itself; the next refresh does.
+      input.blur();
+      expect(input.value).toBe("typed");
+      ui.update();
+      expect(input.value).toBe("initial");
     });
   });
 
