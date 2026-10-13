@@ -526,6 +526,7 @@ export function instanceOf<T extends Node | UIEvent>(
       return false;
     }
     // A node that moved keeps the classes of the window that created it, and that window may be closed
+    // The match is by class name, so an instance of any class of that name with an `ownerDocument` key matches too
     // The depth limit ends the walk for a Proxy whose chain has no end
     for (
       let proto = Reflect.getPrototypeOf(self0), depth = 0;

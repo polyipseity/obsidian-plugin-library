@@ -127,6 +127,15 @@ describe("instanceOf", () => {
     expect(instanceOf(pretender, Node)).toBe(false);
   });
 
+  it("accepts an instance of another class of that name with an `ownerDocument` key", () => {
+    // The limit of a match by class name
+    const lookalike = new (class Node {
+      public readonly ownerDocument = null;
+    })();
+    expect(lookalike).not.toBeInstanceOf(Node);
+    expect(instanceOf(lookalike, Node)).toBe(true);
+  });
+
   it("ends the prototype chain step for a Proxy whose chain has no end", () => {
     // The second target also has a `constructor` of that name
     for (const target of [{}, { constructor: function Node() {} }]) {
