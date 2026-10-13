@@ -152,7 +152,7 @@ describe("instanceOf", () => {
   });
 
   it("returns false when the owner window cannot be read", () => {
-    vi.spyOn(console, "debug").mockImplementation(() => {});
+    const debug = vi.spyOn(console, "debug").mockImplementation(() => {});
     const hostile: readonly object[] = [
       {
         get ownerDocument(): never {
@@ -175,5 +175,11 @@ describe("instanceOf", () => {
     for (const value of hostile) {
       expect(instanceOf(value, HTMLElement)).toBe(false);
     }
+    // One log per value, with the error its getter threw
+    expect(debug.mock.calls).toEqual([
+      [new Error("ownerDocument")],
+      [new Error("defaultView")],
+      [new Error("view")],
+    ]);
   });
 });
