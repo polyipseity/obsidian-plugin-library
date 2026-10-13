@@ -513,16 +513,16 @@ export function instanceOf<T extends Node | UIEvent>(
   }
   try {
     // `defaultView` and `view` are inherited accessors, so read them from the value itself
-    const [owner, key]: readonly [unknown, string] =
-        "ownerDocument" in self0
-          ? [self0.ownerDocument, "defaultView"]
-          : [self0, "view"],
+    const nodeLike = "ownerDocument" in self0,
+      [owner, key]: readonly [unknown, string] = nodeLike
+        ? [self0.ownerDocument, "defaultView"]
+        : [self0, "view"],
       win: unknown = isPrimitive(owner) ? null : Reflect.get(owner, key),
       typeWin: unknown = isPrimitive(win) ? null : Reflect.get(win, name);
     if (typeof typeWin === "function" && self0 instanceof typeWin) {
       return true;
     }
-    if (!("ownerDocument" in self0)) {
+    if (!nodeLike) {
       return false;
     }
     // A node that moved keeps the classes of the window that created it, and that window may be closed
