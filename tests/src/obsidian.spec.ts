@@ -500,6 +500,49 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       await vi.runAllTimersAsync();
     }
 
+    // Adds a text field linked to `state.stored` that refreshes `ui` on change.
+    function linkedInput(
+      ui: UpdatableUI,
+      state: { stored: string },
+      parent: HTMLElement = document.body,
+    ): HTMLInputElement {
+      let input: HTMLInputElement | undefined;
+      ui.newSetting(parent, (setting) => {
+        setting.addText(
+          linkSetting(
+            vi.fn(() => state.stored),
+            vi.fn((value: string) => {
+              state.stored = value;
+            }),
+            vi.fn(() => {
+              ui.update();
+            }),
+            {
+              post(component) {
+                input = component.inputEl;
+              },
+            },
+          ),
+        );
+      });
+      if (!input) throw new Error("addText did not run");
+      return input;
+    }
+
+    // Adds a text field that only the first render writes, so refreshes rely
+    // on the reset.
+    function firstRenderOnlyInput(ui: UpdatableUI): HTMLInputElement {
+      let input: HTMLInputElement | undefined;
+      ui.newSetting(document.body, (setting) => {
+        setting.addText((text) => {
+          if (!input) text.setValue("initial");
+          input = text.inputEl;
+        });
+      });
+      if (!input) throw new Error("addText did not run");
+      return input;
+    }
+
     beforeEach(() => {
       vi.useFakeTimers();
     });
@@ -574,6 +617,71 @@ describe("obsidian.ts — Obsidian API utilities", () => {
       ]);
     });
 
+    it("stores a second keystroke typed where the first left the caret", async () => {
+      const ui = new UpdatableUI();
+      const state = { stored: "python3" };
+      const input = linkedInput(ui, state);
+
+      await typeAt(input, 0, "u");
+      await typeAt(input, input.selectionStart ?? 0, "v");
+
+      expect(state.stored).toBe("uvpython3");
+      expect(input.value).toBe("uvpython3");
+      expect([input.selectionStart, input.selectionEnd]).toEqual([2, 2]);
+    });
+
+    it("keeps the caret of an input focused in another document", async () => {
+      const frame = document.body.appendChild(document.createElement("iframe"));
+      const { contentDocument } = frame;
+      if (!contentDocument) throw new Error("iframe has no document");
+      const ui = new UpdatableUI();
+      const input = linkedInput(
+        ui,
+        { stored: "python3" },
+        contentDocument.body,
+      );
+
+      await typeAt(input, 0, "u");
+
+      // As in a popout window, the global document does not see this focus.
+      expect(contentDocument.activeElement).toBe(input);
+      expect(document.activeElement).not.toBe(input);
+      expect([input.value, input.selectionStart, input.selectionEnd]).toEqual([
+        "upython3",
+        1,
+        1,
+      ]);
+    });
+
+    it("writes only the current value to a focused number input", async () => {
+      const ui = new UpdatableUI();
+      const state = { stored: "5" };
+      const input = linkedInput(ui, state);
+      input.type = "number";
+      input.focus();
+      input.value = "15";
+      // A number input has no caret to read, so watch what the refresh writes.
+      const write = vi.spyOn(input, "value", "set");
+
+      input.dispatchEvent(new Event("input"));
+      await vi.runAllTimersAsync();
+
+      expect(state.stored).toBe("15");
+      expect(write.mock.calls).toEqual([["15"]]);
+    });
+
+    it("shows a value changed elsewhere in a focused field", () => {
+      const ui = new UpdatableUI();
+      const state = { stored: "python3" };
+      const input = linkedInput(ui, state);
+      input.focus();
+      state.stored = "python";
+
+      ui.update();
+
+      expect(input.value).toBe("python");
+    });
+
     it("still resets a field the user is not editing", () => {
       const ui = new UpdatableUI();
       let input: HTMLInputElement | undefined;
@@ -589,6 +697,34 @@ describe("obsidian.ts — Obsidian API utilities", () => {
 
       ui.update();
 
+      expect(input.value).toBe("initial");
+    });
+
+    it("still resets an unfocused field while another field has focus", () => {
+      const ui = new UpdatableUI();
+      const focused = linkedInput(ui, { stored: "python3" });
+      const other = firstRenderOnlyInput(ui);
+      focused.focus();
+      other.value = "stale";
+
+      ui.update();
+
+      expect(other.value).toBe("initial");
+    });
+
+    it("does not reset a focused field until a refresh after it loses focus", () => {
+      const ui = new UpdatableUI();
+      const input = firstRenderOnlyInput(ui);
+      input.focus();
+      input.value = "typed";
+
+      ui.update();
+      expect(input.value).toBe("typed");
+
+      // Losing focus resets nothing by itself; the next refresh does.
+      input.blur();
+      expect(input.value).toBe("typed");
+      ui.update();
       expect(input.value).toBe("initial");
     });
   });
