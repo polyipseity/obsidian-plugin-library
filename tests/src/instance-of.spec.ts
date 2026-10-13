@@ -182,4 +182,20 @@ describe("instanceOf", () => {
       [new Error("view")],
     ]);
   });
+
+  it("catches a throwing Proxy trap only in the owner window lookup", () => {
+    const debug = vi.spyOn(console, "debug").mockImplementation(() => {}),
+      trap = (): never => {
+        throw new Error("trap");
+      };
+    // The lookup is the first to reach `has` and `get`
+    expect(instanceOf(new Proxy({}, { has: trap }), Node)).toBe(false);
+    expect(instanceOf(new Proxy({}, { get: trap }), Node)).toBe(false);
+    expect(debug).toHaveBeenCalledTimes(2);
+    // The plain `instanceof` checks before the lookup reach `getPrototypeOf`
+    expect(() =>
+      instanceOf(new Proxy({}, { getPrototypeOf: trap }), Node),
+    ).toThrow("trap");
+    expect(debug).toHaveBeenCalledTimes(2);
+  });
 });
