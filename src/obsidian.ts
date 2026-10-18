@@ -220,7 +220,13 @@ export class UpdatableUI {
                 if (comp instanceof DropdownComponent) {
                   comp.selectEl.replaceChildren();
                 }
-                if (comp instanceof ValueComponent) {
+                // Resetting the field being typed in, before the callback writes
+                // its value back, would move its caret to the end. A focused
+                // text field thus keeps its value unless the callback sets it.
+                const editing =
+                  comp instanceof AbstractTextComponent &&
+                  comp.inputEl === settingEl.ownerDocument.activeElement;
+                if (comp instanceof ValueComponent && !editing) {
                   comp.setValue(def);
                 }
               } catch (error) {

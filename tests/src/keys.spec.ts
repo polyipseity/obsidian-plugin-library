@@ -350,6 +350,54 @@ describe("keys.ts — hotkey management", () => {
     });
   });
 
+  describe("listener result", () => {
+    const keymapContext: KeymapContext = {
+      key: null,
+      modifiers: null,
+      vkey: "",
+    };
+
+    // Obsidian prevents and stops a key event only when the listener returns `false`.
+    function press(init?: KeyboardEventInit): unknown {
+      const result: unknown = newHotkeyListener(mockContext)(
+        new KeyboardEvent("keydown", init),
+        keymapContext,
+      );
+      return result;
+    }
+
+    it("returns false after it ran a command", () => {
+      mockKeymap.constructor.isMatch.mockReturnValue(true);
+      mockApp.commands.findCommand.mockReturnValue({
+        id: "command-1",
+        name: "Test Command",
+      });
+      mockApp.commands.executeCommand.mockReturnValue(true);
+
+      expect(press()).toBe(false);
+      expect(mockApp.commands.executeCommand).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns nothing when no hotkey matches", () => {
+      mockKeymap.constructor.isMatch.mockReturnValue(false);
+
+      expect(press()).toBeUndefined();
+      expect(mockApp.commands.executeCommand).not.toHaveBeenCalled();
+    });
+
+    it("returns nothing for a repeat of a command that does not repeat", () => {
+      mockKeymap.constructor.isMatch.mockReturnValue(true);
+      mockApp.commands.findCommand.mockReturnValue({
+        id: "command-1",
+        name: "Test Command",
+      });
+      mockApp.commands.executeCommand.mockReturnValue(true);
+
+      expect(press({ repeat: true })).toBeUndefined();
+      expect(mockApp.commands.executeCommand).not.toHaveBeenCalled();
+    });
+  });
+
   describe("ID filtering", () => {
     it("only processes hotkeys for specified IDs", () => {
       const ids = new Set(["command-1"]);

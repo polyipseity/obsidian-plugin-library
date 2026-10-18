@@ -25,19 +25,17 @@ import {
   genericTypeofGuardE,
 } from "./typeof.js";
 import {
-  type AnyObject,
   type AsyncFunctionConstructor,
   type Base64String,
   type CodePoint,
   type ReadonlyTuple,
   contravariant,
   correctType,
-  launderUnchecked,
   simplifyType,
 } from "./types.js";
 
 import AsyncLock from "async-lock";
-import { MAX_LOCK_PENDING } from "./internals/magic.js";
+import { MAX_LOCK_PENDING, MAX_PROTOTYPE_DEPTH } from "./internals/magic.js";
 
 export type KeyModifier = "Alt" | "Ctrl" | "Meta" | "Shift";
 
@@ -513,15 +511,46 @@ export function instanceOf<T extends Node | UIEvent>(
   if (typeof typeMain === "function" && self0 instanceof typeMain) {
     return true;
   }
-  const win =
-      "ownerDocument" in self0
-        ? launderUnchecked<AnyObject>(self0.ownerDocument)["defaultView"]
-        : launderUnchecked<AnyObject>(self0)["view"],
-    typeWin: unknown = isPrimitive(win) ? null : Reflect.get(win, name);
-  if (typeof typeWin === "function" && self0 instanceof typeWin) {
-    return true;
+  try {
+    // `defaultView` and `view` are inherited accessors, so read them from the value itself
+    const nodeLike = "ownerDocument" in self0,
+      [owner, key]: readonly [unknown, string] = nodeLike
+        ? [self0.ownerDocument, "defaultView"]
+        : [self0, "view"],
+      win: unknown = isPrimitive(owner) ? null : Reflect.get(owner, key),
+      typeWin: unknown = isPrimitive(win) ? null : Reflect.get(win, name);
+    if (typeof typeWin === "function" && self0 instanceof typeWin) {
+      return true;
+    }
+    if (!nodeLike) {
+      return false;
+    }
+    // A node that moved keeps the classes of the window that created it, and that window may be closed
+    // The match is by class name, so an instance of any class of that name with an `ownerDocument` key matches too
+    // The depth limit ends the walk for a Proxy whose chain has no end
+    for (
+      let proto = Reflect.getPrototypeOf(self0), depth = 0;
+      proto !== null && depth < MAX_PROTOTYPE_DEPTH;
+      proto = Reflect.getPrototypeOf(proto), ++depth
+    ) {
+      const typeProto: unknown = Reflect.getOwnPropertyDescriptor(
+        proto,
+        "constructor",
+      )?.value;
+      // `instanceof` would walk the chain once more, without the limit
+      if (
+        typeof typeProto === "function" &&
+        typeProto.name === name &&
+        typeProto.prototype === proto
+      ) {
+        return true;
+      }
+    }
+    return false;
+  } catch (error) {
+    /* @__PURE__ */ self.console.debug(error);
+    return false;
   }
-  return false;
 }
 
 export function isHomogenousArray<T extends PrimitiveTypeE>(
