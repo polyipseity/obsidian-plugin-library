@@ -35,9 +35,7 @@
     params?: DeepWritable<Params>;
     results?: string;
     onClose?: () => unknown;
-    // eslint-disable-next-line no-unused-vars -- Callback parameters are consumed by the caller, not referenced in this file
     onFind?: (direction: Direction, params: Params) => unknown;
-    // eslint-disable-next-line no-unused-vars -- Callback parameters are consumed by the caller, not referenced in this file
     onParamsChanged?: (params: Params) => unknown;
     initialFocus?: boolean;
   }

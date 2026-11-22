@@ -572,6 +572,7 @@ describe("private.ts — private API access", () => {
     // The reveal strips the brand and exposes no extra members.
     it("reveals BakedHotkey as an empty brand wrapper", () => {
       expectTypeOf<
+        // eslint-disable-next-line @typescript-eslint/no-generated-empty-object-type -- intentional empty shape; kept as written
         RevealPrivate<BakedHotkey, [$BakedHotkey]>
         // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- asserting the empty revealed shape
       >().toEqualTypeOf<{}>();
@@ -680,6 +681,7 @@ describe("private.ts — private API access", () => {
     // than split before the whitelist is consulted. Mirrors the documentations.ts
     // use case where `App.setting.settingTabs` is typed as `$X | $Y`.
     it("reveals both union branches via whole-union whitelist element", () => {
+      // eslint-disable-next-line @typescript-eslint/no-generated-empty-object-type -- intentional empty shape; kept as written
       type Whole = RevealPrivate<
         CommunityPluginsSettingTab | UnknownSettingTab,
         [$CommunityPluginsSettingTab | $UnknownSettingTab]
@@ -795,6 +797,7 @@ describe("private.ts — private API access", () => {
             : false
         >().toEqualTypeOf<false>();
         expectTypeOf<
+          // eslint-disable-next-line @typescript-eslint/no-generated-empty-object-type -- intentional empty shape; kept as written
           "foo" extends keyof RevealPrivate<ConsumerThing, [$App]>
             ? true
             : false
@@ -854,9 +857,11 @@ describe("private.ts — private API access", () => {
 
       it("reveals neither private shape when the whitelist is empty", () => {
         expectTypeOf<
+          // eslint-disable-next-line @typescript-eslint/no-generated-empty-object-type -- intentional empty shape; kept as written
           "a" extends keyof RevealPrivate<Multi, []> ? true : false
         >().toEqualTypeOf<false>();
         expectTypeOf<
+          // eslint-disable-next-line @typescript-eslint/no-generated-empty-object-type -- intentional empty shape; kept as written
           "b" extends keyof RevealPrivate<Multi, []> ? true : false
         >().toEqualTypeOf<false>();
       });
