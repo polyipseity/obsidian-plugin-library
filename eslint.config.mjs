@@ -24,28 +24,23 @@ export const FILE_GLOBS = [
 ];
 
 export default defineConfig([
-  eslintJs.configs.recommended,
-  ...eslintTs.configs.strictTypeChecked,
-  ...eslintSvelte.configs["flat/recommended"],
-  eslintPrettier,
-  // Disable formatting-related rules that may conflict with Prettier
-  ...eslintSvelte.configs["flat/prettier"],
+  {
+    files: FILE_GLOBS,
+    extends: [
+      eslintJs.configs.recommended,
+      ...eslintTs.configs.strictTypeChecked,
+      ...eslintSvelte.configs["flat/recommended"],
+      eslintPrettier,
+      ...eslintSvelte.configs["flat/prettier"],
+    ],
+  },
   // Obsidian
   ...eslintObsidianMd.configs.recommendedWithLocalesEn.filter(
     (config) => !config.name?.endsWith("typescript-eslint/base"),
   ),
-  // Disable all Svelte rules for `package.json` to avoid crashes (JSON parser has no parserServices)
-  {
-    files: ["package.json"],
-    rules: Object.fromEntries(
-      Object.keys(eslintSvelte.rules).map((key) => [`svelte/${key}`, "off"]),
-    ),
-  },
   includeIgnoreFile(path.join(import.meta.dirname, ".gitignore")),
   {
     files: FILE_GLOBS,
-  },
-  {
     languageOptions: {
       parserOptions: {
         projectService: {
@@ -99,11 +94,18 @@ export default defineConfig([
       "obsidianmd/rule-custom-message": "off",
     },
   },
+  // The rule targets production class instances. Tests deliberately assign structural mocks.
+  {
+    files: ["tests/**"],
+    rules: {
+      "@typescript-eslint/no-unsafe-class-instance-assignment": "off",
+    },
+  },
   // JSON files are data declarations, not executable code — expression and UI-text rules don't apply
   {
     files: ["assets/**/*.json"],
+    languageOptions: { parser: eslintTs.parser },
     rules: {
-      "@typescript-eslint/no-unused-expressions": "off",
       "obsidianmd/ui/sentence-case-json": "off",
     },
   },
