@@ -41,6 +41,7 @@ export async function patchPlugin<const I extends string>(
 
                       const ret2 = ret as Awaited<ReturnType<Proto>> &
                           typeof ret,
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-class-instance-assignment -- Obsidian's loader returned this Plugin instance for the matching id.
                         unpatcher = await patcher(ret2);
                       unpatch.push(unpatcher);
                       ret2.register(() => {
