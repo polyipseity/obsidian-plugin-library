@@ -109,10 +109,10 @@ export abstract class AbstractSettingsManager<
 }
 export namespace AbstractSettingsManager {
   export interface Type {
-    readonly [Type]?: never;
+    readonly [settingsType]?: never;
   }
 
-  declare const Type: unique symbol;
+  declare const settingsType: unique symbol;
   export function fix(self0: unknown): Fixed<Type> {
     return markFixed(self0, {});
   }
