@@ -62,6 +62,7 @@ export function deopaque<T>(value: T): Deopaque<T> {
 
 export function launderUnchecked<T extends object>(
   value: unknown,
+  // eslint-disable-next-line @typescript-eslint/no-generated-empty-object-type -- intentional empty shape; kept as written
 ): Unchecked<T> {
   const ret = {};
   Object.assign(ret, value);
